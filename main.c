@@ -4,6 +4,8 @@
 /*OPTIONAL INCLUDES*/
 	#include <string.h>
 	#include <math.h>
+/*FILE INCLUDES*/
+	#include "errors.h"
 /*END OF INCLUDES*/
 
 /*
@@ -12,5 +14,6 @@
 
 int main( int argc, const char* argv[] )
 {
-	
+	error(1);
+	return 0;
 }

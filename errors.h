@@ -1,0 +1,1 @@
+returnError(int value, char[] errorDescription);
