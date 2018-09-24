@@ -9,7 +9,7 @@ returnError(int value, char[] errorDescription){
             return 2;
             break;
         case 3:
-            printf(stderr, "An error occured: %s. Shutting down.", errorDescription);
+            printf(stderr, "An error occured: %s. Shutting down.", errorDescription); //kkk
             return 3;
             break;
         case 4:
@@ -17,7 +17,7 @@ returnError(int value, char[] errorDescription){
             return 4;
             break;
         case 6:
-            
+
             return 6;
             break;
         case 99:
