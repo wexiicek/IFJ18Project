@@ -1,28 +1,18 @@
-returnError(int value, char[] errorDescription){
-    switch(value){
-        case 1:
-            printf(stderr, "An error occured during lexical analysis.");
-            return 1;
-            break;
-        case 2:
-            printf(stderr, "Incorect syntax: %s.   ", errorDescription);
-            return 2;
-            break;
-        case 3:
-            printf(stderr, "An error occured: %s. Shutting down.", errorDescription);
-            return 3;
-            break;
-        case 4:
+#include <stdio.h>
+#include "errors.h"
 
-            return 4;
-            break;
-        case 6:
-            
-            return 6;
-            break;
-        case 99:
+const char *errorTable[] = {
+	[LEXICAL] = "There was a lexical error in the program.\n",
+	[SYNTACTICAL] = "There was a syntactical error in the program.\n",
+	[SEMANTICAL] = "There was a semantical error in the program.\n",
+	[COMPATIBILITY] = "There was a compatibility error in the program.\n",
+	[OTHER] = "Other problem in the program.\n",
+	[ZERO_DIV] = "Division by zero.\n",
+	[INTERNAL] = "There was an internal compiler error.\n"
+};
 
-            return 99;
-            break;
-    }
+
+int printError(int ret_msg_id){
+	fprintf(stderr, "%s", errorTable[errorID]);
+	return errorID;
 }
