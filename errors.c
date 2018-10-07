@@ -11,8 +11,7 @@ const char *errorTable[] = {
 	[INTERNAL] = "There was an internal compiler error.\n"
 };
 
-
 int printError(int ret_msg_id){
-	fprintf(stderr, "%s", errorTable[errorID]);
+	printf(stderr, "%s", errorTable[errorID]);
 	return errorID;
 }

@@ -4,7 +4,6 @@
 extern const char *errorTable[];
 
 enum errorMessages{
-	SUCCESS = 0,
 	LEXICAL = 1,
 	SYNTACTICAL = 2,
 	SEMANTICAL = 3,
