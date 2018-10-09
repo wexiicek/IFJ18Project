@@ -34,18 +34,36 @@ typedef enum {
     THEN,
     WHILE,
     //LIST OF KEYWORDS FROM TASK 3.1
-    QUESTIONMARK,   //OTÁZNIK
-    EXCLAMATIONMARK, //VÝKRIČNÍK
+
+    QUESTIONMARK,   //?
+    EXCLAMATIONMARK, //!
+    COMMA, //,
+    DOT,    //.
     LEFTBRACKET,    //LAVÁ ZÁVORKA
     RIGHTBRACKET,   //PRAVÁ ZÁVORKA
     SEMICOLON,  //;
-    DOT,    //.
     EOL,    //koniec riadku
-    COMMA, //,
-    DOUBLEQUOTES, //uvodzovky
-    BACKSLASH, //lomitko
+    DOUBLEQUOTES, //"
+    BACKSLASH, //"\"
+    DOUBLEBACKSLASH,
+    BACKSLASHX,
+    BACKSLASHN,
+    BACKSLASHT,
+    BACKSLASHS,
+    BACKSLASHQUOTES,
     ADD, //+
     SUB, //-
     DIV, // /
     MUL, // *
-}
+    POUND, //#
+    CBEGIN, //=begin
+    CEND, //=end
+    GREATER, // >
+    LESS, //<
+    EQUAL, // ==
+    GREATEREQ, // >=
+    LESSEQ, //<=
+    NOTEQUAL, //!=
+
+
+} //TODO

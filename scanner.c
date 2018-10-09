@@ -7,3 +7,20 @@
 #include "error.h"
 #include "strlib.h"
 #include "clear.h"
+
+#define DEBUG 1
+
+FILE *sourceCode;
+
+int main (){
+
+    FILE *sourceCode;
+    #ifdef DEBUG
+	    if (!(sourceCode = fopen("test.bas", "r"))){
+		    source_Code = stdin;
+        }
+    #else
+    	source_file = stdin;
+    #endif
+
+}
