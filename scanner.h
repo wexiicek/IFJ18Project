@@ -34,34 +34,39 @@ typedef enum {
     THEN,
     WHILE,
     //LIST OF KEYWORDS FROM TASK 3.1
-    QUESTIONMARK,   //OTÁZNIK
-    EXCLAMATIONMARK, //VÝKRIČNÍK
+
+    QUESTIONMARK,   //?
+    EXCLAMATIONMARK, //!
+    COMMA, //,
+    DOT,    //.
     LEFTBRACKET,    //LAVÁ ZÁVORKA
     RIGHTBRACKET,   //PRAVÁ ZÁVORKA
     SEMICOLON,  //;
-    DOT,    //.
     EOL,    //koniec riadku
-    COMMA, //,
-    DOUBLEQUOTES, //uvodzovky
-    BACKSLASH, //lomitko
+    DOUBLEQUOTES, //"
+    BACKSLASH, //"\"
+    DOUBLEBACKSLASH,
+    BACKSLASHX,
+    BACKSLASHN,
+    BACKSLASHT,
+    BACKSLASHS,
+    BACKSLASHQUOTES,
     ADD, //+
     SUB, //-
     DIV, // /
     MUL, // *
-}
-typedef union
-{
-	Dynamic_string *string; /// String or identifier value.
-	int integer; /// Integer value.
-	Keyword keyword; /// Keyword, one of the KEYWORD_... constant
-	double decimal; /// Decimal value.
-} Token_attribute;
 
-/**
- * @struct Token representation.
- */
-typedef struct
-{
-	Token_type type; /// Token type, one of token_type constants.
-	Token_attribute attribute; /// Attribute of token.
-} Token;
+
+    POUND, //#
+    CBEGIN, //=begin
+    CEND, //=end
+    GREATER, // >
+    LESS, //<
+    EQUAL, // ==
+    GREATEREQ, // >=
+    LESSEQ, //<=
+    NOTEQUAL, //!=
+
+
+} //TODO
+>>>>>>> b727ef5a1d79bc1a6d59e8718057b12e8f9ed4e0
