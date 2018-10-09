@@ -1,14 +1,13 @@
+PRJ=compiler
+#
+PROGS=$(PRJ)
 CC=gcc
-CFLAGS=-std=gnu99 -Wall -Wextra -Werror -pedantic
-LFLAGS=-lpthread
-BIN=ifjProj
-SOURCE=main.c
+CFLAGS=-Wall -std=c99 -pedantic -lm
 
-all:
-	$(CC) $(CFLAGS) $(SOURCE) -o $(BIN) $(LFLAGS)
+all: $(PROGS)
 
-run: all
-	./$(BIN)
+$(PRJ): main.c scanner.c
+	$(CC) $(CFLAGS) -o $@ main.c scanner.c
 
 clean:
-	rm $(BIN)
+	rm -f *.o *.out $(PROGS)
