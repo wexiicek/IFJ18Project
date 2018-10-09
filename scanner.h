@@ -49,3 +49,19 @@ typedef enum {
     DIV, // /
     MUL, // *
 }
+typedef union
+{
+	Dynamic_string *string; /// String or identifier value.
+	int integer; /// Integer value.
+	Keyword keyword; /// Keyword, one of the KEYWORD_... constant
+	double decimal; /// Decimal value.
+} Token_attribute;
+
+/**
+ * @struct Token representation.
+ */
+typedef struct
+{
+	Token_type type; /// Token type, one of token_type constants.
+	Token_attribute attribute; /// Attribute of token.
+} Token;
