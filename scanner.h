@@ -9,11 +9,6 @@ typedef enum {
 	stateExclamation, //[6]; !
 	sStringStart, //[7]; "....
 
-
-
-
-
-
 } stateList;
 
 
@@ -38,10 +33,11 @@ typedef enum {
 
 
 //-----------------
-typedef struct
-{
+typedef struct {
+
 	tType type; /// Token type, one of token_type constants.
 	tAttribute attribute; /// Attribute of token.
+
 } Token;
 
 
@@ -60,47 +56,16 @@ typedef enum {
     WHILE,
     //LIST OF KEYWORDS FROM TASK 3.1
 
-    QUESTIONMARK,   //?
-    EXCLAMATIONMARK, //!
-    COMMA, //,
-    DOT,    //.
-    LEFTBRACKET,    //LAVÁ ZÁVORKA
-    RIGHTBRACKET,   //PRAVÁ ZÁVORKA
-    SEMICOLON,  //;
-    EOL,    //koniec riadku
-    DOUBLEQUOTES, //"
-    BACKSLASH, //"\"
-    DOUBLEBACKSLASH,
-    BACKSLASHX,
-    BACKSLASHN,
-    BACKSLASHT,
-    BACKSLASHS,
-    BACKSLASHQUOTES,
-    ADD, //+
-    SUB, //-
-    DIV, // /
-    MUL, // *
-
-
-    POUND, //#
-    CBEGIN, //=begin
-    CEND, //=end
-    GREATER, // >
-    LESS, //<
-    EQUAL, // ==
-    GREATEREQ, // >=
-    LESSEQ, //<=
-    NOTEQUAL, //!=
-
-
 } keywords; //TODO
 
 void setSourceCodeFile (FILE *f);
 void set_dynamic_string(dynamicString *string);
 
-typedef union{
+typedef union {
+
 	dynamicString *string; /// String or identifier value.
 	int integer; /// Integer value.
 	Keyword keyword; /// Keyword, one of the KEYWORD_... constant
 	double decimal; /// Decimal value.
-} Token_attribute;
+
+} tokenAttribute;

@@ -34,6 +34,7 @@ int getNextToken (Token *token){
 
 	dynamicString string;
 	dynamicString *str = &string;
+
 	if(!dynamicStringInit(str))
 		return INTERNAL;
 		//If we failed, TODO
@@ -42,7 +43,7 @@ int getNextToken (Token *token){
 	int state = sStart;
 	token -> type = tokenEmpty;
 
-	char c, *endptr, strnum[4] = {0};
+	char c; *endptr; strnum[4] = {0};
 
 	//reading chars from sourceCode
 	while(1){
