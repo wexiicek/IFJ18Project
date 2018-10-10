@@ -121,5 +121,5 @@ int getNextToken (Token *token){
 			}
 		}
 	}
-
+	return 0;
 }

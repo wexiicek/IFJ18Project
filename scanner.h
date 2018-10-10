@@ -1,13 +1,14 @@
 typedef enum {
 
 	stateStart, //[0]; beginning of automaton
-	stateSpace, //[1]; is a space
 	stateEOL, //[2]; end of line
 	stateEqual, //[3]; =
 	stateGreater, //[4]; >
 	stateLess, //[5]; <
 	stateExclamation, //[6]; !
-	sStringStart, //[7]; "....
+	stateStringStart, //[7]; "....
+	stateSlash,
+	stateBackslash,
 
 } stateList;
 
@@ -26,6 +27,8 @@ typedef enum {
 	tokenRightBracket, //[6] right bracket sign
 	tokenComment, //[7] comment (block or single line)
 	tokenEmptyString, //[8] "" - empty string
+	tokenCompare,
+	tokenAssign,
 
 } tokenType;
 
