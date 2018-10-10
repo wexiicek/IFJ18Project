@@ -87,9 +87,11 @@ int getNextToken (Token *token){
 				else if (c == '>')
 					state = stateGreater;
 				
-				else if (c == '='){
+				else if (c == '=')
 					state = stateEqual;
-				}
+				
+				else if (c == '#')
+					state = stateComment;
 
 				else if (c == '+'){
 					token->type = tokenAdd;
@@ -109,14 +111,9 @@ int getNextToken (Token *token){
 
 				else if (c == '/') {
 					token->type = tokenDiv;
-					return freeResources(tokenOK, str);
-				}
-				
-
-				else if (c == '\\'){
-					token->type = TOKEN_TYPE_IDIV;
 					//return freeResources(tokenOK, str);
 				}
+				
 
 				else if (c == '('){
 					token->type = tokenLeftBracket;
@@ -163,13 +160,63 @@ int getNextToken (Token *token){
 					for example  something = begi...
 
 				*/
-
-
-
-
-
-
+				break;
 			}
+
+			case (stateComment):
+			//single line comment
+
+				if(c == '\n' || c == EOF){
+					state = stateStart;
+					ungetc(c, sourceCode);
+				}
+
+			break;
+
+			case (stateBlockComment):
+
+				if (c == 'begin') //TODO, this wont work :D
+
+				else if (c == EOF)
+					return freeResources(LEXICAL, str);
+
+			break;
+
+			//TODO
+			case (stateStringStart):
+
+				if (c == '"') {
+					token->type = tokenEmptyString;
+
+				}
+				if (c == "")
+
+
+				break;
+
+			case (stateGreater):
+
+				if (c == '='){
+					token->type = tokenGreaterEqual
+				}
+				else{
+					ungetc(c, sourceCode);
+					token->type = tokenGreaterThan;
+				}
+
+			break;
+
+			case (stateLess):
+
+				if (c == '='){
+					token->type = tokenLessEqual
+				}
+				else{
+					ungetc(c, sourceCode);
+					token->type = tokenLessThan;
+				}
+
+			break;
 		}
 	}
 	return 0;

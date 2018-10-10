@@ -26,9 +26,16 @@ typedef enum {
 	tokenLeftBracket, //[5] left bracket sign
 	tokenRightBracket, //[6] right bracket sign
 	tokenComment, //[7] comment (block or single line)
+	tokenBlockComment,
 	tokenEmptyString, //[8] "" - empty string
 	tokenCompare,
 	tokenAssign,
+	tokenGreater, //when we get >
+	tokenGreaterEqual, //when we get >=
+	tokenGreaterThan, //when we get > and not=, means we have comparison
+	tokenLess, //when we get <
+	tokenLessEqual, //when we get <=
+	tokenLessThab, //when we get < and not =, means we have comparison
 
 } tokenType;
 
