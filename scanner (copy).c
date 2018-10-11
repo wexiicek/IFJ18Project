@@ -98,7 +98,7 @@ int getNextToken (Token *token){
 
 				else if (c == '\n'){
 					state = stateEndOfLine;
-					token->type = tokenEndOfLine;
+					token->type = tokenEndOfLine; //TODO
 				}
 
 				else if (isspace(c))
