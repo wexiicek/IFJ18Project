@@ -1,6 +1,6 @@
 typedef enum {
 
-	stateStart, //[0]; beginning of automaton
+	stateStart, //[0]; beginning of finite automaton
 	stateEOL, //[2]; end of line
 	stateEqual, //[3]; =
 	stateGreater, //[4]; >
@@ -35,7 +35,7 @@ typedef enum {
 	tokenGreaterThan, //when we get > and not=, means we have comparison
 	tokenLess, //when we get <
 	tokenLessEqual, //when we get <=
-	tokenLessThab, //when we get < and not =, means we have comparison
+	tokenLessThan, //when we get < and not =, means we have comparison
 
 } tokenType;
 
