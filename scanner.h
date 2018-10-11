@@ -1,14 +1,18 @@
 typedef enum {
 
 	stateStart, //[0]; beginning of finite automaton
-	stateEOL, //[2]; end of line
+	stateEndOfLine, //[2]; end of line
 	stateEqual, //[3]; =
 	stateGreater, //[4]; >
 	stateLess, //[5]; <
 	stateExclamation, //[6]; !
 	stateStringStart, //[7]; "....
+	stateStringContinue,
 	stateSlash,
 	stateBackslash,
+	stateLineComment,
+	stateBlockComment,
+	stateIdentifierOrKeyword,
 
 } stateList;
 
@@ -25,17 +29,21 @@ typedef enum {
 	tokenDiv, //[4], slash sign
 	tokenLeftBracket, //[5] left bracket sign
 	tokenRightBracket, //[6] right bracket sign
-	tokenComment, //[7] comment (block or single line)
-	tokenBlockComment,
 	tokenEmptyString, //[8] "" - empty string
+	tokenUnemptyString,
 	tokenCompare,
 	tokenAssign,
+	tokenEqual,
+	tokenNotEqual,
 	tokenGreater, //when we get >
 	tokenGreaterEqual, //when we get >=
 	tokenGreaterThan, //when we get > and not=, means we have comparison
 	tokenLess, //when we get <
 	tokenLessEqual, //when we get <=
 	tokenLessThan, //when we get < and not =, means we have comparison
+	tokenEndOfFile,
+	tokenEndOfLine,
+
 
 } tokenType;
 
@@ -69,7 +77,7 @@ typedef enum {
 } keywords; //TODO
 
 void setSourceCodeFile (FILE *f);
-void set_dynamic_string(dynamicString *string);
+//void setDynamicString(dynamicString *string);
 
 typedef union {
 

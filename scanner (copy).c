@@ -53,47 +53,7 @@ int getNextToken (Token *token){
 				//See stateComment for reference
 				int comCounter = 0;
 
-				if (c == '\n')			{
-					state = stateEOL;
-
-				else if (isspace(c))
-					state = stateStart;
-				
-				/*
-				else if (c == '\'')
-					state = stateComment;
-				*/
-
-				else if (isalpha(c) || c == '_'){
-					//in our case, the identifier needs to start with lowercase - TODO!!
-					/*
-					if (!dynamic_string_add_char(str, (char) tolower(c)))
-						return free_resources(INTERNAL, str);
-					*/
-					state = stateIdentifierOrKeyword;
-				}
-				else if (isdigit(c)){
-					if (!dynamic_string_add_char(str, c)){
-						return free_resources(INTERNAL, str);
-					}
-					state = stateNumber;
-				}
-				else if (c == '"')
-					state = stateStringStart;
-				
-				else if (c == '<')
-					state = stateLess;
-				
-				else if (c == '>')
-					state = stateGreater;
-				
-				else if (c == '=')
-					state = stateEqual;
-				
-				else if (c == '#')
-					state = stateComment;
-
-				else if (c == '+'){
+				if (c == '+'){
 					token->type = tokenAdd;
 					//return freeResources(tokenOK, str);
 				}
@@ -132,9 +92,58 @@ int getNextToken (Token *token){
 
 
 				else if (c == EOF){
-					token->type = tokenEOF;
+					token->type = tokenEndOfFile;
 					//return freeResources(tokenOK, str);
 				}
+
+				else if (c == '\n'){
+					state = stateEndOfLine;
+					token->type = tokenEndOfLine;
+				}
+
+				else if (isspace(c))
+					state = stateStart;
+				
+				/*
+				else if (c == '\'')
+					state = stateComment;
+				*/
+
+				else if ( (isalpha(c) == ((char) tolower(c))) || (c == '_') ){
+					
+					if (!dynamicStringAddChar(str, c))
+						return freeResources(INTERNAL, str);
+				
+					state = stateIdentifierOrKeyword;
+				}
+
+				else if (isdigit(c)){
+					if (!dynamic_string_add_char(str, c)){
+						return free_resources(INTERNAL, str);
+					}
+					state = stateNumber;
+				}
+
+				else if (c == '"')
+					state = stateStringStart;
+				
+				else if (c == '<')
+					state = stateLess;
+				
+				else if (c == '>')
+					state = stateGreater;
+				
+				else if (c == '=')
+					state = stateEqual;
+				
+				else if (c == '#')
+					state = stateComment;
+
+				else if (c == '!')
+					state = stateExclamation;
+			
+
+				
 
 				else
 					//return freeResources(LEXICAL, str);
@@ -143,56 +152,17 @@ int getNextToken (Token *token){
 		
 
 
+			/*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&ccc*/
 
-			case (sEqual):
-				if (c == '='){
-					token->type = tokenCompare;
-					//return freeResources(tokenOK, str);
-				}
 
-				if (isspace(c))
-					token->type = tokenAssign
 
-				//TODO
-				/*
-					We have to solve the problem that comes with assigning a 
-					variable that has name simial to "begin"..
-					for example  something = begi...
-
-				*/
-				break;
-			}
-
-			case (stateComment):
+			/* FINISHED STATES*/
+			case (stateLineComment):
 			//single line comment
-
-				if(c == '\n' || c == EOF){
+				if (c == '\n')
 					state = stateStart;
-					ungetc(c, sourceCode);
-				}
 
 			break;
-
-			case (stateBlockComment):
-
-				if (c == 'begin') //TODO, this wont work :D
-
-				else if (c == EOF)
-					return freeResources(LEXICAL, str);
-
-			break;
-
-			//TODO
-			case (stateStringStart):
-
-				if (c == '"') {
-					token->type = tokenEmptyString;
-
-				}
-				if (c == "")
-
-
-				break;
 
 			case (stateGreater):
 
@@ -217,6 +187,85 @@ int getNextToken (Token *token){
 				}
 
 			break;
+
+
+			/* /FINISHED STATES*/
+			
+			case (stateExclamation):
+
+				if (c == '=') {
+					token->type = tokenNotEqual
+					//return freeResources(tokenOK, str);
+				}
+				else {
+					return LEXICAL; //syntactical??? TODO
+				}
+
+			break;
+
+
+			
+			case (stateEqual):
+				//we need to add comment support TODO
+				if (c == '='){
+					token->type = tokenCompare;
+					//return freeResources(tokenOK, str);
+				}
+				else if (c != '=') {
+					token->type = tokenAssign;
+				}
+
+
+
+
+			case (stateStringStart):
+
+				if (c == '"') {
+					token->type = tokenEmptyString;
+
+				}
+				else if (c != '\n') {
+					if (!dynamic_string_add_char(str, c))
+						freeResources(INTERNAL, str);
+					state = stateStringContinue;
+				}
+
+
+			break;
+
+			case (stateStringContinue):
+
+				if (c == '"') {
+					token->type = tokenUnemptyString;
+
+				}
+				else if (c != '\n') {
+					if (!dynamic_string_add_char(str, c))
+						freeResources(INTERNAL, str);
+					state = stateStringContinue;
+				}
+
+
+			break;
+
+			/* UNFINISHED STATES*/
+
+				
+
+				if (isspace(c))
+					token->type = tokenAssign
+
+				//TODO
+				/*
+					We have to solve the problem that comes with assigning a 
+					variable that has name simial to "begin"..
+					for example  something = begi...
+
+				*/
+				break;
+			}
+			
+			/* / UNFINISHED STATES*/
 		}
 	}
 	return 0;

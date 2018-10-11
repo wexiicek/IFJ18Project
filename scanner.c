@@ -9,22 +9,23 @@
 FILE *sourceCode;
 
 void setSourceCodeFile (FILE *f){
-    printf("debug\n");
+    printf("Setting up file..\n");
 
     sourceCode = f;
 
-    printf("debug1\n");
+    printf("Finished. \n");
 }
-
+/*
 void set_dynamic_string(dynamiString *string){
 	dynamicString = string;
 }
+*/
 
 int getNextToken (Token *token){
 	if (sourceCode == NULL)
 		return INTERNAL;
 	//If there is no code file, we return INTERNAL error
-
+/*
 	if (dynamicString == NULL)
 		return INTERNAL;
 	//If we failed to allocate memory for dynamic string, we return INTERNAL error
@@ -38,12 +39,13 @@ int getNextToken (Token *token){
 	if(!dynamicStringInit(str))
 		return INTERNAL;
 		//If we failed, TODO
-
+*/
+	
 
 	int state = sStart;
 	token -> type = tokenEmpty;
 
-	char c; *endptr; strnum[4] = {0};
+	char c; //*endptr; strnum[4] = {0};
 
 	//reading chars from sourceCode
 	while(1){
@@ -51,75 +53,27 @@ int getNextToken (Token *token){
 		switch (state){
 			case (sStart):
 
-				//These have possible midstates
-				if (c == '\n')
-					state = sEOL;
-				
-				else if (isspace(c))
-					state = sSpace; //TODO
-				
-				else if (c == '\\') {
-					//TODO
+				if (c == '+'){
+					token->type = tokenAdd;
+					//return freeResources(tokenOK, str);
 				}
 
-				else if (c == '=')
-					state = sEqual;
-				
-				else if (c == '>')
-					state = sGreater;
-				
-				else if (c == '<')
-					state = sLess;
-				
-				else if (c == '!')
-					state = sExclamation;
-
-				else if (c == '"')
-					state = sStringStart;
-
-
-
-
-
-				//These are definitive 
-				else if (c == '#')
-					token -> type = tokenComment;
-
-				else if (c == '(')
-					token -> type = tokenLeftBracket;
-
-				else if (c == ')')
-					token -> type = tokenRightBracket;
-
-				else if (c == '+')
-					token -> type = tokenAdd;
-				else if (c == '-')
-					token -> type = tokenSub; // could be negative number TODO
-				else if (c == '*')
-					token -> type = tokenMul;
-				else if (c == '/')
-					token -> type = tokenDiv;
-
-
-
-
-
-
-				else if (isdigit(c)){
-					//TODO
+				else if (c == '-'){
+					token->type = tokenSub;
+					//return freeResources(tokenOK, str);
 				}
-			
+
+				else if (c == '*'){
+					token->type = tokenMul;
+					//return freeResources(tokenOK, str);
+				}
 
 
-
-			case (sEqual):
-				sState = ;
-
-			case (sStringStart){
-				if (c == '"')
-					token -> type = tokenEmptyString;
+				else if (c == '/') {
+					token->type = tokenDiv;
+					//return freeResources(tokenOK, str);
+				}
 			}
 		}
-	}
 	return 0;
 }
