@@ -1,35 +1,44 @@
 #include <stdio.h>
-typedef union
-{
+
+//Structure that keeps the value of a certain token.
+typedef union{
 	int integer; /// Integer value.
 	char *string;
 } tokenData;
 
+//Structure that keeps the type of a certain token.
 typedef enum {
+	tokenEmpty,
 	tokenAdd,
 	tokenSub,
 	tokenMul,
 	tokenDiv,
 	tokenLeftBracket,
 	tokenRightBracket,
+	tokenEndOfLine,
 	tokenWhitespace,
 } tokenType;
 
+//Structure that defines a certain token.
 typedef struct {
 	tokenType Type;
 	tokenData Data;
 } Token;
 
-
-
-
+//List of states for finite automaton of scanner (lexer)
 typedef enum {
 	stateStart,
-	stateString,
-
+	stateStringStart,
+	stateLess,
+	stateGreater,
+	stateEqual,
+	stateComment,
+	stateExclamation,
 } stateList;
 
-enum errorMessages{
+//List of error states that could occur during the compiling process
+enum errorMessages {
+	SUCCESS = 0,
 	LEXICAL = 1,
 	SYNTACTICAL = 2,
 	SEMANTICAL = 3,
@@ -39,7 +48,10 @@ enum errorMessages{
 	INTERNAL = 99,
 };
 
+//Initialization of token
 Token token;
 
-void getTokens (FILE* sourceCode);
+/* @brief
+*/
+int getTokens (FILE* sourceCode);
 
