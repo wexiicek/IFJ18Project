@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "scanner_test.h"
-
+#include "program_data.h"
 
 int getTokens (FILE* sourceCode) {
 

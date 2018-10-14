@@ -48,7 +48,6 @@ enum errorMessages {
 	INTERNAL = 99,
 };
 
-//Initialization of token
 Token token;
 
 /* @brief

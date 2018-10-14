@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "scanner_test.h"
+#include "program_data.h"
 
 int main( int argc, const char* argv[] ){
 	//printf("The program has: %d arguments, %s\n", argc, argv[0]);
