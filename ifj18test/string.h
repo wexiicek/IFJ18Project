@@ -39,6 +39,7 @@ bool charIsTab(char);
 bool charIsSpace(char);
 bool charIsBackslash(char);
 bool charIsDigit(char);
+bool charIsLowercase(char c);
 bool charIsLetter(char);
 int charToDec(char);
 char decToChar(int);

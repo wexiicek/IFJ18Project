@@ -105,6 +105,12 @@ bool charIsDigit(char c) {
         return false;
 }
 
+bool charIsLowercase(char c){
+	if (c >= 'a' && c <= 'z')
+		return true;
+	return false;
+}
+
 bool charIsLetter(char c) {
     if ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') )
         return true;

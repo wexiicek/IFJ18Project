@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 //Structure that keeps the value of a certain token.
 typedef union{
 	int integer; /// Integer value.
@@ -15,8 +14,21 @@ typedef enum {
 	tokenDiv,
 	tokenLeftBracket,
 	tokenRightBracket,
+	tokenLeftBrace,
+	tokenRightBrace,
+	tokenComma,
+	tokenEndOfFile,
+	tokenFloat,
+	tokenExponential,
+	tokenEqual,
+	tokenNotEqual,
+	tokenLess,
+	tokenGreater,
+	tokenLessEqual,
+	tokenGreaterEqual,
 	tokenEndOfLine,
-	tokenWhitespace,
+	tokenNumber,
+	tokenAssign,
 } tokenType;
 
 //Structure that defines a certain token.
@@ -34,6 +46,12 @@ typedef enum {
 	stateEqual,
 	stateComment,
 	stateExclamation,
+	stateNumber,
+	stateIdentifierCheck,
+	stateIdentifierOrKeyword,
+	stateZero,
+	stateEnd,
+	stateEOL,
 } stateList;
 
 //List of error states that could occur during the compiling process
