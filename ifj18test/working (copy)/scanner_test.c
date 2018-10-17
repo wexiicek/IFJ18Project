@@ -17,7 +17,6 @@ int getTokens (FILE* sourceCode) {
 	char c;
 	//Go through every character of a file
 	while (1){
-		token.Type = tokenEmpty;
 		c = getc(sourceCode);
 		switch (state){
 			case (stateStart):
@@ -26,6 +25,9 @@ int getTokens (FILE* sourceCode) {
 
 				if (c == '\n')
 					{token.Type = tokenEndOfLine;}
+
+				else if (isspace(c))
+					{state = stateStart; token.Type = tokenEmpty;}
 
 				else if (c == '+')
 					{token.Type = tokenAdd;}
@@ -70,16 +72,7 @@ int getTokens (FILE* sourceCode) {
 					state = stateEqual;
 
 				else if (isdigit(c)){
-					if (c == '0')
-						{state = stateZero; printf("debug\n");}
-					else if ((c >= '1') && (c <= '9'))
-						{printf("entering number1\n");
-						ungetc(c, sourceCode);
-						printf("entering number2\n");
-						state = stateNumber;
-						printf("entering number3\n");
-						token.Type = tokenInteger;
-						printf("entering number4\n");}
+					ungetc(c, sourceCode); state = stateNumber; token.Type = tokenInteger;
 				}
 				
 				else if (c == '#')
@@ -95,10 +88,10 @@ int getTokens (FILE* sourceCode) {
 				//TODO
 			
 				else if ( (c == '_') || (charIsLowercase(c)) )
-					{ungetc(c, sourceCode); state = stateIdentifierOrKeyword;}
+					{ungetc(c, sourceCode); state = stateIdentifierOrKeyword; token.Type = tokenString;}
 				
 				else 
-					{token.Type = tokenEmpty; continue;}
+					{token.Type = tokenEmpty; return LEXICAL;}
 			break;
 
 			case (stateZero):
@@ -106,10 +99,14 @@ int getTokens (FILE* sourceCode) {
 			break;
 
 			case (stateNumber):
-				if (c == '1')
-					{printf("mame jednotku\n"); state = stateStart; token.Type = tokenInteger;}
+				if (isdigit(c))
+					{stringAddChar(&kwstring, c);}
+				else if (c == '.')
+					{token.Type = tokenFloat; stringAddChar(&kwstring, c);}
+				else if ((c == 'e')||(c == 'E'))
+					{token.Type = tokenExponential; stringAddChar(&kwstring, c);}
 				else
-					state = stateStart;
+					{state = stateNumberEnd; ungetc(c, sourceCode);}
 			break;
 
 			case (stateIdentifierOrKeyword):
@@ -174,6 +171,18 @@ int getTokens (FILE* sourceCode) {
 				stringDispose(&kwstring);
 			break;
 
+			case (stateNumberEnd):
+				if (token.Type == 11)
+					printf("float\n");
+				else if (token.Type == 22)
+					printf("int\n");
+				printf("\"%s\"\n", kwstring.value);
+				state = stateStart;
+				stringClear(&kwstring);
+				ungetc(c, sourceCode);
+				stringDispose(&kwstring);
+			break;
+
 			case (stateEnd):
 				return SUCCESS;
 			break;	
@@ -203,8 +212,8 @@ int getTokens (FILE* sourceCode) {
 		printf("comma\n");
 	if (token.Type == 10)
 		printf("EOF\n");
-	if (token.Type == 11)
-		printf("float\n");
+//	if (token.Type == 11)
+//		printf("float\n");
 	if (token.Type == 12)
 		printf("expon\n");
 	if (token.Type == 13)
@@ -225,8 +234,6 @@ int getTokens (FILE* sourceCode) {
 		printf("num\n");
 	if (token.Type == 21)
 		printf("assign\n");
-	if (token.Type == 22)
-		printf("%s\n", kwstring.value);
 
 	}
 }

@@ -5,6 +5,7 @@
 
 
 //Structure that keeps the type of a certain token.
+
 typedef enum {
 	tokenEmpty,
 	tokenAdd,
@@ -29,6 +30,7 @@ typedef enum {
 	tokenNumber,
 	tokenAssign,
 	tokenInteger,
+	tokenString,
 } tokenType;
 
 //Structure that keeps the value of a certain token.
@@ -61,6 +63,7 @@ typedef enum {
 	stateEnd,
 	stateEOL,
 	stateStringEnd,
+	stateNumberEnd,
 } stateList;
 
 //List of error states that could occur during the compiling process
