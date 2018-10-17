@@ -4,12 +4,14 @@
 #include "scanner_test.h"
 #include "program_data.h"
 #include "string.h"
-int getTokens (FILE* sourceCode) {
 
+int getTokens (FILE* sourceCode) {
 
 	if (!sourceCode)
 		return INTERNAL;
-	
+
+	//if (!dynamicString)
+		//return INTERNAL;
 
 	int state = stateStart; token.Type = tokenEmpty;
 	char c;
@@ -21,8 +23,14 @@ int getTokens (FILE* sourceCode) {
 			case (stateStart):
 
 			/*	Cases, where we CAN determine the type definitely	*/
+/*
+				if (c == '\n')
+					{state = stateEOL;}
+*/
+				else if (isspace(c))
+					{state = stateStart;}
 
-				if (c == '+')
+				else if (c == '+')
 					{token.Type = tokenAdd;}
 
 				else if (c == '-')
@@ -111,16 +119,24 @@ int getTokens (FILE* sourceCode) {
 
 				//stringAddChar(nejakyStringKteryEsteNemame, c);
 
+
+
 			break;
 
 			case (stateIdentifierOrKeyword):
 				if ( (c == '_') || isalnum(c))
-					//stringAddChar(str, c);
+					stringAddChar(nejakyStringKteryEsteNemame, c);
 				else if ( (c == '?') || (c == '!') )
-					//{stringAddChar(str, c); state = stateStringEnd;}
-
-			break;
+					{stringAddChar(nejakyStringKteryEsteNemame, c); state = stateIdentifierCheck;}
 */
+			break;
+
+			case (stateEOL):
+				if (isspace(c))
+					break;
+				token.Type = tokenEndOfLine;
+				return 42;
+			break;
 
 			case (stateIdentifierCheck):
 				if (isspace(c))
@@ -137,21 +153,21 @@ int getTokens (FILE* sourceCode) {
 
 			case (stateLess):
 				if (c == '=')
-					{token.Type = tokenLessEqual; state = stateStart;}
+					{token.Type = tokenLessEqual;}
 				else
-					{ungetc(c, sourceCode); token.Type = tokenLess; state = stateStart;}
+					{ungetc(c, sourceCode); token.Type = tokenLess;}
 			break;
 
 			case (stateGreater):
 				if (c == '=')
-					{token.Type = tokenGreaterEqual; state = stateStart;}
+					{token.Type = tokenGreaterEqual;}
 				else
-					{ungetc(c, sourceCode); token.Type = tokenGreater; state = stateStart;}
+					{token.Type = tokenGreater; state = stateStart;}
 			break;
 
 			case (stateExclamation):
 				if (c == '=')
-					{token.Type = tokenNotEqual; state = stateStart;}
+					{token.Type = tokenNotEqual;}
 				else
 					return LEXICAL;
 			break;
@@ -163,13 +179,15 @@ int getTokens (FILE* sourceCode) {
 					{token.Type = tokenEndOfFile;}
 				else
 					continue;
-			break;
+			break;		
 
 			case (stateEnd):
-				return SUCCESS;
+				return SUCCESSS;
 			break;	
 		}
 
+	if (token.Type == 0)
+		printf("empty\n");
 	if (token.Type == 1)
 		printf("add\n");
 	if (token.Type == 2)
@@ -207,7 +225,7 @@ int getTokens (FILE* sourceCode) {
 	if (token.Type == 18)
 		printf("gEqual\n");
 	if (token.Type == 19)
-		{printf("EOL\n"); return 42;}
+		printf("EOLSRAČKA\n");
 	if (token.Type == 20)
 		printf("num\n");
 	if (token.Type == 21)

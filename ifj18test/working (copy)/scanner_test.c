@@ -4,11 +4,13 @@
 #include "scanner_test.h"
 #include "program_data.h"
 #include "string.h"
+
+
+
 int getTokens (FILE* sourceCode) {
-
-
 	if (!sourceCode)
 		return INTERNAL;
+
 	
 
 	int state = stateStart; token.Type = tokenEmpty;
@@ -22,7 +24,10 @@ int getTokens (FILE* sourceCode) {
 
 			/*	Cases, where we CAN determine the type definitely	*/
 
-				if (c == '+')
+				if (c == '\n')
+					{token.Type = tokenEndOfLine;}
+
+				else if (c == '+')
 					{token.Type = tokenAdd;}
 
 				else if (c == '-')
@@ -49,9 +54,6 @@ int getTokens (FILE* sourceCode) {
 				else if (c == ',')
 					{token.Type = tokenComma;}
 
-		
-				//else if (isspace(c))
-				//	{state = stateStart; token.Type = tokenEmpty;}
 
 			/*	Cases, where we CAN'T determine the type definitely	*/
 
@@ -68,10 +70,16 @@ int getTokens (FILE* sourceCode) {
 					state = stateEqual;
 
 				else if (isdigit(c)){
-					if (c == 0)
-						state = stateZero;
-					else
+					if (c == '0')
+						{state = stateZero; printf("debug\n");}
+					else if ((c >= '1') && (c <= '9'))
+						{printf("entering number1\n");
+						ungetc(c, sourceCode);
+						printf("entering number2\n");
 						state = stateNumber;
+						printf("entering number3\n");
+						token.Type = tokenInteger;
+						printf("entering number4\n");}
 				}
 				
 				else if (c == '#')
@@ -94,33 +102,25 @@ int getTokens (FILE* sourceCode) {
 			break;
 
 			case (stateZero):
-				if ((!isspace(c)) || (c == '.'))
-					{ungetc(c, sourceCode); state = stateNumber;}
-				return LEXICAL;
+				return 42;
 			break;
-/*
+
 			case (stateNumber):
-				 if (c == '.')
-					{token.Type = tokenFloat;}
-				
-				else if ( (c == 'e') || (c == 'E') )
-					//{stringAddChar(nejakyStringKteryEsteNemame, c); token.Type = tokenExponential;}
-
-				else if (isspace(c))
-					{state = stateStart; }
-
-				//stringAddChar(nejakyStringKteryEsteNemame, c);
-
+				if (c == '1')
+					{printf("mame jednotku\n"); state = stateStart; token.Type = tokenInteger;}
+				else
+					state = stateStart;
 			break;
 
 			case (stateIdentifierOrKeyword):
 				if ( (c == '_') || isalnum(c))
-					//stringAddChar(str, c);
+					{stringAddChar(&kwstring, c);}
 				else if ( (c == '?') || (c == '!') )
-					//{stringAddChar(str, c); state = stateStringEnd;}
-
+					{stringAddChar(&kwstring, c); state = stateStringEnd;}
+				else if (  (c == ',')  || (c == '=') || isspace(c) || (c == EOF))
+					{ungetc(c, sourceCode); state = stateStringEnd;}
 			break;
-*/
+
 
 			case (stateIdentifierCheck):
 				if (isspace(c))
@@ -160,15 +160,28 @@ int getTokens (FILE* sourceCode) {
 				if (c == '\n')
 					{state = stateStart;}
 				if (c == EOF)
-					{token.Type = tokenEndOfFile;}
+					{token.Type = tokenEndOfFile; state = stateEnd;}
 				else
 					continue;
+			break;
+
+			case (stateStringEnd):
+
+				printf("\"%s\"\n", kwstring.value);
+				state = stateStart;
+				stringClear(&kwstring);
+				ungetc(c, sourceCode);
+				stringDispose(&kwstring);
 			break;
 
 			case (stateEnd):
 				return SUCCESS;
 			break;	
 		}
+
+		FILE *log = fopen("log.txt", "a");
+		fprintf(log, "%c\n", c);		
+		fclose(log);
 
 	if (token.Type == 1)
 		printf("add\n");
@@ -207,11 +220,13 @@ int getTokens (FILE* sourceCode) {
 	if (token.Type == 18)
 		printf("gEqual\n");
 	if (token.Type == 19)
-		{printf("EOL\n"); return 42;}
+		{printf("EOL\n");}
 	if (token.Type == 20)
 		printf("num\n");
 	if (token.Type == 21)
 		printf("assign\n");
+	if (token.Type == 22)
+		printf("%s\n", kwstring.value);
 
 	}
 }

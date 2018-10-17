@@ -7,21 +7,19 @@
 
 #include <stdbool.h>
 //These values are for additional info for other functions in this library 
-typedef struct
-{
-	char *str; /// string ened by '\0' byte
-	unsigned int length; /// lenght of string
-	unsigned int alloc_size; /// number of chars alocated for string
-} Dynamic_string;
+typedef struct {
+    char *value; // string
+    int length; // string length
+    int lengthAllocated; // allocated size
+} string;
 
-
-int stringLength(Dynamic_string *);
-int stringInit(Dynamic_string *);
-int stringAddChar(Dynamic_string *, char); //If we want to add more chars at once, then we call this function multiple times
-void stringDeleteLastChar(Dynamic_string *);
-int stringClear(Dynamic_string *);
-bool stringCompare(Dynamic_string *a, Dynamic_string*b);
-void stringDispose(Dynamic_string *str);
+int stringLenght(string *);
+int stringInit(string *);
+int stringAddChar(string *, char); //If we want to add more chars at once, then we call this function multiple times
+void stringDeleteLastChar(string *);
+int stringClear(string *);
+bool stringCompare(string *a, string *b);
+void stringDispose(string *str);
 
 //void stringUpdateLastChar(string *, char);    Maybe we will need those as well,
 //int stringAddFirstChar(string *, char);       if yes, then we will add them as well

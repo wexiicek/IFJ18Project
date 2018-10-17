@@ -4,11 +4,11 @@
 #include "string.h"
 #include "scanner_test.h"//For errors TODO
 
-int stringLength(Dynamic_string *str){
-    return strlen(str->str);
+int stringLenght(string *str){
+    return strlen(str->value);
 }
 
-int stringInit(Dynamic_string *str) {
+int stringInit(string *str) {
     str->value = (char*) malloc(initAllocSize * sizeof(char)); 
     if(str->value == NULL){
         return INTERNAL;
@@ -21,7 +21,7 @@ int stringInit(Dynamic_string *str) {
     return SUCCESS;
 }
 
-int stringAddChar(Dynamic_string *str, char c) {
+int stringAddChar(string *str, char c) {
     // If we need more space for additional char,
     //Then we use realloc.
     if (str->length+1 >= str->lengthAllocated) {
@@ -39,12 +39,12 @@ int stringAddChar(Dynamic_string *str, char c) {
     return SUCCESS;
 }
 
-void stringDeleteLastChar(Dynamic_string *str) {
+void stringDeleteLastChar(string *str) {
     str->value[str->length-1] = '\0'; //Just rewrites the value of the last char.
     str->length = str->length - 1;
 }
 
-int stringClear(Dynamic_string *str) {
+int stringClear(string *str) {
     int i;
     for (i = 0; i < str->lengthAllocated; i++) {
         str->value[i] = '\0';
@@ -54,7 +54,7 @@ int stringClear(Dynamic_string *str) {
     return SUCCESS;
 }
 
-bool stringCompare(Dynamic_string *str1, Dynamic_string *str2){
+bool stringCompare(string *str1, string *str2){
     bool tmp;
     tmp = (strcmp(str1->value, str2->value));
     if (tmp == 0){
@@ -64,7 +64,7 @@ bool stringCompare(Dynamic_string *str1, Dynamic_string *str2){
         return false;
 }
 
-void stringDispose(Dynamic_string *str) {
+void stringDispose(string *str) {
     free(str->value);
     str->value = NULL;
     str->length = 0;

@@ -1,19 +1,9 @@
 #include <stdio.h>
-#include "string.h"
-
-
 //Structure that keeps the value of a certain token.
 typedef union{
 	int integer; /// Integer value.
-	char* string;
+	char *string;
 } tokenData;
-
-//Structure that defines a certain token.
-typedef struct {
-	tokenType Type;
-	tokenData Data;
-} Token;
-
 
 //Structure that keeps the type of a certain token.
 typedef enum {
@@ -41,6 +31,11 @@ typedef enum {
 	tokenAssign,
 } tokenType;
 
+//Structure that defines a certain token.
+typedef struct {
+	tokenType Type;
+	tokenData Data;
+} Token;
 
 //List of states for finite automaton of scanner (lexer)
 typedef enum {
@@ -57,7 +52,6 @@ typedef enum {
 	stateZero,
 	stateEnd,
 	stateEOL,
-	stateStringEnd,
 } stateList;
 
 //List of error states that could occur during the compiling process
