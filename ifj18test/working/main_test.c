@@ -9,7 +9,7 @@ int main( int argc, const char* argv[] ){
 	//printf("The program has: %d arguments, %s\n", argc, argv[0]);
 	(void) argc; (void) argv;
    
-	#define DEBUG 1
+	//#define DEBUG 1
 
     FILE *sourceCode;
     
@@ -22,7 +22,8 @@ int main( int argc, const char* argv[] ){
     	sourceCode = stdin;
     #endif
 
-	getTokens(sourceCode);
+	if (getTokens(sourceCode) == 42)
+		printf("vratil sa vesmir\n");
 
 	return 0;
 }

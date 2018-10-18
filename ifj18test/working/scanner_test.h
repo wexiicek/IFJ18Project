@@ -2,20 +2,10 @@
 #include "string.h"
 
 
-//Structure that keeps the value of a certain token.
-typedef union{
-	int integer; /// Integer value.
-	char* string;
-} tokenData;
-
-//Structure that defines a certain token.
-typedef struct {
-	tokenType Type;
-	tokenData Data;
-} Token;
 
 
 //Structure that keeps the type of a certain token.
+
 typedef enum {
 	tokenEmpty,
 	tokenAdd,
@@ -39,7 +29,36 @@ typedef enum {
 	tokenEndOfLine,
 	tokenNumber,
 	tokenAssign,
-} tokenType;
+	tokenInteger,
+	tokenString,
+	tokenEscapeSequence,
+} TokenType;
+
+typedef enum {
+	KW_DEF,
+	KW_DO,
+	KW_ELSE,
+	KW_END,
+	KW_IF,
+	KW_NOT,
+	KW_NIL,
+	KW_THEN,
+	KW_WHILE,
+} Keyword;
+
+//Structure that keeps the value of a certain token.
+typedef union{
+	int integer; /// Integer value.
+	string *string;
+	Keyword keyword;
+} TokenData;
+
+//Structure that defines a certain token.
+typedef struct {
+	TokenType Type;
+	TokenData Data;
+} Token;
+
 
 
 //List of states for finite automaton of scanner (lexer)
@@ -58,6 +77,8 @@ typedef enum {
 	stateEnd,
 	stateEOL,
 	stateStringEnd,
+	stateNumberEnd,
+	stateEscapeSequence,
 } stateList;
 
 //List of error states that could occur during the compiling process
