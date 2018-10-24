@@ -106,37 +106,53 @@ void ReplaceByLeftmost (tNodePtr *PtrReplaced, tNodePtr *RootPtr){
 
 void BSTDelete (tNodePtr *RootPtr, char* K){
 
-    if (RootPtr  && RootPtr ){
-        
-        if(strcmp(K, RootPtr->Key) == 0){ // pokud byl nalezen uzel s danym klicem
-            if((RootPtr->LPtr != NULL) && (RootPtr->RPtr != NULL)){
-                ReplaceByLeftmost(RootPtr, &(RootPtr->RPtr));       // pokud ma ruseny uzel oba podstromy
+    
+    if ( RootPtr && (*RootPtr) ) {
+        if ( strcmp(K, (*RootPtr)->Key) < 0 ) {
+            BSTDelete( &((*RootPtr)->LPtr), K);
+        }
+        else if ( strcmp(K, (*RootPtr)->Key) > 0 ) {
+            BSTDelete( &((*RootPtr)->RPtr), K);
+        }
+        else { // pokud byl nalezen uzel s danym klicem
+            if ( ((*RootPtr)->LPtr == NULL) && ((*RootPtr)->RPtr == NULL) ) { // pokud se jedna o listovy uzel
+                free((*RootPtr)->Data); // uvolneni pameti dat
+                free(*RootPtr);
+                *RootPtr = NULL;
             }
-            else if((RootPtr->LPtr == NULL) && (RootPtr->RPtr == NULL)){ // pokud se jedna o listovy uzel
-                free(RootPtr->Data); // uvolneni pameti dat
-                free(RootPtr);
-                RootPtr = NULL;
+            else if ( ((*RootPtr)->LPtr != NULL) && ((*RootPtr)->RPtr == NULL) ) { // pokud ma uzel jen levy podstrom
+                free((*RootPtr)->Data); // uvolneni pameti dat
+                free(*RootPtr);
+                *RootPtr = (*RootPtr)->LPtr;
             }
-            else if((RootPtr->RPtr != NULL) && (RootPtr->LPtr == NULL)){ // pokud ma uzel jen pravy podstrom
-                free(RootPtr->Data); // uvolneni pameti dat
-                free(RootPtr);
-                RootPtr = RootPtr->RPtr;
+            else if ( ((*RootPtr)->RPtr != NULL) && ((*RootPtr)->LPtr == NULL) ) { // pokud ma uzel jen pravy podstrom
+                free((*RootPtr)->Data); // uvolneni pameti dat
+                free(*RootPtr);
+                *RootPtr = (*RootPtr)->RPtr;
             }
-            else if((RootPtr->LPtr != NULL) && (RootPtr->RPtr == NULL)){ // pokud ma uzel jen levy podstrom
-                free(RootPtr->Data); // uvolneni pameti dat
-                free(RootPtr);
-                RootPtr = RootPtr->LPtr;
-            }
-            else{
-                return INTERNAL;
+            else { // pokud ma ruseny uzel oba podstromy
+                ReplaceByRightmost((*RootPtr), &((*RootPtr)->LPtr));
             }
         }
-        else if(strcmp(K, RootPtr->Key) < 0){
-            BSTDelete( &(RootPtr->LPtr), K);
-        }
-        else if(strcmp(K, RootPtr->Key) > 0){
-            BSTDelete( &(RootPtr->RPtr), K);
-        }
-    }
 }
+void BSTDispose (tBSTNodePtr *RootPtr) {
+if ( (*RootPtr) != NULL ) {
+        BSTDispose(&(*RootPtr)->LPtr); // zruseni leveho podstromu
+        BSTDispose(&(*RootPtr)->RPtr); // zruseni praveho podstromu
+        // uvolneni aktualniho prvku
+        free((*RootPtr)->Key); // uvolneni klice
+        (*RootPtr)->Key = NULL;
 
+        if ( (*RootPtr)->nodeDataType == ndtFunction ) {
+            stringDispose(&(((tDataFunction*)(*RootPtr)->Data)->parameters));
+        }
+
+        free((*RootPtr)->Data); // uvolneni dat
+        (*RootPtr)->Data = NULL;
+
+        free(*RootPtr); // uvolneni celeho uzlu
+        *RootPtr = NULL;
+    }
+
+}
+/**********************************************************************************************/
