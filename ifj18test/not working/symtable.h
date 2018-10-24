@@ -9,29 +9,26 @@
 
 
 typedef enum {
-    ndtVariable,     // nodeDataTypeVariable 
-    ndtFunction,     // nodeDataTypeFunction 
+    ndtVariable,     /* nodeDataTypeVariable */
+    ndtFunction,     /* nodeDataTypeFunction */
 } tNodeDataType;
 
 /*
- * Node of our tree
+ * Tree node
  */
-typedef struct tNode {
+typedef struct tBSTNode {
     char* Key;			                             
-    tNodeDataType nodeDataType;  //Data type of the node, see out enum
-    void* Data;                  //Place where to save our data
-    struct tNode *LPtr;          //Pointer to the left part of the tree
-    struct tNode *RPtr;          //Pointer to the right part of the tree
+    tNodeDataType nodeDataType;                      
+    void* Data;                                      
+    struct tBSTNode * LPtr;                          
+    struct tBSTNode * RPtr;                          
 } *tNodePtr;
 
-/*
- * Function prototypes
- */
-void BSTInit   (tNodePtr *);
-void BTSInsertNewNode(tNodePtr* , char* , void* , tNodeDataType);
-void BSTInsert (tNodePtr *, char*, void*, tNodeDataType);
-tNodePtr BSTSearch (tNodePtr, char*);
-void BSTDelete (tNodePtr *, char*);
-void BSTDispose(tNodePtr *);
+
+void BSTInit   (tBSTNodePtr *);
+tBSTNodePtr BSTSearch (tBSTNodePtr, char*);
+void BSTInsert (tBSTNodePtr *, char*, void*, tNodeDataType);
+void BSTDelete (tBSTNodePtr *, char*);
+void BSTDispose(tBSTNodePtr *);
 
 #endif
