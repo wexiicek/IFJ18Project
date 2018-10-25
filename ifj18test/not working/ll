@@ -1,9 +1,22 @@
-<FUNC> -> def ID ( <PARAMS>) EOL body end 
-<TYPE> -> INT
+ 1. <FUNC> -> def ID ( <PARAMS>) EOL <BODY> end 
+ 2. <PARAMS> -> ID <PARAMS_N>
+ 3. <PARAMS> -> epsilon
+ 4. <PARAMS_N> -> , ID <PARAMS_N>
+ 5. <PARAMS_N> -> epsilon 
+ 6. <BODY> -> EOL
+ 7. <STATEMENT> -> if <EXPRESSION> then EOL <STATEMENT> else EOL <STATEMENT> end
+ 8. <STATEMENT> -> while <EXPRESSION> do EOL <STATEMENT> end
+ 9. <STATEMENT> -> print ( <EXPRESSION> <PRINT> )
+10. <PRINT> -> , <EXPRESSION> <PRINT>
+11. <PRINT> -> EPSILON 
+
+13. <STATEMENT> -> inputs()
+14. <STATEMENT> -> inputi()
+15. <STATEMENT> -> inputf()
+16. <STATEMENT> -> length ( <PARAM_S> )
+17. <STATEMENT> -> substr ( <PARAM_S>, <PARAM_I>, <PARAM_N> )
+18. <STATEMENT> -> ord (<PARAM_S>, <PARAM_I>)
+
+<TYPE> -> INTEGER
 <TYPE> -> DOUBLE
 <TYPE> -> STRING
-<PARAMS> -> ID <PARAMS_N>
-<PARAMS> -> epsilon
-<PARAMS_N> -> , ID <PARAMS_N>
-<PARAMS_N> -> epsilon 
-<BODY> -> EOL
