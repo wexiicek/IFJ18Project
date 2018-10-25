@@ -1,0 +1,9 @@
+<FUNC> -> def ID ( <PARAMS>) EOL body end 
+<TYPE> -> INT
+<TYPE> -> DOUBLE
+<TYPE> -> STRING
+<PARAMS> -> ID <PARAMS_N>
+<PARAMS> -> epsilon
+<PARAMS_N> -> , ID <PARAMS_N>
+<PARAMS_N> -> epsilon 
+<BODY> -> EOL
