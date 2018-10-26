@@ -5,6 +5,7 @@
 
 #include "symtable.h"
 #include "scanner_test.h"
+#include "errors.h"
 
 
 /**********************************************       BST      *******************************************/
@@ -39,31 +40,27 @@ tNodePtr* BSTSearch (tNodePtr *RootPtr, char *tmpKey)	{
     }
 }
 
-void BTSInsertNewNode(tNodePtr *RootPtr, char* Key, void* Data, tNodeDataType nodedataType){
-    //Memory allocation for new node
-    struct tBTSNode *newItem;
-    newItem = (struct tBTSNode*)malloc(sizeof(struct tBTSNode));
-        if(newItem == NULL){
-            return INTERNAL;
-        }
-    //Data initialization for new item
-    newItem->Key = Key;
-    newItem->Data = Data;
-    newItem->dataType = dataType;
-    newItem->LPtr = NULL; 
-    newItem->RPtr = NULL;
-
-    *RootPtr = newItem;
-}
-
 /*
  * Function inserts element into symtable. If item exists, then we will update his value.
 */
 void BSTInsert (tNodePtr *RootPtr, char *tmpKey, void *Data, tNodeDataType nodeDataType)	{
 
     if(*RootPtr == NULL){ // aktualizace dat pri nalezeni stejneho klice
-        BTSInsertNewNode(*RootPtr,tmpKey,Data,nodeDataType);
+        struct tBTSNode *newItem;
+        newItem = (struct tBTSNode*)malloc(sizeof(struct tBTSNode));
+        
+        if(newItem == NULL){
+            return INTERNAL;
         }
+    
+    //Data initialization for new item
+    newItem->Key = Key;
+    newItem->Data = Data;
+    newItem->dataType = dataType;
+    newItem->LPtr = NULL; 
+    newItem->RPtr = NULL;
+    *RootPtr = newItem;
+    }
 
     else{ 
         if(strcmp(tmpKey, *RootPtr->Key) == 0){
@@ -76,11 +73,11 @@ void BSTInsert (tNodePtr *RootPtr, char *tmpKey, void *Data, tNodeDataType nodeD
                 /*If our key is less than *RootPtr->Key , then we will continue searching in 
                 left part of the tree. We continue in doing this using RECURSE until we find an item 
                 and update it, or we will come to the end of tree and create new NODE with item. */
-                BSTInsert(*RootPtr->LPtr, tmpKey, Data, NodeDataType);
+                BSTInsert(&(*RootPtr->LPtr), tmpKey, Data, NodeDataType);
             }else if(strcmp(tmpKey, (*RootPtr->Key)) > 0){
                 /*If our key is more than *RootPtr->Key , then we will continue searching in 
                 right part of the tree. */
-                BSTInsert(*RootPtr->RPtr, tmpKey, Data, NodeDataType);
+                BSTInsert(&(*RootPtr->RPtr), tmpKey, Data, NodeDataType);
                 }
         }
     }
@@ -90,10 +87,10 @@ void BSTInsert (tNodePtr *RootPtr, char *tmpKey, void *Data, tNodeDataType nodeD
 void ReplaceByLeftmost (tNodePtr *PtrReplaced, tNodePtr *RootPtr){
 
     if(*RootPtr->LPtr == NULL){
-        // prekopirovani hodnot uzlu
+        // We need to copy all values of the node
         PtrReplaced->Data = *RootPtr->Data;
         PtrReplaced->Key = *RootPtr->Key;
-        // uvolneni uzlu
+        // Here we want to free the node
         tNodePtr *itemToDelete = *RootPtr;
         *RootPtr = *RootPtr->RPtr;
         free(itemToDelete);
@@ -104,55 +101,134 @@ void ReplaceByLeftmost (tNodePtr *PtrReplaced, tNodePtr *RootPtr){
 
 }
 
-void BSTDelete (tNodePtr *RootPtr, char* K){
+void BSTDelete (tNodePtr *RootPtr, char* tmpKey){
 
-    
-    if ( RootPtr && (*RootPtr) ) {
-        if ( strcmp(K, (*RootPtr)->Key) < 0 ) {
-            BSTDelete( &((*RootPtr)->LPtr), K);
+    if (RootPtr && (*RootPtr)){
+        if (strcmp(tmpKey,(*RootPtr)->Key) == 0){    // If we found the node with it's key
+            if ((*RootPtr)->LPtr == NULL){
+                if(((*RootPtr)->RPtr == NULL)){      // If it's a leaf
+                    free((*RootPtr)->Data);          
+                    free(*RootPtr);
+                    *RootPtr = NULL;
+                }
+                if((*RootPtr)->RPtr != NULL){        // If the node has only the right side
+                    free((*RootPtr)->Data);          
+                    free(*RootPtr);
+                    *RootPtr = (*RootPtr)->RPtr;
+                }
+            }
+            if((*RootPtr)->RPtr == NULL){
+                if(((*RootPtr)->LPtr == NULL)){      // If it's a leaf
+                    free((*RootPtr)->Data);          
+                    free(*RootPtr);
+                    *RootPtr = NULL;
+                }
+                if((*RootPtr)->LPtr != NULL){        //If the node has only left side 
+                    free((*RootPtr)->Data);          
+                    free(*RootPtr);
+                    *RootPtr = (*RootPtr)->LPtr;
+                }
+            }
+            if((*RootPtr)->LPtr != NULL){            // If the node has both sides
+                if((*RootPtr)->RPtr != NULL){
+                    ReplaceByLeftmost((*RootPtr), &((*RootPtr)->RPtr));
+                }
+            }
         }
-        else if ( strcmp(K, (*RootPtr)->Key) > 0 ) {
-            BSTDelete( &((*RootPtr)->RPtr), K);
+        else if(strcmp(tmpKey,(*RootPtr)->Key) < 0){ //Here we continue searching in the left side
+            BSTDelete(&((*RootPtr)->LPtr), tmpKey);
         }
-        else { // pokud byl nalezen uzel s danym klicem
-            if ( ((*RootPtr)->LPtr == NULL) && ((*RootPtr)->RPtr == NULL) ) { // pokud se jedna o listovy uzel
-                free((*RootPtr)->Data); // uvolneni pameti dat
-                free(*RootPtr);
-                *RootPtr = NULL;
-            }
-            else if ( ((*RootPtr)->LPtr != NULL) && ((*RootPtr)->RPtr == NULL) ) { // pokud ma uzel jen levy podstrom
-                free((*RootPtr)->Data); // uvolneni pameti dat
-                free(*RootPtr);
-                *RootPtr = (*RootPtr)->LPtr;
-            }
-            else if ( ((*RootPtr)->RPtr != NULL) && ((*RootPtr)->LPtr == NULL) ) { // pokud ma uzel jen pravy podstrom
-                free((*RootPtr)->Data); // uvolneni pameti dat
-                free(*RootPtr);
-                *RootPtr = (*RootPtr)->RPtr;
-            }
-            else { // pokud ma ruseny uzel oba podstromy
-                ReplaceByRightmost((*RootPtr), &((*RootPtr)->LPtr));
-            }
+        else if(strcmp(tmpKey,(*RootPtr)->Key) > 0){ //Here in the right side
+            BSTDelete(&((*RootPtr)->RPtr), tmpKey);
         }
+    }
 }
-void BSTDispose (tBSTNodePtr *RootPtr) {
-if ( (*RootPtr) != NULL ) {
-        BSTDispose(&(*RootPtr)->LPtr); // zruseni leveho podstromu
-        BSTDispose(&(*RootPtr)->RPtr); // zruseni praveho podstromu
-        // uvolneni aktualniho prvku
-        free((*RootPtr)->Key); // uvolneni klice
-        (*RootPtr)->Key = NULL;
 
+void BSTDispose (tBSTNodePtr *RootPtr) {
+if ((*RootPtr) != NULL){
+        BSTDispose(&(*RootPtr)->LPtr); //Canceling left side of the tree
+        BSTDispose(&(*RootPtr)->RPtr); //Canceling right side of the tree
+        //From here till the end we are doing operations to free a single item 
+        free((*RootPtr)->Key); //We have to free the key
+        (*RootPtr)->Key = NULL;
+        //If it's a function
         if ( (*RootPtr)->nodeDataType == ndtFunction ) {
             stringDispose(&(((tDataFunction*)(*RootPtr)->Data)->parameters));
         }
 
-        free((*RootPtr)->Data); // uvolneni dat
+        free((*RootPtr)->Data); //Then we have to free it's data
         (*RootPtr)->Data = NULL;
 
-        free(*RootPtr); // uvolneni celeho uzlu
+        free(*RootPtr); //And finally free the node
         *RootPtr = NULL;
     }
 
 }
-/**********************************************************************************************/
+/*******************************  SYMTABLE  **********************************************/
+
+/*
+ * Initialization
+ */
+void symTableInit(tSymtable* Table) {
+    BSTInit(&(Table->root));
+}
+
+/*
+ * Function will search for an item in symtable
+ * Function returns a pointer on the node
+ * If function does not find an item, then returns NULL
+ */
+tBSTNodePtr symTableSearch(tSymtable *Table, string Key) { 
+    return BSTSearch(Table->root, Key.value);
+}
+
+/*
+ * Function deletes an item from symtable
+ */
+void symTableDelete(tSymtable *Table, string Key) {
+    BSTDelete(&(Table->root), Key.value);
+}
+
+/*
+ * Function deletes whole symtable
+ */
+void symTableDispose(tSymtable *Table) {
+    BSTDispose(&(Table->root));
+}
+
+/*
+ * Function inserts a data about a function into the symtable
+ */
+void symTableInsertFunction(tSymtable *Table, string Key){ 
+    // Memory allocation for data
+    tDataFunction *dataPtr;
+    dataPtr = (tDataFunction*)malloc(sizeof(tDataFunction)); 
+    if(dataPtr == NULL){
+        return INTERNAL;
+    }
+    // Data initialization
+    string parameters;
+    stringInit(&parameters);
+    dataPtr->returnDataType = -1;
+    dataPtr->declared = false;
+    dataPtr->defined = false;
+    dataPtr->parameters = parameters;
+    // Here we create a new intem in symtable
+    BSTInsert(&(Table->root), Key.value, dataPtr, ndtFunction);
+}
+
+/*
+ *  Function inserts data about a variable
+ */
+void symTableInsertVariable(tSymtable* Table, string Key) { 
+    // Memory allocation
+    tDataVariable * dataPtr;
+    dataPtr = (tDataVariable*)malloc(sizeof(tDataVariable));
+    if(dataPtr == NULL){
+        return INTERNAL;
+    }
+    
+    dataPtr->dataType = -1;
+    // Here we create a new intem in symtable
+    BSTInsert(&(Table->root), Key.value, dataPtr, ndtVariable);
+}
