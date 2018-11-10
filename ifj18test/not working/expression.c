@@ -1,6 +1,6 @@
 #include "scanner.h"
 #include "expression.h"
-#include "symstack.h"     //TODO   Pridat to Hikesove
+#include "stack.h"     
 #include "errors.h"
 #include "generator.h"
 
@@ -51,7 +51,7 @@ int precTable[tableSize][tableSize] =
 //	|+- | */| r | ( | ) | i | $ |
 	{ R , S , R , S , R , S , R }, // +-
 	{ R , R , R , S , R , S , R }, // */
-	{ S , S , N , S , R , S , R }, // r (realtion operators) = <> <= < >= >
+	{ S , S , N , S , R , S , R }, // r (realtion operators) = != <= < >= >
 	{ S , S , S , S , E , S , N }, // (
 	{ R , R , R , N , R , N , R }, // )
 	{ R , R , R , N , R , N , R }, // i (id, int, double, string)
@@ -85,17 +85,17 @@ static precAnalysisTableSymbol getSymbolFromToken(Token* token)
     case tokenLess:
         return LESS; 
     case tokenGreater:
-        return MORE; 
+        return  GREATHER; 
     case tokenLessEqual:
         return LESS_OR_EQUAL; 
     case tokenGreaterEqual:
-        return MORE_OR_EQUAL;
+        return GREATHER_OR_EQUAL;
     case tokenLeftBracket:
         return LEFT_BRACKET;
     case tokenRightBracket:
         return RIGHT_BRACKET;
     case token:      //TODO FOR ID
-        return PLUS;
+        return ;
     case tokenString:
         return STRING;
     case tokenFloat:
@@ -129,9 +129,67 @@ static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
     else return I_DOLLAR;
 }
 
+/**
+ * Function tests if symbols in parameters are valid according to rules.
+ *
+ * @param num Number of valid symbols in parameter.
+ * @param op1 Symbol 1.
+ * @param op2 Symbol 2.
+ * @param op3 Symbol 3.
+ * @return NOT_A_RULE if no rule is found or returns rule which is valid.
+ */
+static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *operand1, StackItem *operand2, StackItem *operand3){
+	
+    if (numberOfOperands == 1){
+		// rule E -> i
+		if (operand1->symbol == INT_NUMBER || operand1->symbol == FLOAT_NUMBER || operand1->symbol == STRING || operand1->symbol == IDENTIFIER)
+			return OPERAND_RULE;
+        else
+		    return NOT_A_RULE;
+    }
+
+	else if(numberOfOperands == 3){
+		if (operand1->symbol == NON_TERMINAL && operand3->symbol == NON_TERMINAL){
+			if(operand2->symbol == PLUS)                // rule E -> E + E
+                return PLUS_RULE;
+            else if(operand2->symbol == MINUS)          // rule E -> E - E
+                return MINUS_RULE;
+            else if(operand2->symbol == MUL)            // rule E -> E * E
+                return MUL_RULE;
+            else if(operand2->symbol == DIV)            // rule E -> E / E
+                return DIV_RULE;
+            //else if(operand2->symbol == IDIV)         // rule E -> E \ E
+            //    return IDIV_RULE;
+            else if(operand2->symbol == EQUAL)          // rule E -> E = E
+                return EQUAL_RULE;
+            else if(operand2->symbol == NOT_EQUAL)      // rule E -> E != E
+                return NOT_EQUAL_RULE;
+            else if(operand2->symbol == GREATHER)       // rule E -> E > E
+                return GREATHER_RULE;
+            else if(operand2->symbol == LESS)           // rule E -> E < E
+                return LESS_RULE;  
+            else if(operand2->symbol == GREATHER_OR_EQUAL)  // rule E -> E >= E
+                return GREATHER_OR_EQUAL_RULE;
+            else if(operand2->symbol == LESS_OR_EQUAL)  // rule E -> E <= E
+                return LESS_OR_EQUAL_RULE;
+            else
+                return NOT_A_RULE;
+        }
+        else if(operand1->symbol == LEFT_BRACKET && operand2->symbol == NON_TERMINAL && operand3->symbol == RIGHT_BRACKET){
+            return BRACKETS_RULE;                       // rule E -> (E)
+        }
+        else
+            return NOT_A_RULE;
+    }
+    else
+        return NOT_A_RULE;
+}
+
 
 int expression(PData* data){
     int result = SYNTACTICAL;
+    
+    
     precAnalysisTableSymbol actualSymbol;
 
 
