@@ -5,13 +5,13 @@ void stackInit(Stack* stack) {
 	stack->top = NULL;
 }
 
-bool stackPush(Stack* stack, Prec_table_symbol_enum symbol, Data_type type) {
+bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, tDataVariable type) {
 	StackItem* newElemPtr = (StackItem *) malloc(sizeof(StackItem));
 	if (newElemPtr == NULL) {
 		return false;
 	}
 	newElemPtr->symbol = symbol;
-	newElemPtr->data_type = type;
+	newElemPtr->dataType = type;
 	newElemPtr->nextPtr = stack->topPtr;
 	stack->topPtr = newElemPtr;
 	return true;
@@ -65,7 +65,7 @@ StackItem* stackTopTerminal(Stack* stack) {
 	return NULL;
 }
 
-bool symbolStackInsertAfterTopTerminal(Stack* stack, Prec_table_symbol_enum symbol, Data_type type) {
+bool symbolStackInsertAfterTopTerminal(Stack* stack, precAnalysisTableSymbol symbol, tDataVariable type) {
 	StackItem* tmp = NULL;
 	StackItem* elemPtr = stack->topPtr;
 	while (elemPtr != NULL) {
@@ -75,7 +75,7 @@ bool symbolStackInsertAfterTopTerminal(Stack* stack, Prec_table_symbol_enum symb
 				return false;
 			}
 			newElemPtr->symbol = symbol;
-			newElemPtr->data_type = data_type;
+			newElemPtr->dataType = type;
 			if (tmp == NULL) {
 				newElemPtr->nextPtr = stack->topPtr;
 				stack->topPtr = newElemPtr;
