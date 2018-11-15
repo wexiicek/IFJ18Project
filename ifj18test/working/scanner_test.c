@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include "scanner_test.h"
-#include "program_data.h"
 #include "string.h"
 
 
@@ -12,23 +11,23 @@ unsigned int keywordCompare (string *kwstring, Token *token){
 	bool kw = false;
 
 	if (stringCompare(kwstring, "def"))
-		{token->Data.keyword = KW_DEF; kw = true;}
+		{token->Data.keyword = KW_DEF; token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "do"))
-		{token->Data.keyword = KW_DO;kw = true;}
+		{token->Data.keyword = KW_DO;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "else"))
-		{token->Data.keyword = KW_ELSE;kw = true;}
+		{token->Data.keyword = KW_ELSE;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "end"))
-		{token->Data.keyword = KW_END;kw = true;}
+		{token->Data.keyword = KW_END;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "if"))
-		{token->Data.keyword = KW_IF;kw = true;}
+		{token->Data.keyword = KW_IF;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "not"))
-		{token->Data.keyword = KW_NOT;kw = true;}
+		{token->Data.keyword = KW_NOT;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "nil"))
-		{token->Data.keyword = KW_NIL;kw = true;}
+		{token->Data.keyword = KW_NIL;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "then"))
-		{token->Data.keyword = KW_THEN;kw = true;}
+		{token->Data.keyword = KW_THEN;token -> Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "while"))
-		{token->Data.keyword = KW_WHILE;kw = true;}
+		{token->Data.keyword = KW_WHILE;token -> Type = tokenKeyword; kw = true;}
 
 	if(kw)
 		printf("KEYWORD: %d, ", token->Data.keyword);
@@ -42,6 +41,8 @@ unsigned int keywordCompare (string *kwstring, Token *token){
 int getTokens (FILE* sourceCode) {
 	if (!sourceCode)
 		return INTERNAL;
+
+	printf("hledam tokeny\n");
 
 
 
@@ -223,7 +224,7 @@ int getTokens (FILE* sourceCode) {
 
 
 				if (token.Type == 24)
-					printf("escape\n");
+					printf("TOKEN TYPE: ESCAPE\n");
 				if (c == 'n'){
 					c = '\n';
 					token.Type = tokenEscapeSequence;
@@ -255,7 +256,10 @@ int getTokens (FILE* sourceCode) {
 
 			case (stateStringEnd):
 			keywordCompare(&kwstring, &token);
-				printf("\"%s\"\n", kwstring.value);
+				if(&kwstring.value == "\n")
+					printf("TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
+				else
+					printf("TOKEN TYPE: STRING | TOKEN VAL: \"%s\"\n", kwstring.value);
 				state = stateStart;
 				stringClear(&kwstring);
 				ungetc(c, sourceCode);
@@ -264,11 +268,11 @@ int getTokens (FILE* sourceCode) {
 
 			case (stateNumberEnd):
 				if (token.Type == 11)
-					printf("float\n");
+					printf("TOKEN TYPE: FLOAT\n");
 				else if (token.Type == 12)
-					printf("int\n");
+					printf("TOKEN TYPE: INT\n");
 				else if (token.Type == 22)
-					printf("int\n");
+					printf("TOKEN TYPE: INT ");
 				printf("\"%s\"\n", kwstring.value);
 				state = stateStart;
 				stringClear(&kwstring);
@@ -286,47 +290,47 @@ int getTokens (FILE* sourceCode) {
 		fclose(log);
 
 	if (token.Type == 1)
-		printf("add\n");
+		printf("TOKEN TYPE: ADD\n");
 	if (token.Type == 2)
-		printf("sub\n");
+		printf("TOKEN TYPE: SUB\n");
 	if (token.Type == 3)
-		printf("mul\n");
+		printf("TOKEN TYPE: MUL\n");
 	if (token.Type == 4)
-		printf("div\n");
+		printf("TOKEN TYPE: DIV\n");
 	if (token.Type == 5)
-		printf("lBr\n");
+		printf("TOKEN TYPE: L BRACKET\n");
 	if (token.Type == 6)
-		printf("rBr\n");
+		printf("TOKEN TYPE: R BRACKET\n");
 	if (token.Type == 7)
-		printf("llBr\n");
+		printf("TOKEN TYPE: L BRACE\n");
 	if (token.Type == 8)
-		printf("rrBr\n");
+		printf("TOKEN TYPE: R BRACE\n");
 	if (token.Type == 9)
-		printf("comma\n");
+		printf("TOKEN TYPE: COMMA\n");
 	if (token.Type == 10)
-		printf("EOF\n");
+		printf("TOKEN TYPE: EOF\n");
 //	if (token.Type == 11)
 //		printf("float\n");
 	if (token.Type == 12)
-		printf("expon\n");
+		printf("TOKEN TYPE: EXPONENTIAL\n");
 	if (token.Type == 13)
-		printf("equal\n");
+		printf("TOKEN TYPE: EQUAL\n");
 	if (token.Type == 14)
-		printf("nequal\n");
+		printf("TOKEN TYPE: NOT EQUAL\n");
 	if (token.Type == 15)
-		printf("less\n");
+		printf("TOKEN TYPE: LESS\n");
 	if (token.Type == 16)
-		printf("greater\n");
+		printf("TOKEN TYPE: GREATER\n");
 	if (token.Type == 17)
-		printf("lEqual\n");
+		printf("TOKEN TYPE: LESS EQUAL\n");
 	if (token.Type == 18)
-		printf("gEqual\n");
+		printf("TOKEN TYPE: GREATER EQUAL\n");
 	if (token.Type == 19)
-		{printf("EOL\n");}
+		{printf("TOKEN TYPE: EOL\n");}
 	if (token.Type == 20)
-		printf("num\n");
+		printf("TOKEN TYPE: NUMBER\n");
 	if (token.Type == 21)
-		printf("assign\n");
+		printf("TOKEN TYPE: ASSIGN\n");
 
 	}
 }

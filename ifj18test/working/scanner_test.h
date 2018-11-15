@@ -32,6 +32,7 @@ typedef enum {
 	tokenInteger,
 	tokenString,
 	tokenEscapeSequence,
+	tokenKeyword
 } TokenType;
 
 typedef enum {

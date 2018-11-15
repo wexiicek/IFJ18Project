@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include <string.h>
 #include "scanner_test.h"
-#include "program_data.h"
 
 int main( int argc, const char* argv[] ){
 	//printf("The program has: %d arguments, %s\n", argc, argv[0]);
@@ -22,8 +21,10 @@ int main( int argc, const char* argv[] ){
     	sourceCode = stdin;
     #endif
 
-	if (getTokens(sourceCode) == 42)
-		printf("vratil sa vesmir\n");
+	if(kowalsiAnalyze())
+		printf("sme pici\n");
+	else
+		printf("kokot funguje to\n");
 
 	return 0;
 }

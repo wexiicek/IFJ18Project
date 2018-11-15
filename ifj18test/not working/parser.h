@@ -1,24 +1,15 @@
-#ifndef _PARSER_H
-#define _PARSER_H
-
-
+#include <stdio.h>
 #include <stdbool.h>
-
 #include "symtable.h"
-#include "scanner.h"
+#include "scanner_test.h"
+#include "parser.h"
 
-
-//#define GENERATE_CODE(_callback, ...)								
-//	if (!_callback(__VA_ARGS__)) return INTERNAL
 
 
 /**
  * @struct Parser's internal data representation.
  */
-typedef struct
-{
-	Sym_table global_table;		/// Global symbol table
-	Sym_table local_table;		/// Local symbol table
+typedef struct{
 
 	Token token;				/// Token
 
@@ -34,7 +25,7 @@ typedef struct
 	bool in_declaration;		/// Defines if param rule should add or check it's params
 	bool in_while_or_if;		/// Defines if the parser is in construction while, if or then
 	bool non_declared_function;	/// Function that has been only defined
-} PData;
+} parserData;
 
 
 /**
@@ -42,7 +33,7 @@ typedef struct
  *
  * @return Appropriate error code.
  */
-int analyse();
+int kowalsiAnalyze();
 
 
 #endif //_Parser_H
