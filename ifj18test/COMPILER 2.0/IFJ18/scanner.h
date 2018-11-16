@@ -44,6 +44,7 @@ typedef enum {
 	KW_NIL,
 	KW_THEN,
 	KW_WHILE,
+	KW_PRINT,
 } Keyword;
 
 typedef union{

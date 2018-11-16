@@ -1,12 +1,8 @@
-def foo (par1, par2)
-kkk
+def foo (par1)
+    if then
+	if then
+	else
+	end
+    else    
+    end
 end
-
-
-
-def bar(par4)
-hey
-end
-
-
-

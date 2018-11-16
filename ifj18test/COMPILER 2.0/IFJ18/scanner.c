@@ -36,7 +36,9 @@ unsigned int keywordCompare (dynString *kwstring, Token *token){
 		{token->Data.keyword = KW_THEN;token->Type = tokenKeyword; kw = true;}
 	else if (stringCompare(kwstring, "while"))
 		{token->Data.keyword = KW_WHILE;token->Type = tokenKeyword; kw = true;}
-
+	else if (stringCompare(kwstring, "print"))
+		{token->Data.keyword = KW_PRINT;token->Type = tokenKeyword; kw = true;}
+	
 	if(kw)
 		{printf("    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;}
 
@@ -62,7 +64,7 @@ int checkAndSet(Token *token){
 
 
 
-	printf(CGRN"[SCANNER] File "CGRN"OK"CWHT", Dynamic String "CGRN"OK\n");
+	printf(CGRN"[SCANNER]"CWHT" File "CGRN"OK"CWHT", Dynamic String "CGRN"OK\n");
 	token -> Data.string = kwstring;
 
 	printf(CGRN "[SCANNER]"CWHT" Looking for tokens->\n");

@@ -9,27 +9,27 @@
 static int params(parseData *parserData);
 static int params_n(parseData* parserData);
 static int body(parseData* parserData);
+static int ID(parseData* parserData);
 
 #define getToken()\
 	getTokens(&parserData->token)
 
 #define checkRule(rule)\
-	if((res = rule(parserData)))\
-		return res
+	if((res = rule(parserData))) return res
 
 #define checkTokenType(_type)\
 	if(!(parserData -> token.Type == (_type))) return 3
 
 #define checkKeyword(_keyword)\
 	if(parserData -> token.Type != tokenKeyword\
-	   || parserData -> token.Data.keyword != (_keyword))\
-		return 3
+	   || parserData -> token.Data.keyword != (_keyword)) return 3
 
 
 
 
 
 static int mainFun(parseData* parserData){
+	printf("	%d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
 	int res;
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
 	if((parserData -> token.Type == tokenKeyword) && (parserData->token.Data.keyword == KW_DEF)){
@@ -51,9 +51,7 @@ static int mainFun(parseData* parserData){
 		
 		checkRule(body);
 
-		getToken();
 		checkKeyword(KW_END);
-
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		getToken();
@@ -69,7 +67,7 @@ static int mainFun(parseData* parserData){
 	else if (parserData -> token.Type == tokenEndOfFile){
 		return 0;
 	}
-	else return 1;
+	else return body(parserData);
 }
 
 static int params(parseData* parserData){
@@ -92,17 +90,81 @@ static int params_n(parseData* parserData){
 		return(params_n(parserData));
 	}
 
-
 	return res;
 }
 
 static int body(parseData* parserData){
+	int res = 0;
 	printf(CRED "    <BODY>\n"CWHT);
-	getToken();
-	checkTokenType(tokenIdentifier);
-	getToken();
-	checkTokenType(tokenEndOfLine);
-	return 0;
+
+	if (parserData -> token.Type == tokenIdentifier){
+		getToken();
+		checkRule(ID);
+		getToken();
+		checkTokenType(tokenEndOfLine);
+		return body(parserData);
+	}
+	
+	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_IF){
+		
+
+		//TODO expression in IF statement
+
+
+		getToken();
+		checkKeyword(KW_THEN);
+		getToken();
+		checkTokenType(tokenEndOfLine);
+		checkRule(body);
+		//getToken();
+		checkKeyword(KW_ELSE);
+		getToken();
+		checkTokenType(tokenEndOfLine);
+		checkRule(body);
+		//getToken();
+		checkKeyword(KW_END);
+		getToken();
+		checkTokenType(tokenEndOfLine);
+		getToken();
+		return body(parserData);
+	}
+
+	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_WHILE){
+		
+
+		//TODO expression for do while statement
+
+
+		getToken();
+		checkKeyword(KW_DO);
+		getToken();
+		checkTokenType(tokenEndOfLine);
+		checkRule(body);
+		getToken();
+		checkKeyword(KW_END);
+		getToken();
+		checkTokenType(tokenEndOfLine);
+		getToken();
+		return body(parserData);
+	}
+	
+	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_PRINT){
+		//TODO: is garbage
+		return body(parserData);
+	}
+	
+	else if(parserData -> token.Type == tokenEndOfLine){
+		getToken();
+		return body(parserData);
+	}
+
+	else {
+		return 0;
+	}
+}
+
+static int ID(parseData* parserData){
+	return body(parserData);
 }
 
 

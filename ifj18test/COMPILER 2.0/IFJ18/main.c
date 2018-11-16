@@ -20,7 +20,7 @@ int main( int argc, const char* argv[] ){
 			return -1;
 		}
 		else
-			printf(CGRN "[MAIN]" CWHT " Debug file opened succesfully.");
+			printf(CGRN "[MAIN]" CWHT " Debug file opened succesfully.\n");
     #else
     	sourceCode = stdin;
     #endif
