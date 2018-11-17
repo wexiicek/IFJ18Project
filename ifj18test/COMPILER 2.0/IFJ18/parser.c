@@ -84,13 +84,13 @@ static int mainFun(parseData* parserData){
 	}
 
 	else if (parserData -> token.Type == tokenEndOfFile){
-		printf("HI\n");
 		return SUCCESS;
 	}
 
 
-	else {
+	else if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenEndOfLine || parserData -> token.Data.keyword == KW_IF || parserData -> token.Data.keyword == KW_WHILE || parserData -> token.Data.keyword == KW_PRINT){
 		checkRule(body);
+		return mainFun(parserData);
 	}
 
 	return 42;
@@ -141,17 +141,19 @@ static int body(parseData* parserData){
 		checkKeyword(KW_THEN);
 		getToken();
 		checkTokenType(tokenEndOfLine);
+		getToken();
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_ELSE);
 		getToken();
 		checkTokenType(tokenEndOfLine);
+		getToken();
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_END);
 
 		getToken();
-		checkTokenType(tokenEndOfLine);
+		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		getToken();
 		return body(parserData);
 	}
@@ -166,11 +168,12 @@ static int body(parseData* parserData){
 		checkKeyword(KW_DO);
 		getToken();
 		checkTokenType(tokenEndOfLine);
+		getToken();
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_END);
 		getToken();
-		checkTokenType(tokenEndOfLine);
+		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		getToken();
 		return body(parserData);
 	}
