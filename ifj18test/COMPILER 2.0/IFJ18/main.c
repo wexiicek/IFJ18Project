@@ -3,6 +3,9 @@
 #include <ctype.h>
 #include "parser.h"
 
+/*
+ * Macros for colored output
+*/
 #define CRED  "\x1B[31m"
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
@@ -36,5 +39,5 @@ int main( int argc, const char* argv[] ){
 	else
 		printf(CGRN"[MAIN]"CWHT" Parser finished succesfully.\n");
 
-	return 0;
+	return SUCCESS;
 }

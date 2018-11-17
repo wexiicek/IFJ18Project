@@ -1,5 +1,5 @@
-#ifndef _ANALYSIS_H
-#define _ANALYSIS_H
+#ifndef PARSER_HEADER
+#define PARSER_HEADER
 
 #include <stdbool.h>
 

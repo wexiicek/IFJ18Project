@@ -5,8 +5,11 @@
 #include "string.h"
 #include "scanner.h"
 #include "parser.h"
+#include "err.h"
 
-
+/*
+ * Macros for colored output
+*/
 #define CRED  "\x1B[31m"
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
@@ -43,15 +46,15 @@ unsigned int keywordCompare (dynString *kwstring, Token *token){
 		{printf("    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;}
 
 
-	return 0;
+	return SUCCESS;
 }
 
 dynString *kwstring;
 
 int setSourceFile(FILE *sourceFile) {
 	if((code = sourceFile) == NULL)
-		return 0;
-	return 1;
+		return SUCCESS;
+	return LEXICAL;
 }
 
 void setDynString(dynString *string){
@@ -60,7 +63,7 @@ void setDynString(dynString *string){
 
 int checkAndSet(Token *token){
 	if(code == NULL || kwstring == NULL)
-		return 0;
+		return SUCCESS;
 
 
 
@@ -68,7 +71,7 @@ int checkAndSet(Token *token){
 	token -> Data.string = kwstring;
 
 	printf(CGRN "[SCANNER]"CWHT" Looking for tokens->\n");
-	return 1;
+	return LEXICAL;
 }
 
 int getTokens (Token *token) {
@@ -78,7 +81,7 @@ int getTokens (Token *token) {
 	dynString *str = &string;
 
 	if(stringInit(str))
-		return 1;
+		return LEXICAL;
 
 
 
@@ -164,12 +167,12 @@ int getTokens (Token *token) {
 					{ungetc(c, code); state = stateIdentifierOrKeyword; token->Type = tokenIdentifier;}
 				
 				else 
-					{token->Type = tokenEmpty; return 2;}
+					{token->Type = tokenEmpty; return LEXICAL;}
 			break;
 
 			case (stateNumber):
 				if ((zeroSwitch) && (token->Type == tokenInteger) && (isdigit(c)))
-					{printf("%d\n", zeroSwitch); zeroSwitch = false;return 2; }
+					{printf("%d\n", zeroSwitch); zeroSwitch = false;return LEXICAL; }
 
 				if (isdigit(c)){
 					if (c == '0')
@@ -230,7 +233,7 @@ int getTokens (Token *token) {
 				if (c == '=')
 					{token->Type = tokenNotEqual; state = stateStart;}
 				else
-					return 2;
+					return LEXICAL;
 			break;
 
 			case (stateComment):
@@ -246,7 +249,7 @@ int getTokens (Token *token) {
 				token->Type = tokenString;
 
 				if (c < 32)
-					return 2;
+					return LEXICAL;
 
 				else if (c == '\\')
 					{state = stateEscapeSequence;}
@@ -299,7 +302,7 @@ int getTokens (Token *token) {
 				stringClear(kwstring);
 				ungetc(c, code);
 				stringDispose(kwstring);
-				return 1;
+				return LEXICAL;
 			break;
 
 			case (stateNumberEnd):
@@ -317,7 +320,7 @@ int getTokens (Token *token) {
 			break;
 
 			case (stateEnd):
-				return 0;
+				return SUCCESS;
 			break;	
 	}
 
@@ -330,83 +333,83 @@ int getTokens (Token *token) {
 	switch(token->Type){
 		case 1:
 			printf("%s ADD\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 2:
 			printf("%s SUB\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 3:
 			printf("%s MUL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 4:
 			printf("%s DIV\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 5:
 			printf("%s L BRACKET\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 6:
 			printf("%s R BRACKET\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 7:
 			printf("%s L BRACE\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 8:
 			printf("%s R BRACE\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 9:
 			printf("%s COMMA\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 10:
 			printf("%s EOF\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 12:
 			printf("%s EXPONENTIAL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 13:
 			printf("%s EQUAL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 14:
 			printf("%s NOT EQUAL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 15:
 			printf("%s LESS\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 16:
 			printf("%s GREATER\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 17:
 			printf("%s LESS EQUAL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 18:
 			printf("%s GREATER EQUAL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 19:
 			printf("%s EOL\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 20:
 			printf("%s NUMBER\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		case 21:
 			printf("%s ASSIGN\n", tType);
-			return 0;
+			return SUCCESS;
 			break;
 		default:
 			break;

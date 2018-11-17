@@ -1,8 +1,5 @@
-def foo (par1)
-    if then
+def foo(par1)
 	if then
 	else
 	end
-    else    
-    end
 end

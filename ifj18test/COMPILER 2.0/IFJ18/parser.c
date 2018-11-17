@@ -1,16 +1,28 @@
 #include <stdio.h>
 #include "string.h"
 #include "parser.h"
+#include "err.h"
 
+/*
+ * Macros for colored output
+*/
 #define CRED  "\x1B[31m"
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
 
+/*
+ * FORWARD DECLARATION
+ * - So that they can be called before they were declared
+*/
 static int params(parseData *parserData);
 static int params_n(parseData* parserData);
 static int body(parseData* parserData);
 static int ID(parseData* parserData);
 
+/*
+ * Macro declaration
+ * Makes our work easier and keeps the code clean and understandable
+*/
 #define getToken()\
 	getTokens(&parserData->token)
 
@@ -18,19 +30,24 @@ static int ID(parseData* parserData);
 	if((res = rule(parserData))) return res
 
 #define checkTokenType(_type)\
-	if(!(parserData -> token.Type == (_type))) return 3
+	if(!(parserData -> token.Type == (_type))) return SYNTACTICAL
+
+#define checkTokenType2(_type, _type2)\
+	if(!(parserData -> token.Type == (_type)) && !(parserData -> token.Type == (_type2))) return SYNTACTICAL
 
 #define checkKeyword(_keyword)\
 	if(parserData -> token.Type != tokenKeyword\
-	   || parserData -> token.Data.keyword != (_keyword)) return 3
+	   || parserData -> token.Data.keyword != (_keyword)) return SYNTACTICAL
 
 
 
 
 
 static int mainFun(parseData* parserData){
-	printf("	%d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
+	printf(CRED "    <MAINFUN>\n"CWHT);
+	printf("    %d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
 	int res;
+	
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
 	if((parserData -> token.Type == tokenKeyword) && (parserData->token.Data.keyword == KW_DEF)){
 		//Checking function definition
@@ -49,11 +66,12 @@ static int mainFun(parseData* parserData){
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		
+		getToken();
 		checkRule(body);
 
 		checkKeyword(KW_END);
 		getToken();
-		checkTokenType(tokenEndOfLine);
+		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		getToken();
 
 		return (mainFun(parserData));
@@ -61,13 +79,21 @@ static int mainFun(parseData* parserData){
 
 	else if (parserData -> token.Type == tokenEndOfLine){
 		getToken();
+
 		return mainFun(parserData);
 	}
 
 	else if (parserData -> token.Type == tokenEndOfFile){
-		return 0;
+		printf("HI\n");
+		return SUCCESS;
 	}
-	else return body(parserData);
+
+
+	else {
+		checkRule(body);
+	}
+
+	return 42;
 }
 
 static int params(parseData* parserData){
@@ -100,7 +126,7 @@ static int body(parseData* parserData){
 	if (parserData -> token.Type == tokenIdentifier){
 		getToken();
 		checkRule(ID);
-		getToken();
+		//getToken();
 		checkTokenType(tokenEndOfLine);
 		return body(parserData);
 	}
@@ -123,6 +149,7 @@ static int body(parseData* parserData){
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_END);
+
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		getToken();
@@ -140,7 +167,7 @@ static int body(parseData* parserData){
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		checkRule(body);
-		getToken();
+		//getToken();
 		checkKeyword(KW_END);
 		getToken();
 		checkTokenType(tokenEndOfLine);
@@ -158,17 +185,28 @@ static int body(parseData* parserData){
 		return body(parserData);
 	}
 
-	else {
-		return 0;
-	}
+
+	return SUCCESS;
 }
 
 static int ID(parseData* parserData){
+	if (parserData -> token.Type == tokenAssign){
+		/* code */
+	}
 	return body(parserData);
 }
 
+static int print(parseData* parserData){
+	int res;
 
+	//empty print statement
+	if(parserData -> token.Type == tokenEndOfLine)
+		return SUCCESS;
 
+	//TODO
+
+	return SUCCESS;
+}
 
 
 
@@ -209,19 +247,39 @@ int kowalskiAnalysis(){
  yddddmm:```````````   `  ``````````````````.......-----:dmN                  
 */
 	printf(CGRN"[PARSER]"CWHT" Starting parser.\n"CGRN"[PARSER]"CWHT" Requesting token.\n");
+	
+	/*
+	 * Setting up dynamic string
+	*/
 	dynString string;
+	
+	/*
+	 * If stringInit returns anything else but 0, 
+	 * there was an error while creating string
+	*/
 	if(stringInit(&string))
 		return INTERNAL;
+	
 	setDynString(&string);
 
 	parseData parserData;
+	
+	/*
+	 * Check if there were any problems with opening source file
+	 * or creating dynamic string
+	*/
 	checkAndSet(&parserData.token);
 	
 	int res;
 
+	/*
+	 * Get first token and start parser
+	*/
 	if(getTokens(&parserData.token))
 		res = mainFun(&parserData);
+	
 	if (res)
 		return 1;
-	return 0;
+	
+	return SUCCESS;
 }

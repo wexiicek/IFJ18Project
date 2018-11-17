@@ -1,5 +1,5 @@
-#ifndef _DYNAMIC_STRING_H
-#define _DYNAMIC_STRING_H
+#ifndef STRING_HEADER
+#define STRING_HEADER
 
 #include <stdbool.h>
 
