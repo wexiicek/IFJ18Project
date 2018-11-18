@@ -18,6 +18,8 @@ static int params(parseData *parserData);
 static int params_n(parseData* parserData);
 static int body(parseData* parserData);
 static int ID(parseData* parserData);
+static int terms(parseData* parserData);
+static int terms_n(parseData* parserData);
 
 /*
  * Macro declaration
@@ -180,8 +182,22 @@ static int body(parseData* parserData){
 	}
 	
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_PRINT){
-		//TODO: is garbage
+		getToken();
+
+		if (parserData -> token.Type == tokenLeftBracket){	
+			getToken();
+			checkRule(terms);
+			checkTokenType(tokenRightBracket);
+			getToken();
+			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
+			return body(parserData);
+		}
+
+		else {
+			checkRule(terms);
+			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		return body(parserData);
+		}
 	}
 	
 	else if(parserData -> token.Type == tokenEndOfLine){
@@ -200,16 +216,28 @@ static int ID(parseData* parserData){
 	return body(parserData);
 }
 
-static int print(parseData* parserData){
+
+static int terms(parseData* parserData){
 	int res;
-
-	//empty print statement
-	if(parserData -> token.Type == tokenEndOfLine)
-		return SUCCESS;
-
-	//TODO
-
+	if (parserData -> token.Type == tokenIdentifier) //docasne ID, nahradit za expression
+	{
+		getToken();
+		checkRule(terms_n);
+	}
 	return SUCCESS;
+}
+
+static int terms_n(parseData* parserData){
+	int res = 0;
+
+	if (parserData -> token.Type == tokenComma){
+		getToken();
+		checkTokenType(tokenIdentifier); //docasne ID, nahradit za expression
+		getToken();
+		return(terms_n(parserData));
+	}
+
+	return res;
 }
 
 
