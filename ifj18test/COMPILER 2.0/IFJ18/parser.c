@@ -33,7 +33,8 @@ static int ID(parseData* parserData);
 	if(!(parserData -> token.Type == (_type))) return SYNTACTICAL
 
 #define checkTokenType2(_type, _type2)\
-	if(!(parserData -> token.Type == (_type)) && !(parserData -> token.Type == (_type2))) return SYNTACTICAL
+	if (parserData -> token.Type == (_type2)) return 0;\
+	else if (!(parserData -> token.Type == (_type))) return SYNTACTICAL
 
 #define checkKeyword(_keyword)\
 	if(parserData -> token.Type != tokenKeyword\
@@ -126,8 +127,8 @@ static int body(parseData* parserData){
 	if (parserData -> token.Type == tokenIdentifier){
 		getToken();
 		checkRule(ID);
-		//getToken();
-		checkTokenType(tokenEndOfLine);
+		getToken();
+		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		return body(parserData);
 	}
 	
@@ -278,8 +279,10 @@ int kowalskiAnalysis(){
 	/*
 	 * Get first token and start parser
 	*/
-	if(getTokens(&parserData.token))
+	getTokens(&parserData.token);
 		res = mainFun(&parserData);
+
+
 	
 	if (res)
 		return 1;
