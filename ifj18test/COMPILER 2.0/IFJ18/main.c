@@ -19,25 +19,25 @@ int main( int argc, const char* argv[] ){
     
 	#ifdef DEBUG
 		if((sourceCode = fopen("testfile", "r"))==NULL){
-			printf(CRED "[MAIN]" CWHT " Couldnt open file. Stopping.\n");
+			fprintf(stderr,CRED "[MAIN]" CWHT " Couldnt open file. Stopping.\n");
 			return -1;
 		}
 		else
-			printf(CGRN "[MAIN]" CWHT " Debug file opened succesfully.\n");
+			fprintf(stderr,CGRN "[MAIN]" CWHT " Debug file opened succesfully.\n");
     #else
     	sourceCode = stdin;
     #endif
 
-    printf(CGRN "[MAIN]" CWHT " Launching main program.\n" CGRN "[MAIN]" CWHT " Setting source file.\n");
+    fprintf(stderr,CGRN "[MAIN]" CWHT " Launching main program.\n" CGRN "[MAIN]" CWHT " Setting source file.\n");
 
     if(!setSourceFile(sourceCode))
-    	{printf(CRED"[MAIN]"CWHT" File couldnt be set.\n"); return 1;}
-    printf(CGRN"[MAIN]"CWHT" File set properly.\n");
+    	{fprintf(stderr,CRED"[MAIN]"CWHT" File couldnt be set.\n"); return 1;}
+    fprintf(stderr,CGRN"[MAIN]"CWHT" File set properly.\n");
 
 	if(kowalskiAnalysis())
-		printf(CRED"[MAIN]"CWHT" Error in parser.\n");
+		fprintf(stderr,CRED"[MAIN]"CWHT" Error in parser.\n");
 	else
-		printf(CGRN"[MAIN]"CWHT" Parser finished succesfully.\n");
+		fprintf(stderr,CGRN"[MAIN]"CWHT" Parser finished succesfully.\n");
 
 	return SUCCESS;
 }

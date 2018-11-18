@@ -47,8 +47,8 @@ static int terms_n(parseData* parserData);
 
 
 static int mainFun(parseData* parserData){
-	printf(CRED "    <MAINFUN>\n"CWHT);
-	printf("    %d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
+	fprintf(stderr,CRED "    <MAINFUN>\n"CWHT);
+	fprintf(stderr,"    %d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
 	int res;
 	
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
@@ -124,7 +124,7 @@ static int params_n(parseData* parserData){
 
 static int body(parseData* parserData){
 	int res = 0;
-	printf(CRED "    <BODY>\n"CWHT);
+	fprintf(stderr,CRED "    <BODY>\n"CWHT);
 
 	if (parserData -> token.Type == tokenIdentifier){
 		getToken();
@@ -278,7 +278,7 @@ int kowalskiAnalysis(){
  -ddddmd-``````````````````````````````````........-----:dmN
  yddddmm:```````````   `  ``````````````````.......-----:dmN                  
 */
-	printf(CGRN"[PARSER]"CWHT" Starting parser.\n"CGRN"[PARSER]"CWHT" Requesting token.\n");
+	fprintf(stderr,CGRN"[PARSER]"CWHT" Starting parser.\n"CGRN"[PARSER]"CWHT" Requesting token.\n");
 	
 	/*
 	 * Setting up dynamic string

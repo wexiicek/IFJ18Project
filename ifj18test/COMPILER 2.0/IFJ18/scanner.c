@@ -14,6 +14,10 @@
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
 
+#define scanRet(string, value)\
+			stringDispose(string);\
+			return value
+
 FILE *code;
 
 
@@ -43,7 +47,7 @@ unsigned int keywordCompare (dynString *kwstring, Token *token){
 		{token->Data.keyword = KW_PRINT;token->Type = tokenKeyword; kw = true;}
 	
 	if(kw)
-		{printf("    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;}
+		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;}
 
 
 	return SUCCESS;
@@ -63,19 +67,19 @@ void setDynString(dynString *string){
 
 int checkAndSet(Token *token){
 	if(code == NULL || kwstring == NULL)
-		return SUCCESS;
+		scanRet(kwstring, SUCCESS);
 
 
 
-	printf(CGRN"[SCANNER]"CWHT" File "CGRN"OK"CWHT", Dynamic String "CGRN"OK\n");
+	fprintf(stderr,CGRN"[SCANNER]"CWHT" File "CGRN"OK"CWHT", Dynamic String "CGRN"OK\n");
+	
 	token -> Data.string = kwstring;
 
-	printf(CGRN "[SCANNER]"CWHT" Looking for tokens->\n");
+	fprintf(stderr,CGRN "[SCANNER]"CWHT" Looking for tokens->\n");
 	return LEXICAL;
 }
 
-int getTokens (Token *token) {
-	
+int getTokens (Token *token) {	
 
 	dynString string;
 	dynString *str = &string;
@@ -83,13 +87,13 @@ int getTokens (Token *token) {
 	if(stringInit(str))
 		return LEXICAL;
 
-
-
-
+	token -> Data.string = kwstring;
 	
 	bool zeroSwitch = false;
 	int state = stateStart; token -> Type = tokenEmpty;
 	char c;
+	char *prt = "    TOKEN TYPE:";
+
 	//Go through every character of a file
 	while (1){
 		c = getc(code);
@@ -105,31 +109,31 @@ int getTokens (Token *token) {
 					{state = stateStart; token->Type = tokenEmpty;}
 
 				else if (c == '+')
-					{token->Type = tokenAdd;}
+					{token->Type = tokenAdd; fprintf(stderr,"%s ADD", prt); scanRet(kwstring, SUCCESS);}
 
 				else if (c == '-')
-					{token->Type = tokenSub;}
+					{token->Type = tokenSub; fprintf(stderr,"%s SUB", prt); scanRet(kwstring, SUCCESS);}
 				
 				else if (c == '*')
-					{token->Type = tokenMul;}
+					{token->Type = tokenMul; fprintf(stderr,"%s MUL", prt); scanRet(kwstring, SUCCESS);}
 				
 				else if (c == '/') 
-					{token->Type = tokenDiv;}
+					{token->Type = tokenDiv; fprintf(stderr,"%s DIV", prt); scanRet(kwstring, SUCCESS);}
 				
 				else if (c == '(')
-					{token->Type = tokenLeftBracket;}
+					{token->Type = tokenLeftBracket; fprintf(stderr,"%s LBRACK", prt); scanRet(kwstring, SUCCESS);}
 				
 				else if (c == ')')
-					{token->Type = tokenRightBracket;}
+					{token->Type = tokenRightBracket; fprintf(stderr,"%s RBRACK", prt); scanRet(kwstring, SUCCESS);}
 
 				else if (c == '{')
-					{token->Type = tokenLeftBrace;}
+					{token->Type = tokenLeftBrace; fprintf(stderr,"%s LBRACE", prt); scanRet(kwstring, SUCCESS);}
 
 				else if (c == '}')
-					{token->Type = tokenRightBrace;}
+					{token->Type = tokenRightBrace; fprintf(stderr,"%s RBRACE", prt); scanRet(kwstring, SUCCESS);}
 
 				else if (c == ',')
-					{token->Type = tokenComma;}
+					{token->Type = tokenComma; fprintf(stderr,"%s COMMA", prt); scanRet(kwstring, SUCCESS);}
 
 
 			/*	Cases, where we CAN'T determine the type definitely	*/
@@ -172,7 +176,7 @@ int getTokens (Token *token) {
 
 			case (stateNumber):
 				if ((zeroSwitch) && (token->Type == tokenInteger) && (isdigit(c)))
-					{printf("%d\n", zeroSwitch); zeroSwitch = false;return LEXICAL; }
+					{fprintf(stderr,"%d\n", zeroSwitch); zeroSwitch = false;return LEXICAL; }
 
 				if (isdigit(c)){
 					if (c == '0')
@@ -209,7 +213,7 @@ int getTokens (Token *token) {
 
 			case (stateEqual):
 				if (c == '=')
-					{token->Type = tokenEqual; state = stateStart;}
+					{token->Type = tokenEqual; state = stateStart;  fprintf(stderr,"%s EQUAL", prt); scanRet(kwstring, SUCCESS);}
 				else 
 					{ungetc(c, code); token->Type = tokenAssign; state = stateStart;}
 
@@ -217,21 +221,21 @@ int getTokens (Token *token) {
 
 			case (stateLess):
 				if (c == '=')
-					{token->Type = tokenLessEqual; state = stateStart;}
+					{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr,"%s LESS EQUAL", prt); scanRet(kwstring, SUCCESS);}
 				else
 					{ungetc(c, code); token->Type = tokenLess; state = stateStart;}
 			break;
 
 			case (stateGreater):
 				if (c == '=')
-					{token->Type = tokenGreaterEqual; state = stateStart;}
+					{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr,"%s GREATER EQUAL", prt); scanRet(kwstring, SUCCESS);}
 				else
 					{ungetc(c, code); token->Type = tokenGreater; state = stateStart;}
 			break;
 
 			case (stateExclamation):
 				if (c == '=')
-					{token->Type = tokenNotEqual; state = stateStart;}
+					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); scanRet(kwstring, SUCCESS);}
 				else
 					return LEXICAL;
 			break;
@@ -249,7 +253,7 @@ int getTokens (Token *token) {
 				token->Type = tokenString;
 
 				if (c < 32)
-					return LEXICAL;
+					{scanRet(kwstring, LEXICAL);}
 
 				else if (c == '\\')
 					{state = stateEscapeSequence;}
@@ -264,7 +268,7 @@ int getTokens (Token *token) {
 
 
 				if (token->Type == 24)
-					printf("    TOKEN TYPE: ESCAPE\n");
+					fprintf(stderr,"    TOKEN TYPE: ESCAPE\n");
 				if (c == 'n'){
 					c = '\n';
 					token->Type = tokenEscapeSequence;
@@ -295,121 +299,81 @@ int getTokens (Token *token) {
 			case (stateStringEnd):
 			keywordCompare(kwstring, token);
 				if(!stringCompare(kwstring,"\n") == 0)
-					printf("    TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
+					fprintf(stderr,"    TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
 				else
-					printf("    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
+					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
 				state = stateStart;
 				stringClear(kwstring);
 				ungetc(c, code);
-				stringDispose(kwstring);
-				return LEXICAL;
+				scanRet(kwstring, LEXICAL);
 			break;
 
 			case (stateNumberEnd):
 				if (token->Type == 11)
-					printf("    TOKEN TYPE: FLOAT | TOKEN VAL: ");
+					fprintf(stderr,"    TOKEN TYPE: FLOAT | TOKEN VAL: ");
 				else if (token->Type == 12)
-					printf("    TOKEN TYPE: INT | TOKEN VAL: \n");
+					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: \n");
 				else if (token->Type == 22)
-					printf("    TOKEN TYPE: INT | TOKEN VAL: ");
-				printf("\"%s\"\n", kwstring->value);
+					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: ");
+				fprintf(stderr,"\"%s\"\n", kwstring->value);
 				state = stateStart;
 				stringClear(kwstring);
 				ungetc(c, code);
-				stringDispose(kwstring);
+				scanRet(kwstring, SUCCESS);
+
 			break;
 
 			case (stateEnd):
-				return SUCCESS;
+				 	scanRet(kwstring, SUCCESS);
 			break;	
 	}
-
-		FILE *log = fopen("log->txt", "a");
-		fprintf(log, "%c\n", c);		
-		fclose(log);
-
 	
 	char * tType = "    TOKEN TYPE:";
 	switch(token->Type){
-		case 1:
-			printf("%s ADD\n", tType);
-			return SUCCESS;
-			break;
-		case 2:
-			printf("%s SUB\n", tType);
-			return SUCCESS;
-			break;
-		case 3:
-			printf("%s MUL\n", tType);
-			return SUCCESS;
-			break;
-		case 4:
-			printf("%s DIV\n", tType);
-			return SUCCESS;
-			break;
-		case 5:
-			printf("%s L BRACKET\n", tType);
-			return SUCCESS;
-			break;
-		case 6:
-			printf("%s R BRACKET\n", tType);
-			return SUCCESS;
-			break;
-		case 7:
-			printf("%s L BRACE\n", tType);
-			return SUCCESS;
-			break;
-		case 8:
-			printf("%s R BRACE\n", tType);
-			return SUCCESS;
-			break;
-		case 9:
-			printf("%s COMMA\n", tType);
-			return SUCCESS;
-			break;
+		
 		case 10:
-			printf("%s EOF\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s EOF\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 12:
-			printf("%s EXPONENTIAL\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s EXPONENTIAL\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 13:
-			printf("%s EQUAL\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s EQUAL\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 14:
-			printf("%s NOT EQUAL\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s NOT EQUAL\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 15:
-			printf("%s LESS\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s LESS\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 16:
-			printf("%s GREATER\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s GREATER\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 17:
-			printf("%s LESS EQUAL\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s LESS EQUAL\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 18:
-			printf("%s GREATER EQUAL\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s GREATER EQUAL\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 19:
-			printf("%s EOL\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s EOL\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 20:
-			printf("%s NUMBER\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s NUMBER\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		case 21:
-			printf("%s ASSIGN\n", tType);
-			return SUCCESS;
+			fprintf(stderr,"%s ASSIGN\n", tType);
+			scanRet(kwstring, SUCCESS);
 			break;
 		default:
 			break;
