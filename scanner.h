@@ -1,0 +1,105 @@
+#ifndef SCANNER_HEADER
+#define SCANNER_HEADER
+
+#include <stdio.h>
+
+#include "string.h"
+typedef enum {
+	tokenEmpty,
+	tokenAdd,
+	tokenSub,
+	tokenMul,
+	tokenDiv,
+	tokenLeftBracket,
+	tokenRightBracket,
+	tokenLeftBrace,
+	tokenRightBrace,
+	tokenComma,
+	tokenEndOfFile,
+	tokenFloat,
+	tokenExponential,
+	tokenEqual,
+	tokenNotEqual,
+	tokenLess,
+	tokenGreater,
+	tokenLessEqual,
+	tokenGreaterEqual,
+	tokenEndOfLine,
+	tokenNumber,
+	tokenAssign,
+	tokenInteger,
+	tokenString,
+	tokenEscapeSequence,
+	tokenKeyword,
+	tokenIdentifier
+} TokenType;
+
+typedef enum {
+	KW_CHR,
+	KW_DEF,
+	KW_DO,
+	KW_ELSE,
+	KW_END,
+	KW_IF,
+	KW_INPUTF,
+	KW_INPUTI,
+	KW_INPUTS,
+	KW_LENGTH,
+	KW_NOT,
+	KW_NIL,
+	KW_ORD,
+	KW_THEN,
+	KW_WHILE,
+	KW_PRINT,
+	KW_SUBSTR,
+} Keyword;
+
+typedef union{
+	int integer; 
+	dynString *string;
+	Keyword keyword;
+	double flt; // float
+} TokenData;
+
+typedef struct {
+	TokenType Type;
+	TokenData Data;
+} Token;
+
+typedef enum {
+	stateStart,
+	stateStringStart,
+	stateLess,
+	stateGreater,
+	stateEqual,
+	stateComment,
+	stateExclamation,
+	stateNumber,
+	stateIdentifierCheck,
+	stateIdentifierOrKeyword,
+	stateZero,
+	stateEnd,
+	stateEOL,
+	stateStringEnd,
+	stateNumberEnd,
+	stateEscapeSequence,
+	stateBlockComment,
+} stateList;
+
+enum errorMessages {
+	SUCCESS = 0,
+	LEXICAL = 1,
+	SYNTACTICAL = 2,
+	SEMANTICAL = 3,
+	COMPATIBILITY = 4,
+	OTHER = 6,
+    ZERO_DIV = 9,
+	INTERNAL = 99,
+};
+
+
+int getTokens (Token *token);
+int setSourceFile(FILE *sourceFile);
+void setDynString(dynString *string);
+int checkAndSet(Token *token);
+#endif

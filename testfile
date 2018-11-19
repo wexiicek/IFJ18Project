@@ -1,0 +1,32 @@
+def foo (par, par2)
+end
+
+if then
+	print (kkt)
+	print kkt
+else
+	print kkt, kkt2
+	print (kkt, kkt2)
+end
+
+kkt = inputi
+kkt = inputs
+kkt = inputf
+kkt = foo (par, par2)
+kkt = foo par, par2
+foo par, par2
+foo (par, par2)
+
+kkt = length ("kkt")
+kkt = length (hikes)
+kkt = substr (kkt, 2, 3)
+kkt = ord (kkt, 2)
+kkt = chr (3)
+
+#hovno
+jebek
+
+
+
+
+
