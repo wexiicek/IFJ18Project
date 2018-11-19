@@ -25,26 +25,41 @@ unsigned int keywordCompare (dynString *kwstring, Token *token){
 
 	bool kw = false;
 
-	if (stringCompare(kwstring, "def"))
-		{token->Data.keyword = KW_DEF; token->Type = tokenKeyword; kw = true;}
+
+	if(stringCompare(kwstring, "chr"))
+		{token -> Data.keyword = KW_CHR; kw = true;}
+	else if (stringCompare(kwstring, "def"))
+		{token->Data.keyword = KW_DEF; kw = true;}
 	else if (stringCompare(kwstring, "do"))
-		{token->Data.keyword = KW_DO;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_DO; kw = true;}
 	else if (stringCompare(kwstring, "else"))
-		{token->Data.keyword = KW_ELSE;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_ELSE; kw = true;}
 	else if (stringCompare(kwstring, "end"))  
-		{token->Data.keyword = KW_END;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_END; kw = true;}
 	else if (stringCompare(kwstring, "if"))
-		{token->Data.keyword = KW_IF;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_IF; kw = true;}
+	else if (stringCompare(kwstring, "inputf"))
+		{token->Data.keyword = KW_IF; kw = true;}
+	else if (stringCompare(kwstring, "inputi"))
+		{token->Data.keyword = KW_IF; kw = true;}
+	else if (stringCompare(kwstring, "inputs"))
+		{token->Data.keyword = KW_IF; kw = true;}
+	else if (stringCompare(kwstring, "length"))
+		{token -> Data.keyword = KW_LENGTH; kw = true;}
 	else if (stringCompare(kwstring, "not"))
-		{token->Data.keyword = KW_NOT;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_NOT; kw = true;}
 	else if (stringCompare(kwstring, "nil"))
-		{token->Data.keyword = KW_NIL;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_NIL; kw = true;}
+	else if (stringCompare(kwstring, "ord"))
+		{token->Data.keyword = KW_ORD; kw = true;}
 	else if (stringCompare(kwstring, "then"))
-		{token->Data.keyword = KW_THEN;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_THEN; kw = true;}
 	else if (stringCompare(kwstring, "while"))
-		{token->Data.keyword = KW_WHILE;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_WHILE; kw = true;}
 	else if (stringCompare(kwstring, "print"))
-		{token->Data.keyword = KW_PRINT;token->Type = tokenKeyword; kw = true;}
+		{token->Data.keyword = KW_PRINT; kw = true;}
+	else if (stringCompare(kwstring, "substr"))
+		{token->Data.keyword = KW_SUBSTR; kw = true;}
 	
 	if(kw)
 		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;}
