@@ -1,9 +1,0 @@
-print (kkt, kkt2)
-def foo (par)
-if then
-print kkt
-else
-print chuj
-end
-end
-print konec

@@ -1,4 +1,0 @@
-
-
-
-void codeGenBuiltIn(FILE *dest);
