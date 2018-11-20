@@ -81,22 +81,12 @@ typedef enum {
 	stateEnd,
 	stateEOL,
 	stateStringEnd,
+	stateIdentifierEnd,
 	stateNumberEnd,
 	stateEscapeSequence,
 	stateBlockComment,
+	stateError,
 } stateList;
-
-enum errorMessages {
-	SUCCESS = 0,
-	LEXICAL = 1,
-	SYNTACTICAL = 2,
-	SEMANTICAL = 3,
-	COMPATIBILITY = 4,
-	OTHER = 6,
-    ZERO_DIV = 9,
-	INTERNAL = 99,
-};
-
 
 int getTokens (Token *token);
 int setSourceFile(FILE *sourceFile);

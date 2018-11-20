@@ -34,10 +34,13 @@ int main( int argc, const char* argv[] ){
     	{fprintf(stderr,CRED"[MAIN]"CWHT" File couldnt be set.\n"); return 1;}
     fprintf(stderr,CGRN"[MAIN]"CWHT" File set properly.\n");
 
-	if(kowalskiAnalysis())
+
+    int parser = kowalskiAnalysis();
+    
+	if(parser)
 		fprintf(stderr,CRED"[MAIN]"CWHT" Error in parser.\n");
 	else
 		fprintf(stderr,CGRN"[MAIN]"CWHT" Parser finished succesfully.\n");
-
-	return SUCCESS;
+	
+	return parser;
 }

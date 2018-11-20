@@ -54,8 +54,8 @@ static int func(parseData* parserData);
 
 
 static int mainFun(parseData* parserData){
-	fprintf(stderr,CRED "    <MAINFUN>\n"CWHT);
-	fprintf(stderr,"    %d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
+	//fprintf(stderr,CRED "    <MAINFUN>\n"CWHT);
+	//fprintf(stderr,"    %d, %d\n", parserData -> token.Type, parserData -> token.Data.keyword);
 	int res;
 	
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
@@ -102,7 +102,7 @@ static int mainFun(parseData* parserData){
 		checkRule(body);
 		return mainFun(parserData);
 	}
-
+	
 	return 42;
 }
 
@@ -131,7 +131,7 @@ static int params_n(parseData* parserData){
 
 static int body(parseData* parserData){
 	int res = 0;
-	fprintf(stderr,CRED "    <BODY>\n"CWHT);
+	//fprintf(stderr,CRED "    <BODY>\n"CWHT);
 
 	if (parserData -> token.Type == tokenIdentifier){
 		getToken();
@@ -493,12 +493,7 @@ int kowalskiAnalysis(){
 	 * Get first token and start parser
 	*/
 	getTokens(&parserData.token);
-		res = mainFun(&parserData);
+	res = mainFun(&parserData);
 
-
-	
-	if (res)
-		return 1;
-	
-	return SUCCESS;
+	return res;
 }

@@ -14,9 +14,13 @@
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
 
+
 #define scanRet(string, value)\
 			stringDispose(string);\
 			return value
+
+#define nextChar(character) character = getc(code)
+#define returnChar(character, source) ungetc(character, source)
 
 FILE *code;
 
@@ -111,14 +115,66 @@ int getTokens (Token *token) {
 
 	//Go through every character of a file
 	while (1){
-		c = getc(code);
+		nextChar(c);
 		switch (state){
 			case (stateStart):
 
 			/*	Cases, where we CAN determine the type definitely	*/
 
-				if (c == '\n')
-					{token->Type = tokenEndOfLine;}
+				if (c == '\n'){
+					nextChar(c);
+					if ((c == '=')){
+						state = stateError;
+						nextChar(c);                										
+						if (c == 'b'){
+							nextChar(c);
+							if(c == 'e'){
+								nextChar(c);                										
+								if(c == 'g'){
+									nextChar(c);                										
+									if(c == 'i'){
+										nextChar(c);                								
+										if(c == 'n'){
+											nextChar(c);                					
+                							if (c ==  '\n') {
+                								while (1){
+                									nextChar(c);
+                									if(c == '\n'){
+                										nextChar(c);
+                										if(c == '='){
+                											nextChar(c);
+                											if( c == 'e'){
+	                											nextChar(c);
+	                											if(c == 'n'){
+	                												nextChar(c);
+	                												if(c == 'd'){
+	                													nextChar(c);
+	                													if(c == '\n' || c == EOF){
+	                														ungetc(c, code);
+	                														state = stateStart;
+	                														break;
+	                													}	
+	                												}
+	                											}
+                											}
+                										}
+                									}      								
+                								}
+											}												
+										}
+									}
+								}
+							}
+						}						
+					}
+                										
+												
+					else{
+						ungetc(c, code);
+						token -> Type = tokenEndOfLine;
+						state = stateEnd;
+						}
+				}
 
 				else if (isspace(c))
 					{state = stateStart; token->Type = tokenEmpty;}
@@ -213,11 +269,11 @@ int getTokens (Token *token) {
 				if ( (c == '_') || isalnum(c))
 					{stringAddChar(kwstring, c);}
 				else if ( (c == '?') || (c == '!') )
-					{stringAddChar(kwstring, c); state = stateStringEnd;}
+					{stringAddChar(kwstring, c); state = stateIdentifierEnd;}
 				else if (  (c == ',')  || (c == '=') || isspace(c) || (c == EOF))
-					{ungetc(c, code); state = stateStringEnd;}
+					{ungetc(c, code); state = stateIdentifierEnd;}
 				else
-					{ungetc(c, code); state = stateStringEnd;}
+					{ungetc(c, code); state = stateIdentifierEnd;}
 			break;
 
 
@@ -259,7 +315,7 @@ int getTokens (Token *token) {
 
 			case (stateComment):
 				if (c == '\n')
-					{ungetc(c, code); state = stateStart;}
+					{state = stateStart;}
 				if (c == EOF)
 					{token->Type = tokenEndOfFile; state = stateEnd;}
 				else
@@ -318,9 +374,20 @@ int getTokens (Token *token) {
 			break;
 
 			case (stateStringEnd):
-			keywordCompare(kwstring, token);
 				if(!stringCompare(kwstring,"\n") == 0)
 					fprintf(stderr,"    TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
+				else
+					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
+				state = stateStart;
+				stringClear(kwstring);
+				ungetc(c, code);
+				scanRet(kwstring, LEXICAL);
+			break;
+
+			case (stateIdentifierEnd):
+			keywordCompare(kwstring, token);
+				if(!stringCompare(kwstring,"\n") == 0)
+					fprintf(stderr,"    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
 				else
 					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
 				state = stateStart;
@@ -344,8 +411,12 @@ int getTokens (Token *token) {
 
 			break;
 
+			case (stateError):
+				exit(1);
+				break;
+
 			case (stateEnd):
-				 	scanRet(kwstring, SUCCESS);
+				scanRet(kwstring, SUCCESS);
 			break;	
 	}
 	
