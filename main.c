@@ -18,7 +18,7 @@ int main( int argc, const char* argv[] ){
     FILE *sourceCode;
     
 	#ifdef DEBUG
-		if((sourceCode = fopen("testfile", "r"))==NULL){
+		if((sourceCode = fopen("example1.src", "r"))==NULL){
 			fprintf(stderr,CRED "[MAIN]" CWHT " Couldnt open file. Stopping.\n");
 			return -1;
 		}

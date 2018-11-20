@@ -112,6 +112,42 @@ int getTokens (Token *token) {
 	int state = stateStart; token -> Type = tokenEmpty;
 	char c;
 	char *prt = "    TOKEN TYPE:";
+	
+
+	//Checking for block comment at the beginning, when there is no EOL before.. 
+	// .. dont ask
+	nextChar(c);
+	if ((c == '=')){
+		state = stateError;
+		nextChar(c);               										
+		if (c == 'b'){
+			nextChar(c);
+			if(c == 'e'){
+				nextChar(c);                										
+				if(c == 'g'){
+					nextChar(c);                										
+					if(c == 'i'){
+						nextChar(c);                								
+						if(c == 'n'){
+							nextChar(c);                					
+							if (c ==  '\n') {
+								while (1){
+									nextChar(c);
+									if(c == '\n'){
+										nextChar(c);
+										if(c == '='){
+											nextChar(c);
+											if( c == 'e'){
+												nextChar(c);
+												if(c == 'n'){
+													nextChar(c);
+													if(c == 'd'){
+														nextChar(c);
+														if(c == '\n' || c == EOF){
+															ungetc(c, code);
+															state = stateStart;
+															break;
+	}}}}}}}}}}}}}} else ungetc(c, code);
 
 	//Go through every character of a file
 	while (1){
@@ -153,20 +189,7 @@ int getTokens (Token *token) {
 	                														ungetc(c, code);
 	                														state = stateStart;
 	                														break;
-	                													}	
-	                												}
-	                											}
-                											}
-                										}
-                									}      								
-                								}
-											}												
-										}
-									}
-								}
-							}
-						}						
-					}
+	                									   }}}}}}}}}}}}}}
                 										
 												
 					else{
@@ -412,7 +435,7 @@ int getTokens (Token *token) {
 			break;
 
 			case (stateError):
-				exit(1);
+				return LEXICAL;
 				break;
 
 			case (stateEnd):
