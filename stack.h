@@ -28,5 +28,6 @@ void stackFree(Stack* stack);
 void stackPopCount(Stack* stack, int count);
 StackItem* stackTopTerminal(Stack* stack);
 bool symbolStackInsertAfterTopTerminal(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type);
+void printStack(Stack* stack);
 
 #endif

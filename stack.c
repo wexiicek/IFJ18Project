@@ -35,8 +35,9 @@ StackItem* stackTop(Stack *stack) {
 
 void stackFree(Stack* stack) {
 	//while (symbol_stack_pop(stack));
+	StackItem *elemPtr;
 	while (stack->topPtr != NULL) {		
-		StackItem *elemPtr = stack->topPtr;
+		elemPtr = stack->topPtr;
 		stack->topPtr = stack->topPtr->nextPtr;
 		free(elemPtr);
 	}
@@ -65,7 +66,7 @@ StackItem* stackTopTerminal(Stack* stack) {
 	}
 	return NULL;
 }
-
+/*
 bool symbolStackInsertAfterTopTerminal(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type) {
 	StackItem* tmp = NULL;
 	StackItem* elemPtr = stack->topPtr;
@@ -90,4 +91,54 @@ bool symbolStackInsertAfterTopTerminal(Stack* stack, precAnalysisTableSymbol sym
 		elemPtr = elemPtr->nextPtr;
 	}
 	return false;
+}
+*/
+
+bool symbolStackInsertAfterTopTerminal(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type)
+{
+	StackItem* prev = NULL;
+
+	for (StackItem* tmp = stack->topPtr; tmp != NULL; tmp = tmp->nextPtr)
+	{
+		if (tmp->symbol < STOP)
+		{
+			StackItem* new_item = (StackItem*)malloc(sizeof(StackItem));
+
+			if (new_item == NULL)
+				return false;
+
+			new_item->symbol = symbol;
+			new_item->dataType = type;
+
+			if (prev == NULL)
+			{
+				new_item->nextPtr = stack->topPtr;
+				stack->topPtr = new_item;
+			}
+			else
+			{
+				new_item->nextPtr = prev->nextPtr;
+				prev->nextPtr = new_item;
+			}
+
+			return true;
+		}
+
+		prev = tmp;
+	}
+
+	return false;
+}
+
+void printStack(Stack* stack){
+	StackItem *item = stack -> topPtr;
+	int i = 0;
+	while (item != NULL){
+		printf("Stack %d :%d\n", ++i, item->symbol);
+		item = item -> nextPtr;
+		if (i == 10)
+			exit(100);
+	}
+	exit(89);
+	return;
 }

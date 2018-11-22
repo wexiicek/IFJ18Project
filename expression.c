@@ -5,6 +5,10 @@
 //#include "generator.h"
 #include "symtable.h"
 
+#define CRED  "\x1B[31m"
+#define CGRN  "\x1B[32m"
+#define CWHT  "\x1B[37m"
+
 #define tableSize 7
 //We will work with this stack for the whole time
 Stack stack;
@@ -105,19 +109,24 @@ static dataTypeEnum getDataType(Token* token, parseData* parserData){
 
 static int numberOfSymbolsAfterStop(bool* stopFound)
 {
+    fprintf(stderr,CGRN"    [EXPR]" CRED" FUN "CWHT" numberOfSymbolsAfterStop \n");
 	StackItem* tmp = stackTop(&stack);
 	int count = 0;
-
+//for debugging purposes
+    //return count;
+//debug TODO
 	while (tmp != NULL){
 		if (tmp->symbol != STOP){
 			*stopFound = false;
 			count++;
+
+            //if (count == 20) return;
+            //debug
 		}
 		else{
 			*stopFound = true;
 			break;
 		}
-
 		tmp = tmp->nextPtr;
 	}
 
@@ -156,13 +165,12 @@ static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
  * @return NOT_A_RULE if no rule is found or returns rule which is valid.
  */
 static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *operand1, StackItem *operand2, StackItem *operand3){
-	//printf("numofops %d\n", numberOfOperands);
+	printf(CGRN"    [EXPR]"CWHT" testWhichRuleToUse.. Operand count: %d\n", numberOfOperands);
 
-        printf("op1: %d\nop2: %d\nop3: %d\n",operand1->symbol, operand2->symbol, operand3->symbol );
     if (numberOfOperands == 1){
 		// rule E -> i
 		if (operand1->symbol == INT_NUMBER || operand1->symbol == FLOAT_NUMBER || operand1->symbol == STRING || operand1->symbol == IDENTIFIER)
-			return OPERAND_RULE;
+			{fprintf(stderr, CGRN"    [EXPR]"CRED" RET "CWHT"OPERAND RULE\n");return OPERAND_RULE;}
         else
 		    return NOT_A_RULE;
     }
@@ -220,30 +228,40 @@ static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem
 	bool retypeToFloat3 = false;
 	bool retypeToInt1 = false;
 	bool retypeToInt3 = false;*/
-
+   fprintf(stderr,CGRN"    [EXPR]"CRED" FUN "CWHT" checkSemantics\n");
     //What to do, if something had gone wrong
 	if ((rule == OPERAND_RULE) || (rule == BRACKETS_RULE)){
-		if (operand1->dataType== TYPE_UNDEFINED)
+       fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" OPERAND OR BRACKET\n");fprintf(stderr, "%d\n", rule);
+		if (operand1->dataType== TYPE_UNDEFINED){
+            fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" SEM_OTHER\n");
 			return SEMANTICAL_OTHER;
-
-		if (operand2->dataType == TYPE_UNDEFINED)
+        }
+        //TADY ZA TENTO IF SA TO NEDOSTANE A SEG
+		if (operand2->dataType == TYPE_UNDEFINED){
+            fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" SEM_OTHER\n");
 			return SEMANTICAL_OTHER;
+        }
 	}
-
 	if ((rule != OPERAND_RULE) && (rule != BRACKETS_RULE)){
+        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" NOT RULE OR BRACKETS\n");
 		if (operand1->dataType == TYPE_UNDEFINED || operand3->dataType == TYPE_UNDEFINED)
 			return SEMANTICAL_OTHER;
 	}
     /*************************************************************************************/
 
-	if(rule == OPERAND_RULE)
+	if(rule == OPERAND_RULE){
+        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" OP RULE-Setting finalType\n");
 		*finalType = operand1->dataType;
+    }
 		
 	
-	else if(rule == BRACKETS_RULE)
+	else if(rule == BRACKETS_RULE){
+        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" BR RULE-Setting finalType\n");
 		*finalType = operand2->dataType;
+    }
 	
 	else if((rule == PLUS_RULE) || (rule == MINUS_RULE) || (rule == MUL_RULE)){
+        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" +-* RULE-Setting finalType\n");
 		if(operand1->dataType == TYPE_INTEGER){
 			if(operand3->dataType == TYPE_INTEGER)
 				*finalType = TYPE_INTEGER;
@@ -267,6 +285,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem
 	}
 
 	else if(rule == DIV_RULE){
+        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" DIV RULE-Setting finalType\n");
 		if(operand1->dataType == TYPE_FLOAT){
 			if(operand3->dataType == TYPE_FLOAT){
 				*finalType = TYPE_FLOAT; 
@@ -274,8 +293,10 @@ static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem
 			else return SEMANTICAL_OTHER;
 		}
 
-		if((operand1->dataType == TYPE_STRING) || (operand3->dataType == TYPE_STRING))
-			return SEMANTICAL_OTHER;
+		if((operand1->dataType == TYPE_STRING) || (operand3->dataType == TYPE_STRING)){
+			fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" STR RULE-Setting finalType\n");
+            return SEMANTICAL_OTHER;
+        }
 
 		/**if(operand1->dataType == TYPE_INTEGER) //TODO KONZULTOVAT S OSTATNYMA
 			retypeToFloat1 = true;
@@ -283,7 +304,9 @@ static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem
 		if(operand3->dataType == TYPE_INTEGER)
 			retypeToFloat3 = true;
 		*/
+        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" SHIT-Setting finalType\n");
 		*finalType = TYPE_FLOAT;
+        return SUCCESS;
 	}
 
 	/*if(rule == IDIV_RULE){
@@ -310,6 +333,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem
  */
 static int reduceByRule(parseData* parserData)
 {
+   fprintf(stderr,CGRN"    [EXPR]"CRED" FUN "CWHT" reduceByRule\n");
 	(void) parserData;
     int result;
 
@@ -319,9 +343,8 @@ static int reduceByRule(parseData* parserData)
 	dataTypeEnum finalType;
 	precAnalysisRules rule;
 	bool found = false;
-
 	int count = numberOfSymbolsAfterStop(&found);
-    printf("numberOfSymbolsAfterStop %d\n", count);
+   fprintf(stderr,CGRN"    [EXPR]"CWHT" numberOfSymbolsAfterStop %d\n", count);
     if(count == 1){
         if(found == true){
             op1 = stack.topPtr;
@@ -339,12 +362,13 @@ static int reduceByRule(parseData* parserData)
 	else {printf("kktina 1\n");return SYNTACTICAL;}
 
 	if (rule == NOT_A_RULE){
-        printf("kktina\n");
+       fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" NOT A RULE (SYNTACTICA)\n");
 		return SYNTACTICAL;}
 
 	else{
 		if ((result = checkSemantics(rule, op1, op2, op3, &finalType)))
-			return result;
+            return result;
+            
 
 		/*if (rule == PLUS_RULE && finalType == TYPE_STRING)
 		{
@@ -354,6 +378,7 @@ static int reduceByRule(parseData* parserData)
 
 		stackPopCount(&stack, count + 1);
 		stackPush(&stack, NON_TERMINAL, finalType);
+
 	}
     
 	return SUCCESS;
@@ -373,7 +398,7 @@ int expression(parseData* parserData){
     //printf("%d\n", helper -> symbol);
     if(resultDecider == false){
         stackFree(&stack); 
-        printf("jebek-1\n");
+       fprintf(stderr,"jebek-1\n");
         return INTERNAL;
     };
     
@@ -384,29 +409,29 @@ int expression(parseData* parserData){
     do{
         actualSymbol = getSymbolFromToken(&parserData->token);
         topTerminal = stackTop(&stack);
-        printf("%d\n",topTerminal->symbol );
+       fprintf(stderr,"%d\n",topTerminal->symbol );
 
         if (topTerminal == NULL){
             stackFree(&stack);
-            printf("jebek0\n");
+           fprintf(stderr,"jebek0\n");
             return INTERNAL;
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == S){
             resultDecider = symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED);
+           fprintf(stderr,"STOP? %d\n", resultDecider);
             if(resultDecider == false){
                 stackFree(&stack);
-                printf("jebek1\n");
+               fprintf(stderr,"jebek1\n");
                 return INTERNAL;
             }
 
             resultDecider = stackPush(&stack,actualSymbol, getDataType(&parserData->token,parserData));
-            StackItem *helper = stackTop(&stack);
-            printf("%d\n", helper -> symbol);
+           fprintf(stderr,"Pushing %d to stack.\n", actualSymbol);
 
             if(resultDecider == false){
                 stackFree(&stack);
-                printf("jebek2\n");
+               fprintf(stderr,"jebek2\n");
                 return INTERNAL;
             }
 
@@ -415,33 +440,36 @@ int expression(parseData* parserData){
 				//resultDecider = generate_push(parserData->token);
                 if(resultDecider == false){
                     stackFree(&stack);
-                    printf("jebek3\n");
+                   fprintf(stderr,"jebek3\n");
                     return INTERNAL;
                 }
 			}
 
             result= getTokens(&parserData->token);
-            printf("RES %d\n", result);
+           fprintf(stderr,"RES %d\n", result);
             if (result){
 				stackFree(&stack);
-                printf("jebek4 %d\n", result);
+               fprintf(stderr,"jebek4 %d\n", result);
                 return result;
             }         
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
             stackPush(&stack, actualSymbol, getDataType(&parserData->token,parserData));
+           fprintf(stderr,"Pushing %d to stack.\n", actualSymbol);
             
             if ((result = getTokens(&parserData->token))){
 				stackFree(&stack);
-                printf("jebek5\n");
+               fprintf(stderr,"jebek5\n");
                 return result;
             }
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
-            printf("R table\n");
-            if ((result = reduceByRule(parserData))){
+           fprintf(stderr,"R table\n");
+            //printStack(&stack);
+            result = reduceByRule(parserData);
+            if (result){
 				stackFree(&stack);printf("jebek6\n");
                 return result;   
             }  
@@ -455,7 +483,7 @@ int expression(parseData* parserData){
             }
             else{
                 stackFree(&stack);
-                printf("jebek7\n");
+               fprintf(stderr,"jebek7\n");
                 return SYNTACTICAL;
             }
         }
