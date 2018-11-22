@@ -2,6 +2,7 @@
 #include "string.h"
 #include "parser.h"
 #include "err.h"
+#include "expression.h"
 
 /*
  * Macros for colored output
@@ -161,8 +162,9 @@ static int body(parseData* parserData){
 		
 
 		//TODO expression in IF statement
-
-
+		getToken();
+		checkRule(expression);
+		printf("KKT\n");
 		getToken();
 		checkKeyword(KW_THEN);
 		getToken();

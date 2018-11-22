@@ -4,9 +4,11 @@
 #include <stdbool.h>
 
 #include "scanner.h"
+#include "symtable.h"
 
 typedef struct {
 	Token token;
+	tSymtable localTable;
 } parseData;
 
 int kowalskiAnalysis();
