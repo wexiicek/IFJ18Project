@@ -156,7 +156,9 @@ static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
  * @return NOT_A_RULE if no rule is found or returns rule which is valid.
  */
 static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *operand1, StackItem *operand2, StackItem *operand3){
-	
+	//printf("numofops %d\n", numberOfOperands);
+
+        printf("op1: %d\nop2: %d\nop3: %d\n",operand1->symbol, operand2->symbol, operand3->symbol );
     if (numberOfOperands == 1){
 		// rule E -> i
 		if (operand1->symbol == INT_NUMBER || operand1->symbol == FLOAT_NUMBER || operand1->symbol == STRING || operand1->symbol == IDENTIFIER)
@@ -196,7 +198,7 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
             return BRACKETS_RULE;                       // rule E -> (E)
         }
         else
-            return NOT_A_RULE;
+            {printf("chyba here\n");return NOT_A_RULE;}
     }
     else
         return NOT_A_RULE;
@@ -319,7 +321,7 @@ static int reduceByRule(parseData* parserData)
 	bool found = false;
 
 	int count = numberOfSymbolsAfterStop(&found);
-
+    printf("numberOfSymbolsAfterStop %d\n", count);
     if(count == 1){
         if(found == true){
             op1 = stack.topPtr;
@@ -334,10 +336,11 @@ static int reduceByRule(parseData* parserData)
             rule = testWhichRuleToUse(count, op1, op2, op3);
         }
 	}
-	else return SYNTACTICAL;
+	else {printf("kktina 1\n");return SYNTACTICAL;}
 
-	if (rule == NOT_A_RULE)
-		return SYNTACTICAL;
+	if (rule == NOT_A_RULE){
+        printf("kktina\n");
+		return SYNTACTICAL;}
 
 	else{
 		if ((result = checkSemantics(rule, op1, op2, op3, &finalType)))
@@ -364,9 +367,13 @@ int expression(parseData* parserData){
     bool resultDecider;
     
     stackInit(&stack);
+    if(&stack.topPtr ==  NULL) return INTERNAL;
     resultDecider = stackPush(&stack, DOLLAR, TYPE_UNDEFINED);
+    //StackItem *helper = stackTop(&stack);
+    //printf("%d\n", helper -> symbol);
     if(resultDecider == false){
         stackFree(&stack); 
+        printf("jebek-1\n");
         return INTERNAL;
     };
     
@@ -377,8 +384,11 @@ int expression(parseData* parserData){
     do{
         actualSymbol = getSymbolFromToken(&parserData->token);
         topTerminal = stackTop(&stack);
+        printf("%d\n",topTerminal->symbol );
+
         if (topTerminal == NULL){
             stackFree(&stack);
+            printf("jebek0\n");
             return INTERNAL;
         }
 
@@ -386,12 +396,17 @@ int expression(parseData* parserData){
             resultDecider = symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED);
             if(resultDecider == false){
                 stackFree(&stack);
+                printf("jebek1\n");
                 return INTERNAL;
             }
 
             resultDecider = stackPush(&stack,actualSymbol, getDataType(&parserData->token,parserData));
+            StackItem *helper = stackTop(&stack);
+            printf("%d\n", helper -> symbol);
+
             if(resultDecider == false){
                 stackFree(&stack);
+                printf("jebek2\n");
                 return INTERNAL;
             }
 
@@ -400,31 +415,36 @@ int expression(parseData* parserData){
 				//resultDecider = generate_push(parserData->token);
                 if(resultDecider == false){
                     stackFree(&stack);
+                    printf("jebek3\n");
                     return INTERNAL;
                 }
 			}
 
-            if ((result = getTokens(&parserData->token)))
+            result= getTokens(&parserData->token);
+            printf("RES %d\n", result);
+            if (result){
 				stackFree(&stack);
+                printf("jebek4 %d\n", result);
                 return result;
-			break;
+            }         
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
             stackPush(&stack, actualSymbol, getDataType(&parserData->token,parserData));
             
-            if ((result = getTokens(&parserData->token)))
+            if ((result = getTokens(&parserData->token))){
 				stackFree(&stack);
+                printf("jebek5\n");
                 return result;
-			break;
+            }
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
-            
-            if ((result = reduceByRule(parserData)))
-				stackFree(&stack);
-                return result;
-			break;
+            printf("R table\n");
+            if ((result = reduceByRule(parserData))){
+				stackFree(&stack);printf("jebek6\n");
+                return result;   
+            }  
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == N){
@@ -435,6 +455,7 @@ int expression(parseData* parserData){
             }
             else{
                 stackFree(&stack);
+                printf("jebek7\n");
                 return SYNTACTICAL;
             }
         }

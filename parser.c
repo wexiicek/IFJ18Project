@@ -165,8 +165,9 @@ static int body(parseData* parserData){
 		getToken();
 		checkRule(expression);
 		printf("KKT\n");
-		getToken();
+		//getToken();
 		checkKeyword(KW_THEN);
+		printf("then\n");
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		getToken();

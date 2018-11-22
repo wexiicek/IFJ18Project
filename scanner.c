@@ -77,7 +77,7 @@ dynString *kwstring;
 int setSourceFile(FILE *sourceFile) {
 	if((code = sourceFile) == NULL)
 		return SUCCESS;
-	return LEXICAL;
+	return INTERNAL;
 }
 
 void setDynString(dynString *string){
@@ -104,7 +104,7 @@ int getTokens (Token *token) {
 	dynString *str = &string;
 
 	if(stringInit(str))
-		return LEXICAL;
+		return INTERNAL;
 
 	token -> Data.string = kwstring;
 	
