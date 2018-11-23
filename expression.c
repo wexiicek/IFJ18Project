@@ -416,7 +416,8 @@ static int reduceByRule(parseData* parserData)
 	return SUCCESS;
 }
 
-#define HARMIM 1
+//TODO REMOVE
+//#define HARMIM 1
 
 #ifdef HARMIM
 int expression(parseData *parserData)
@@ -543,7 +544,7 @@ int expression(parseData *parserData){
             }
 
             result = getTokens(&parserData->token);
-            if (result == true){
+            if (result){
                 stackFree(&stack);
                 return result;
             }
@@ -553,7 +554,7 @@ int expression(parseData *parserData){
             stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData));
 
             result = getTokens(&parserData->token);
-            if (result == true){
+            if (result){
                 stackFree(&stack);
                 return result;
             }
@@ -561,7 +562,7 @@ int expression(parseData *parserData){
 
         else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
             result = reduceByRule(parserData);
-            if (result == true){
+            if (result){
                 stackFree(&stack);
                 return result;
             }
