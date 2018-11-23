@@ -194,6 +194,7 @@ static int body(parseData* parserData){
 
 
 		getToken();
+		checkRule(expression);
 		checkKeyword(KW_DO);
 		getToken();
 		checkTokenType(tokenEndOfLine);
@@ -210,20 +211,22 @@ static int body(parseData* parserData){
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_PRINT){
 		getToken();
 
+
+		/*
 		if (parserData -> token.Type == tokenLeftBracket){	
 			getToken();
 			checkRule(terms);
-			checkTokenType(tokenRightBracket);
-			getToken();
+			//checkTokenType(tokenRightBracket);
+			//getToken();
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 			return body(parserData);
 		}
+		*/
 
-		else {
 			checkRule(terms);
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		return body(parserData);
-		}
+
 	}
 	
 	else if(parserData -> token.Type == tokenEndOfLine){
@@ -239,11 +242,10 @@ static int body(parseData* parserData){
 
 static int terms(parseData* parserData){
 	int res;
-	if (parserData -> token.Type == tokenIdentifier) //docasne ID, nahradit za expression
-	{
-		getToken();
+	
+		//getToken();
+		checkRule(expression);
 		checkRule(terms_n);
-	}
 	return SUCCESS;
 }
 
@@ -252,8 +254,8 @@ static int terms_n(parseData* parserData){
 
 	if (parserData -> token.Type == tokenComma){
 		getToken();
-		checkTokenType(tokenIdentifier); //docasne ID, nahradit za expression
-		getToken();
+		checkRule(expression); //docasne ID, nahradit za expression
+		//getToken();
 		return(terms_n(parserData));
 	}
 
@@ -262,6 +264,7 @@ static int terms_n(parseData* parserData){
 
 static int def_value(parseData* parserData){
 	int res;
+	/*
 	if (parserData -> token.Type == tokenIdentifier)
 	{
 		getToken();
@@ -277,8 +280,9 @@ static int def_value(parseData* parserData){
 			return SUCCESS;
 		}
 	}
+	*/
 
-	else if (parserData -> token.Type == tokenKeyword)
+	if (parserData -> token.Type == tokenKeyword)
 	{
 
 		switch (parserData -> token.Data.keyword) {
@@ -379,7 +383,8 @@ static int def_value(parseData* parserData){
 		}
 
 	}
-	return 42; //checkRule(expression); 
+	checkRule(expression);
+	return SUCCESS;
 }
 
 static int args (parseData* parserData){
