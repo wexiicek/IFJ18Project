@@ -416,116 +416,6 @@ static int reduceByRule(parseData* parserData)
 	return SUCCESS;
 }
 
-
-/*
-int expression(parseData* parserData){
-    fprintf(stderr,"jebek exp\n");
-    int result = SYNTACTICAL;
-    bool resultDecider;
-    
-    stackInit(&stack);
-    if(&stack.topPtr ==  NULL) return INTERNAL;
-    resultDecider = stackPush(&stack, DOLLAR, TYPE_UNDEFINED);
-    //StackItem *helper = stackTop(&stack);
-    //printf("%d\n", helper -> symbol);
-    if(resultDecider == false){
-        stackFree(&stack); 
-       fprintf(stderr,"jebek-1\n");
-        return INTERNAL;
-    };
-    
-    StackItem *topTerminal;
-    precAnalysisTableSymbol actualSymbol;
-
-    bool success = false;
-    do{
-        actualSymbol = getSymbolFromToken(&parserData->token);
-        topTerminal = stackTop(&stack);
-        printStack(&stack);
-       fprintf(stderr,CGRN"    [EXPR]"CRED" STACK TOP:"CWHT" %d\n",topTerminal->symbol );
-
-        if (topTerminal == NULL){
-            stackFree(&stack);
-           fprintf(stderr,"jebek0\n");
-            return INTERNAL;
-        }
-
-        if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == S){
-            resultDecider = symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED);
-           fprintf(stderr,"STOP? %d\n", resultDecider);
-            if(resultDecider == false){
-                stackFree(&stack);
-               fprintf(stderr,"jebek1\n");
-                return INTERNAL;
-            }
-
-            resultDecider = stackPush(&stack,actualSymbol, getDataType(&parserData->token,parserData));
-           fprintf(stderr,"    Pushing %d to stack.\n", actualSymbol);
-
-            if(resultDecider == false){
-                stackFree(&stack);
-               fprintf(stderr,"jebek2\n");
-                return INTERNAL;
-            }
-
-            if (actualSymbol == IDENTIFIER || actualSymbol == INT_NUMBER || actualSymbol == FLOAT_NUMBER || actualSymbol == STRING)
-			{
-				//resultDecider = generate_push(parserData->token);
-                if(resultDecider == false){
-                    stackFree(&stack);
-                   fprintf(stderr,"jebek3\n");
-                    return INTERNAL;
-                }
-			}
-
-            result= getTokens(&parserData->token);
-           fprintf(stderr,"RES %d\n", result);
-            if (result){
-				stackFree(&stack);
-                fprintf(stderr,"jebek4 %d\n", result);
-                return result;
-            }         
-        }
-
-        if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
-            stackPush(&stack, actualSymbol, getDataType(&parserData->token,parserData));
-           fprintf(stderr,"    Pushing %d to stack.\n", actualSymbol);
-            
-            if ((result = getTokens(&parserData->token))){
-				stackFree(&stack);
-               fprintf(stderr,"jebek5\n");
-                return result;
-            }
-        }
-
-        if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
-           fprintf(stderr,"R table\n");
-            printStack(&stack);
-            result = reduceByRule(parserData);
-            fprintf(stderr,"RESULT: %d\n", result);
-            if (result){
-				stackFree(&stack);printf("jebek6\n");
-                return result;   
-            }  
-        }
-
-        if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == N){
-            if(actualSymbol == DOLLAR){
-                if(topTerminal->symbol == DOLLAR){
-                    success = true;
-                }
-            }
-            else{
-                stackFree(&stack);
-               fprintf(stderr,"jebek7\n");
-                return SYNTACTICAL;
-            }
-        }
-    }while(success == false);
-    return SUCCESS;
-}
-*/
-
 #define HARMIM 1
 
 #ifdef HARMIM
@@ -553,49 +443,46 @@ int expression(parseData *parserData)
             stackFree(&stack);
             return INTERNAL;
         }
-        switch (precTable[getPrecTableIndex(top_stack_terminal->symbol)][getPrecTableIndex(actual_symbol)])
-        {
+        switch (precTable[getPrecTableIndex(top_stack_terminal->symbol)][getPrecTableIndex(actual_symbol)]){
         case S:
-            if (!symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED))
-                {
-            stackFree(&stack);
-            return INTERNAL;
-        }
+            if (!symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED)){
+                stackFree(&stack);
+                return INTERNAL;
+            }
 
-            if(!stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData)))
-                {
-            stackFree(&stack);
-            return INTERNAL;
-        }
+            if(!stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData))){
+                stackFree(&stack);
+                return INTERNAL;
+            }
 
-            if ((result = getTokens(&parserData->token)))
-                {
-            stackFree(&stack);
-            return result;
-        }
+            if ((result = getTokens(&parserData->token))){
+                stackFree(&stack);
+                return result;
+            }
             break;
 
         case E:
             stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData));
 
             if ((result = getTokens(&parserData->token))){
-            stackFree(&stack);
-            return result; }
+                stackFree(&stack);
+                return result; 
+            }
             break;
 
         case R:
             if ((result = reduceByRule(parserData))){
-            stackFree(&stack);
-            return result;
-        }
+                stackFree(&stack);
+                return result;
+            }
             break;
 
         case N:
             if (actual_symbol == DOLLAR && top_stack_terminal->symbol == DOLLAR)
                 success = true;
             else{
-            stackFree(&stack);
-            return SYNTACTICAL;
+                stackFree(&stack);
+                return SYNTACTICAL;
         }
             break;
         }
@@ -635,7 +522,7 @@ int expression(parseData *parserData){
 
     do {
         actualSymbol = getSymbolFromToken(&parserData->token);
-        topTerminal = stackTop(&stack);
+        topTerminal = stackTopTerminal(&stack);
 
         if(topTerminal == NULL){
             stackFree(&stack);
@@ -688,7 +575,6 @@ int expression(parseData *parserData){
                 stackFree(&stack);
                 return SYNTACTICAL;
             }
-            continue;
         }
 
     } while (!success);
