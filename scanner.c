@@ -416,8 +416,8 @@ int getTokens (Token *token) {
 				state = stateStart;
 				stringClear(kwstring);
 				ungetc(c, code);
-				scanRet(kwstring, LEXICAL);
-				//scanRet(kwstring, SUCCESS);
+				//scanRet(kwstring, LEXICAL);
+				scanRet(kwstring, SUCCESS);
 			break;
 
 			case (stateNumberEnd):

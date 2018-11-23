@@ -5,6 +5,8 @@
 //#include "generator.h"
 #include "symtable.h"
 
+
+
 #define CRED  "\x1B[31m"
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
@@ -523,7 +525,10 @@ int expression(parseData* parserData){
     return SUCCESS;
 }
 */
-/*
+
+#define HARMIM 1
+
+#ifdef HARMIM
 int expression(parseData *parserData)
 {
     int result = SYNTACTICAL;
@@ -610,9 +615,9 @@ int expression(parseData *parserData)
             stackFree(&stack);
             return SUCCESS;
         
-}*/
+}
 
-
+#else
 int expression(parseData *parserData){
     bool success = false;
     int result = SYNTACTICAL;
@@ -683,6 +688,7 @@ int expression(parseData *parserData){
                 stackFree(&stack);
                 return SYNTACTICAL;
             }
+            continue;
         }
 
     } while (!success);
@@ -694,3 +700,4 @@ int expression(parseData *parserData){
     stackFree(&stack);
     return SUCCESS;
 }
+#endif
