@@ -203,31 +203,31 @@ int getTokens (Token *token) {
 					{state = stateStart; token->Type = tokenEmpty;}
 
 				else if (c == '+')
-					{token->Type = tokenAdd; fprintf(stderr,"%s ADD\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenAdd; fprintf(stderr,"%s ADD\n", prt); return SUCCESS;}
 
 				else if (c == '-')
-					{token->Type = tokenSub; fprintf(stderr,"%s SUB\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenSub; fprintf(stderr,"%s SUB\n", prt); return SUCCESS;}
 				
 				else if (c == '*')
-					{token->Type = tokenMul; fprintf(stderr,"%s MUL\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenMul; fprintf(stderr,"%s MUL\n", prt); return SUCCESS;}
 				
 				else if (c == '/') 
-					{token->Type = tokenDiv; fprintf(stderr,"%s DIV\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenDiv; fprintf(stderr,"%s DIV\n", prt); return SUCCESS;}
 				
 				else if (c == '(')
-					{token->Type = tokenLeftBracket; fprintf(stderr,"%s LBRACK\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenLeftBracket; fprintf(stderr,"%s LBRACK\n", prt); return SUCCESS;}
 				
 				else if (c == ')')
-					{token->Type = tokenRightBracket; fprintf(stderr,"%s RBRACK\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenRightBracket; fprintf(stderr,"%s RBRACK\n", prt); return SUCCESS;}
 
 				else if (c == '{')
-					{token->Type = tokenLeftBrace; fprintf(stderr,"%s LBRACE\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenLeftBrace; fprintf(stderr,"%s LBRACE\n", prt); return SUCCESS;}
 
 				else if (c == '}')
-					{token->Type = tokenRightBrace; fprintf(stderr,"%s RBRACE\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenRightBrace; fprintf(stderr,"%s RBRACE\n", prt); return SUCCESS;}
 
 				else if (c == ',')
-					{token->Type = tokenComma; fprintf(stderr,"%s COMMA\n", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenComma; fprintf(stderr,"%s COMMA\n", prt); return SUCCESS;}
 
 
 			/*	Cases, where we CAN'T determine the type definitely	*/
@@ -307,7 +307,7 @@ int getTokens (Token *token) {
 
 			case (stateEqual):
 				if (c == '=')
-					{token->Type = tokenEqual; state = stateStart;  fprintf(stderr,"%s EQUAL", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenEqual; state = stateStart;  fprintf(stderr,"%s EQUAL", prt); return SUCCESS;}
 				else if(c == 'b')
 					{ungetc(c, code); state = stateBlockComment;}
 				else 
@@ -317,21 +317,21 @@ int getTokens (Token *token) {
 
 			case (stateLess):
 				if (c == '=')
-					{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr,"%s LESS EQUAL", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr,"%s LESS EQUAL", prt); return SUCCESS;}
 				else
 					{ungetc(c, code); token->Type = tokenLess; state = stateStart;}
 			break;
 
 			case (stateGreater):
 				if (c == '=')
-					{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr,"%s GREATER EQUAL", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr,"%s GREATER EQUAL", prt); return SUCCESS;}
 				else
 					{ungetc(c, code); token->Type = tokenGreater; state = stateStart;}
 			break;
 
 			case (stateExclamation):
 				if (c == '=')
-					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); scanRet(kwstring, SUCCESS);}
+					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); return SUCCESS;}
 				else
 					return LEXICAL;
 			break;
@@ -417,7 +417,7 @@ int getTokens (Token *token) {
 				stringClear(kwstring);
 				ungetc(c, code);
 				//scanRet(kwstring, LEXICAL);
-				scanRet(kwstring, SUCCESS);
+				return SUCCESS;
 			break;
 
 			case (stateNumberEnd):
@@ -431,16 +431,16 @@ int getTokens (Token *token) {
 				state = stateStart;
 				stringClear(kwstring);
 				ungetc(c, code);
-				scanRet(kwstring, SUCCESS);
+				return SUCCESS;
 
 			break;
 
 			case (stateError):
-				return LEXICAL;
+				scanRet(kwstring, LEXICAL);
 				break;
 
 			case (stateEnd):
-				scanRet(kwstring, SUCCESS);
+				return SUCCESS;
 			break;	
 	}
 	
@@ -449,47 +449,47 @@ int getTokens (Token *token) {
 		
 		case 10:
 			fprintf(stderr,"%s EOF\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 12:
 			fprintf(stderr,"%s EXPONENTIAL\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 13:
 			fprintf(stderr,"%s EQUAL\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 14:
 			fprintf(stderr,"%s NOT EQUAL\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 15:
 			fprintf(stderr,"%s LESS\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 16:
 			fprintf(stderr,"%s GREATER\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 17:
 			fprintf(stderr,"%s LESS EQUAL\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 18:
 			fprintf(stderr,"%s GREATER EQUAL\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 19:
 			fprintf(stderr,"%s EOL\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 20:
 			fprintf(stderr,"%s NUMBER\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		case 21:
 			fprintf(stderr,"%s ASSIGN\n", tType);
-			scanRet(kwstring, SUCCESS);
+			return SUCCESS;
 			break;
 		default:
 			break;

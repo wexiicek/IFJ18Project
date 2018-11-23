@@ -581,8 +581,10 @@ int expression(parseData *parserData){
     } while (!success);
 
     StackItem *finalNT = stackTop(&stack);
-    if(finalNT == NULL) {stackFree(&stack); return INTERNAL;}
-    if(finalNT -> symbol != NON_TERMINAL) {stackFree(&stack); return SYNTACTICAL;}
+    if(finalNT == NULL) {stackFree(&stack);
+     return INTERNAL;}
+    if(finalNT -> symbol != NON_TERMINAL) {stackFree(&stack);
+     return SYNTACTICAL;}
 
     stackFree(&stack);
     return SUCCESS;

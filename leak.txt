@@ -1,357 +1,118 @@
-==7966== Memcheck, a memory error detector
-==7966== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==7966== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==7966== Command: ./compiler
-==7966== Parent PID: 5335
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x1094E4: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A82E: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x1094E4: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid write of size 1
-==7966==    at 0x10A370: stringAddChar (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x1097EE: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid write of size 1
-==7966==    at 0x10A389: stringAddChar (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x1097EE: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b1 is 1 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid read of size 1
-==7966==    at 0x4C32CF2: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x4E994D2: vfprintf (vfprintf.c:1643)
-==7966==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==7966==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==7966==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==7966==    by 0x109F18: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid read of size 1
-==7966==    at 0x4C32D04: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x4E994D2: vfprintf (vfprintf.c:1643)
-==7966==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==7966==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==7966==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==7966==    by 0x109F18: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b1 is 1 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid read of size 1
-==7966==    at 0x4ECA532: _IO_default_xsputn (genops.c:412)
-==7966==    by 0x4E98FEA: vfprintf (vfprintf.c:1643)
-==7966==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==7966==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==7966==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==7966==    by 0x109F18: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid write of size 1
-==7966==    at 0x10A3C4: stringClear (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109F2E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109F52: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109454: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10952C: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x1093C4: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C3D7: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10940C: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C3D7: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== Invalid free() / delete / delete[] / realloc()
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10940C: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Address 0x522d2b0 is 0 bytes inside a block of size 10 free'd
-==7966==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A403: stringDispose (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x109E64: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966==  Block was alloc'd at
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B274: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== 
-==7966== HEAP SUMMARY:
-==7966==     in use at exit: 672 bytes in 13 blocks
-==7966==   total heap usage: 42 allocs, 40 frees, 6,218 bytes allocated
-==7966== 
-==7966== 10 bytes in 1 blocks are definitely lost in loss record 1 of 5
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2A3: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== 10 bytes in 1 blocks are definitely lost in loss record 2 of 5
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A82E: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== 20 bytes in 2 blocks are definitely lost in loss record 3 of 5
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C3D7: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== 80 bytes in 8 blocks are definitely lost in loss record 4 of 5
-==7966==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==7966==    by 0x10A25A: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10C343: expression (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A83A: body (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10A60F: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x10B2AF: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==7966==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==7966== 
-==7966== LEAK SUMMARY:
-==7966==    definitely lost: 120 bytes in 12 blocks
-==7966==    indirectly lost: 0 bytes in 0 blocks
-==7966==      possibly lost: 0 bytes in 0 blocks
-==7966==    still reachable: 552 bytes in 1 blocks
-==7966==         suppressed: 0 bytes in 0 blocks
-==7966== Reachable blocks (those to which a pointer was found) are not shown.
-==7966== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==7966== 
-==7966== For counts of detected and suppressed errors, rerun with: -v
-==7966== ERROR SUMMARY: 64 errors from 18 contexts (suppressed: 0 from 0)
+==8338== Memcheck, a memory error detector
+==8338== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==8338== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==8338== Command: ./compiler
+==8338== Parent PID: 8316
+==8338== 
+==8338== 
+==8338== HEAP SUMMARY:
+==8338==     in use at exit: 752 bytes in 21 blocks
+==8338==   total heap usage: 53 allocs, 32 frees, 6,352 bytes allocated
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 1 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B0FA: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 2 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B129: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 3 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A6B4: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 4 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A716: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 5 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A737: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 6 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A781: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 7 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A7A2: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 8 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A7EC: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 10 bytes in 1 blocks are definitely lost in loss record 9 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A822: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 20 bytes in 2 blocks are definitely lost in loss record 10 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10C25D: expression (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A6C0: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== 90 bytes in 9 blocks are definitely lost in loss record 11 of 12
+==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10C1C9: expression (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A6C0: body (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
+==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
+==8338== 
+==8338== LEAK SUMMARY:
+==8338==    definitely lost: 200 bytes in 20 blocks
+==8338==    indirectly lost: 0 bytes in 0 blocks
+==8338==      possibly lost: 0 bytes in 0 blocks
+==8338==    still reachable: 552 bytes in 1 blocks
+==8338==         suppressed: 0 bytes in 0 blocks
+==8338== Reachable blocks (those to which a pointer was found) are not shown.
+==8338== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==8338== 
+==8338== For counts of detected and suppressed errors, rerun with: -v
+==8338== ERROR SUMMARY: 11 errors from 11 contexts (suppressed: 0 from 0)
