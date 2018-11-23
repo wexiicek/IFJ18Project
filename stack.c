@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include "stack.h"
 
+#define CRED  "\x1B[31m"
+#define CGRN  "\x1B[32m"
+#define CWHT  "\x1B[37m"
+
 void stackInit(Stack* stack) {
 	stack->topPtr = NULL;
 }
@@ -134,11 +138,8 @@ void printStack(Stack* stack){
 	StackItem *item = stack -> topPtr;
 	int i = 0;
 	while (item != NULL){
-		printf("Stack %d :%d\n", ++i, item->symbol);
+		printf(CRED"    Stack"CWHT" %d :%d\n", ++i, item->symbol);
 		item = item -> nextPtr;
-		if (i == 10)
-			exit(100);
 	}
-	exit(89);
 	return;
 }

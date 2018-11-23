@@ -38,7 +38,7 @@ typedef enum{
     TYPE_INTEGER,
     TYPE_FLOAT,
     TYPE_STRING,
-    TYPE_UNDEFINED
+    TYPE_UNDEFINED,
 }dataTypeEnum;
 
 typedef struct variable {

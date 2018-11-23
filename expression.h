@@ -31,27 +31,27 @@ typedef enum
  */
 typedef enum
 {
-	PLUS,				// +
-	MINUS,				// -
-	MUL,				// *
-	DIV,				// /
+	PLUS,				// + 0
+	MINUS,				// - 1 
+	MUL,				// * 2
+	DIV,				// / 3
 	//IDIV,				// \ /    //TODO Nevim, ci to tam mame
-	ASSIGN,          	// =
-    EQUAL,	        	// ==
-	NOT_EQUAL,			// !=
-	LESS_OR_EQUAL,		// <=
-	LESS,				// <
-	GREATER_OR_EQUAL,	// >=
-	GREATER,			// >
-	LEFT_BRACKET,		// (
-	RIGHT_BRACKET,		// )
-	IDENTIFIER,			// ID
-	INT_NUMBER,			// int
-	FLOAT_NUMBER,		// float
-	STRING,				// string
-	DOLLAR,				// $
-	STOP,				// stop symbol used when reducing
-	NON_TERMINAL		// non-terminal
+	ASSIGN,          	// = 4
+    EQUAL,	        	// == 5
+	NOT_EQUAL,			// != 6
+	LESS_OR_EQUAL,		// <= 7
+	LESS,				// < 8
+	GREATER_OR_EQUAL,	// >= 9
+	GREATER,			// > 10 
+	LEFT_BRACKET,		// ( 11 
+	RIGHT_BRACKET,		// ) 12
+	IDENTIFIER,			// ID 13 
+	INT_NUMBER,			// int 14
+	FLOAT_NUMBER,		// float 15
+	STRING,				// string 16 
+	DOLLAR,				// $ 17
+	STOP,				// stop symbol used when reducing 18
+	NON_TERMINAL		// non-terminal 19
 }precAnalysisTableSymbol;
 
 /**

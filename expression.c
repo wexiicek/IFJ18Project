@@ -111,6 +111,7 @@ static int numberOfSymbolsAfterStop(bool* stopFound)
 {
     fprintf(stderr,CGRN"    [EXPR]" CRED" FUN "CWHT" numberOfSymbolsAfterStop \n");
 	StackItem* tmp = stackTop(&stack);
+    printStack(&stack);
 	int count = 0;
 //for debugging purposes
     //return count;
@@ -129,7 +130,6 @@ static int numberOfSymbolsAfterStop(bool* stopFound)
 		}
 		tmp = tmp->nextPtr;
 	}
-
 	return count;
 }
 
@@ -211,119 +211,147 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
     else
         return NOT_A_RULE;
 }
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type)
+{
+    
+    //bool retype_op1_to_double = false;
+    //bool retype_op3_to_double = false;
+    //bool retype_op1_to_integer = false;
+    //bool retype_op3_to_integer = false;
 
-
-/**
- * Function checks semantics of operands according to rule.
- *
- * @param rule Pointer to table.
- * @param op1 Symbol 1.
- * @param op2 Symbol 2.
- * @param op3 Symbol 3.
- * @param final_type Sets data type which will be after executing rule.
- * @return Given exit code.
- */
-static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem* operand2, StackItem* operand3, dataTypeEnum* finalType){
-	/*bool retypeToFloat1 = false;
-	bool retypeToFloat3 = false;
-	bool retypeToInt1 = false;
-	bool retypeToInt3 = false;*/
-   fprintf(stderr,CGRN"    [EXPR]"CRED" FUN "CWHT" checkSemantics\n");
-    //What to do, if something had gone wrong
-	if ((rule == OPERAND_RULE) || (rule == BRACKETS_RULE)){
-       fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" OPERAND OR BRACKET\n");fprintf(stderr, "%d\n", rule);
-		if (operand1->dataType== TYPE_UNDEFINED){
-            fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" SEM_OTHER\n");
-			return SEMANTICAL_OTHER;
-        }
-        //TADY ZA TENTO IF SA TO NEDOSTANE A SEG
-		if (operand2->dataType == TYPE_UNDEFINED){
-            fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" SEM_OTHER\n");
-			return SEMANTICAL_OTHER;
-        }
-	}
-	if ((rule != OPERAND_RULE) && (rule != BRACKETS_RULE)){
-        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" NOT RULE OR BRACKETS\n");
-		if (operand1->dataType == TYPE_UNDEFINED || operand3->dataType == TYPE_UNDEFINED)
-			return SEMANTICAL_OTHER;
-	}
-    /*************************************************************************************/
-
-	if(rule == OPERAND_RULE){
-        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" OP RULE-Setting finalType\n");
-		*finalType = operand1->dataType;
-    }
-		
-	
-	else if(rule == BRACKETS_RULE){
-        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" BR RULE-Setting finalType\n");
-		*finalType = operand2->dataType;
-    }
-	
-	else if((rule == PLUS_RULE) || (rule == MINUS_RULE) || (rule == MUL_RULE)){
-        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" +-* RULE-Setting finalType\n");
-		if(operand1->dataType == TYPE_INTEGER){
-			if(operand3->dataType == TYPE_INTEGER)
-				*finalType = TYPE_INTEGER;
-			
-			else return SEMANTICAL_OTHER;
-		}  
-		
-		if(operand1->dataType == TYPE_FLOAT){
-			if(operand3->dataType == TYPE_FLOAT)
-				*finalType = TYPE_FLOAT;
-			
-			else return SEMANTICAL_OTHER;
-		}  
-
-		if(operand1->dataType == TYPE_STRING){
-			if(operand3->dataType == TYPE_STRING)
-				*finalType = TYPE_STRING;
-			
-			else return SEMANTICAL_OTHER;
-		}  
-	}
-
-	else if(rule == DIV_RULE){
-        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" DIV RULE-Setting finalType\n");
-		if(operand1->dataType == TYPE_FLOAT){
-			if(operand3->dataType == TYPE_FLOAT){
-				*finalType = TYPE_FLOAT; 
-			}
-			else return SEMANTICAL_OTHER;
-		}
-
-		if((operand1->dataType == TYPE_STRING) || (operand3->dataType == TYPE_STRING)){
-			fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" STR RULE-Setting finalType\n");
+    if (rule == OPERAND_RULE)
+    {
+        if (op1->dataType == TYPE_UNDEFINED)
             return SEMANTICAL_OTHER;
+    }
+
+    if (rule == BRACKETS_RULE)
+    {
+        if (op2->dataType == TYPE_UNDEFINED)
+            return SEMANTICAL_OTHER;
+    }
+
+    if (rule != OPERAND_RULE && rule != BRACKETS_RULE)
+    {
+        if (op1->dataType == TYPE_UNDEFINED || op3->dataType == TYPE_UNDEFINED)
+            return SEMANTICAL_OTHER;
+    }
+
+    switch (rule)
+    {
+    case OPERAND_RULE:
+        *final_type = op1->dataType;
+        break;
+
+    case BRACKETS_RULE:
+        *final_type = op2->dataType;
+        break;
+
+    case PLUS_RULE:
+    case MINUS_RULE:
+    case MUL_RULE:
+        if (op1->dataType == TYPE_STRING && op3->dataType == TYPE_STRING && rule == PLUS_RULE)
+        {
+            *final_type = TYPE_STRING;
+            break;
         }
 
-		/**if(operand1->dataType == TYPE_INTEGER) //TODO KONZULTOVAT S OSTATNYMA
-			retypeToFloat1 = true;
-		
-		if(operand3->dataType == TYPE_INTEGER)
-			retypeToFloat3 = true;
-		*/
-        fprintf(stderr,CGRN"    [EXPR]"CRED" IN "CWHT" SHIT-Setting finalType\n");
-		*finalType = TYPE_FLOAT;
-        return SUCCESS;
-	}
+        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER)
+        {
+            *final_type = TYPE_INTEGER;
+            break;
+        }
 
-	/*if(rule == IDIV_RULE){
+        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
+            return SEMANTICAL_OTHER;
 
-	}*/
+        *final_type = TYPE_FLOAT;
 
-	else if((rule == EQUAL_RULE) || (rule == NOT_EQUAL_RULE) || (rule == LESS_OR_EQUAL_RULE) || (rule == LESS_RULE) || (rule == GREATER_OR_EQUAL_RULE) || (rule == GREATER_RULE)){
-		if(operand1->dataType != operand3->dataType)
-			return SEMANTICAL_OTHER;
-		
-	}
+        /*if (op1->dataType == TYPE_INTEGER)
+            retype_op1_to_double = true;
 
-	
-	else return SUCCESS;
-	return SUCCESS;
+        if (op3->dataType == TYPE_INTEGER)
+            retype_op3_to_double = true;
+*/
+        break;
+
+    case DIV_RULE:
+        *final_type = TYPE_FLOAT;
+
+        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
+            return SEMANTICAL_OTHER;
+
+        /*if (op1->dataType == TYPE_INTEGER)
+            retype_op1_to_double = true;
+
+        if (op3->dataType == TYPE_INTEGER)
+            retype_op3_to_double = true;
+*/
+        break;
+
+    /*case NT_IDIV_NT:
+        *final_type = TYPE_INTEGER;
+
+        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
+            return SEMANTICAL_OTHER;
+
+        if (op1->dataType == TYPE_FLOAT)
+            retype_op1_to_integer = true;
+
+        if (op3->dataType == TYPE_FLOAT)
+            retype_op3_to_integer = true;
+
+        break;*/
+
+    case EQUAL_RULE:
+    case NOT_EQUAL_RULE:
+    case LESS_OR_EQUAL_RULE:
+    case LESS_RULE:
+    case GREATER_OR_EQUAL_RULE:
+    case GREATER_RULE:
+
+        /*if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT)
+            retype_op1_to_double = true;
+
+        else if (op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER)
+            retype_op3_to_double = true;
+*/
+        //else if (op1->dataType != op3->dataType)
+        if (op1->dataType != op3->dataType)
+            return SEMANTICAL_OTHER;
+
+        break;
+
+    default:
+        break;
+    }
+/*
+    if (retype_op1_to_double)
+    {
+        //GENERATE_CODE(generate_stack_op2_to_double);
+    }
+
+    if (retype_op3_to_double)
+    {
+        //GENERATE_CODE(generate_stack_op1_to_double);
+    }
+
+    if (retype_op1_to_integer)
+    {
+        //GENERATE_CODE(generate_stack_op2_to_integer);
+    }
+
+    if (retype_op3_to_integer)
+    {
+        //GENERATE_CODE(generate_stack_op1_to_integer);
+    }*/
+
+    return SUCCESS;
 }
-
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 /**
  * Function reduces symbols after STOP symbol if rule for reducing is found.
@@ -333,7 +361,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* operand1, StackItem
  */
 static int reduceByRule(parseData* parserData)
 {
-   fprintf(stderr,CGRN"    [EXPR]"CRED" FUN "CWHT" reduceByRule\n");
+    fprintf(stderr,CGRN"    [EXPR]"CRED" FUN "CWHT" reduceByRule\n");
 	(void) parserData;
     int result;
 
@@ -348,6 +376,7 @@ static int reduceByRule(parseData* parserData)
     if(count == 1){
         if(found == true){
             op1 = stack.topPtr;
+            fprintf(stderr, "TOPPPPPP: %d %d\n", (stackTop(&stack)->symbol), op1->symbol);
 		    rule = testWhichRuleToUse(count, op1, NULL, NULL);
         }
     }
@@ -362,7 +391,7 @@ static int reduceByRule(parseData* parserData)
 	else {printf("kktina 1\n");return SYNTACTICAL;}
 
 	if (rule == NOT_A_RULE){
-       fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" NOT A RULE (SYNTACTICA)\n");
+       fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" NOT A RULE (SYNTACTICAL)\n");
 		return SYNTACTICAL;}
 
 	else{
@@ -372,11 +401,12 @@ static int reduceByRule(parseData* parserData)
 
 		/*if (rule == PLUS_RULE && finalType == TYPE_STRING)
 		{
-			GENERATE_CODE(generate_concat_stack_strings);
+			//GENERATE_CODE(generate_concat_stack_strings);
 		}
-		else GENERATE_CODE(generate_stack_operation, rule_for_code_gen);*/
-
+		else //GENERATE_CODE(generate_stack_operation, rule_for_code_gen);*/
+        printStack(&stack);
 		stackPopCount(&stack, count + 1);
+        printStack(&stack);
 		stackPush(&stack, NON_TERMINAL, finalType);
 
 	}
@@ -385,7 +415,7 @@ static int reduceByRule(parseData* parserData)
 }
 
 
-
+/*
 int expression(parseData* parserData){
     fprintf(stderr,"jebek exp\n");
     int result = SYNTACTICAL;
@@ -409,7 +439,8 @@ int expression(parseData* parserData){
     do{
         actualSymbol = getSymbolFromToken(&parserData->token);
         topTerminal = stackTop(&stack);
-       fprintf(stderr,"%d\n",topTerminal->symbol );
+        printStack(&stack);
+       fprintf(stderr,CGRN"    [EXPR]"CRED" STACK TOP:"CWHT" %d\n",topTerminal->symbol );
 
         if (topTerminal == NULL){
             stackFree(&stack);
@@ -427,7 +458,7 @@ int expression(parseData* parserData){
             }
 
             resultDecider = stackPush(&stack,actualSymbol, getDataType(&parserData->token,parserData));
-           fprintf(stderr,"Pushing %d to stack.\n", actualSymbol);
+           fprintf(stderr,"    Pushing %d to stack.\n", actualSymbol);
 
             if(resultDecider == false){
                 stackFree(&stack);
@@ -449,14 +480,14 @@ int expression(parseData* parserData){
            fprintf(stderr,"RES %d\n", result);
             if (result){
 				stackFree(&stack);
-               fprintf(stderr,"jebek4 %d\n", result);
+                fprintf(stderr,"jebek4 %d\n", result);
                 return result;
             }         
         }
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
             stackPush(&stack, actualSymbol, getDataType(&parserData->token,parserData));
-           fprintf(stderr,"Pushing %d to stack.\n", actualSymbol);
+           fprintf(stderr,"    Pushing %d to stack.\n", actualSymbol);
             
             if ((result = getTokens(&parserData->token))){
 				stackFree(&stack);
@@ -467,8 +498,9 @@ int expression(parseData* parserData){
 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
            fprintf(stderr,"R table\n");
-            //printStack(&stack);
+            printStack(&stack);
             result = reduceByRule(parserData);
+            fprintf(stderr,"RESULT: %d\n", result);
             if (result){
 				stackFree(&stack);printf("jebek6\n");
                 return result;   
@@ -488,5 +520,177 @@ int expression(parseData* parserData){
             }
         }
     }while(success == false);
+    return SUCCESS;
+}
+*/
+/*
+int expression(parseData *parserData)
+{
+    int result = SYNTACTICAL;
+
+    stackInit(&stack);
+
+    if (!stackPush(&stack, DOLLAR, TYPE_UNDEFINED)){
+        stackFree(&stack);
+        return INTERNAL;
+    }
+    StackItem* top_stack_terminal;
+    precAnalysisTableSymbol actual_symbol;
+
+    bool success = false;
+
+    do
+    {
+        actual_symbol = getSymbolFromToken(&parserData->token);
+        top_stack_terminal = stackTopTerminal(&stack);
+
+        if (top_stack_terminal == NULL){
+            stackFree(&stack);
+            return INTERNAL;
+        }
+        switch (precTable[getPrecTableIndex(top_stack_terminal->symbol)][getPrecTableIndex(actual_symbol)])
+        {
+        case S:
+            if (!symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED))
+                {
+            stackFree(&stack);
+            return INTERNAL;
+        }
+
+            if(!stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData)))
+                {
+            stackFree(&stack);
+            return INTERNAL;
+        }
+
+            if ((result = getTokens(&parserData->token)))
+                {
+            stackFree(&stack);
+            return result;
+        }
+            break;
+
+        case E:
+            stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData));
+
+            if ((result = getTokens(&parserData->token))){
+            stackFree(&stack);
+            return result; }
+            break;
+
+        case R:
+            if ((result = reduceByRule(parserData))){
+            stackFree(&stack);
+            return result;
+        }
+            break;
+
+        case N:
+            if (actual_symbol == DOLLAR && top_stack_terminal->symbol == DOLLAR)
+                success = true;
+            else{
+            stackFree(&stack);
+            return SYNTACTICAL;
+        }
+            break;
+        }
+    } while (!success);
+
+    StackItem* final_non_terminal = stackTop(&stack);
+    if (final_non_terminal == NULL){
+            stackFree(&stack);
+            return SYNTACTICAL;
+        }
+    if (final_non_terminal->symbol != NON_TERMINAL){
+            stackFree(&stack);
+            return SYNTACTICAL;
+        }
+
+    
+            stackFree(&stack);
+            return SUCCESS;
+        
+}*/
+
+
+int expression(parseData *parserData){
+    bool success = false;
+    int result = SYNTACTICAL;
+    stackInit(&stack);
+
+    int continue0 = stackPush(&stack, DOLLAR, TYPE_UNDEFINED);
+    
+    if(continue0 == false){
+        stackFree(&stack);
+        return INTERNAL;
+    }
+
+    StackItem *topTerminal;
+    precAnalysisTableSymbol actualSymbol;
+
+    do {
+        actualSymbol = getSymbolFromToken(&parserData->token);
+        topTerminal = stackTop(&stack);
+
+        if(topTerminal == NULL){
+            stackFree(&stack);
+            return INTERNAL;
+        }
+
+        if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == S){
+            int continue1 = symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED);
+            if (continue1 == false){
+                stackFree(&stack);
+                return INTERNAL;
+            }
+
+            int continue2 = stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData));
+            if (continue2 == false){
+                stackFree(&stack);
+                return INTERNAL;
+            }
+
+            result = getTokens(&parserData->token);
+            if (result == true){
+                stackFree(&stack);
+                return result;
+            }
+        }
+
+        else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
+            stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData));
+
+            result = getTokens(&parserData->token);
+            if (result == true){
+                stackFree(&stack);
+                return result;
+            }
+        }
+
+        else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
+            result = reduceByRule(parserData);
+            if (result == true){
+                stackFree(&stack);
+                return result;
+            }
+        }
+
+        else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == N){
+            if ((actualSymbol == DOLLAR) && (topTerminal->symbol == DOLLAR)){
+                success = true;
+            }
+            else{
+                stackFree(&stack);
+                return SYNTACTICAL;
+            }
+        }
+
+    } while (!success);
+
+    StackItem *finalNT = stackTop(&stack);
+    if(finalNT == NULL) {stackFree(&stack); return INTERNAL;}
+    if(finalNT -> symbol != NON_TERMINAL) {stackFree(&stack); return SYNTACTICAL;}
+
+    stackFree(&stack);
     return SUCCESS;
 }
