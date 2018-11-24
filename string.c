@@ -4,7 +4,12 @@
 #include <string.h>
 #include "string.h"
 
+#define CRED  "\x1B[31m"
+#define CGRN  "\x1B[32m"
+#define CWHT  "\x1B[37m"
+int allocCounter = 0;
 int stringInit(dynString *str) {
+    fprintf(stderr, CRED"%d. ALLOCATING STRING \n"CWHT, ++allocCounter );
     str->value = (char*) malloc(initAllocSize * sizeof(char)); 
     if(str->value == NULL){
         return 1;
@@ -31,6 +36,8 @@ int stringAddChar(dynString *str, char c) {
     //Then we use realloc.
     if (str->length+1 >= str->lengthAllocated) {
         str->value = (char *) realloc(str->value, str->lengthAllocated + initAllocSize * sizeof(char));
+        fprintf(stderr, CRED"%d. REALLOCATING STRING \n"CWHT, ++allocCounter );
+
         if (str->value == NULL){    
             return 1;
         }

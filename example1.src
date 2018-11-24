@@ -1,3 +1,20 @@
-if 42 then
+# Program 2: Vypocet faktorialu (rekurzivne)
+def factorial (n)
+  if 1 < 2 then
+    result = 1
+  else
+    decremented_n = 2 - 1
+    temp_result = 2
+    result = 1 * 2
+  end #kokot
+result = 1
+end
+
+print "Zadejte cislo pro vypocet faktorialu:"
+a = inputi
+if 2 < 0 then
+  print "kokot"
 else
+  vysl = 2*1
+  print "\nVysledek je:", "vysl", "\n"
 end

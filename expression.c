@@ -32,6 +32,8 @@ int precTable[tableSize][tableSize] =
 	{ S , S , S , S , N , S , N }  // $
 };
 
+FILE *dest;
+
 /**
  * Function converts token type to symbol.
  *
@@ -218,10 +220,10 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
 static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type)
 {
     
-    //bool retype_op1_to_double = false;
-    //bool retype_op3_to_double = false;
-    //bool retype_op1_to_integer = false;
-    //bool retype_op3_to_integer = false;
+    bool retype_op1_to_double = false;
+    bool retype_op3_to_double = false;
+    bool retype_op1_to_integer = false;
+    bool retype_op3_to_integer = false;
 
     if (rule == OPERAND_RULE)
     {
@@ -271,12 +273,12 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
 
         *final_type = TYPE_FLOAT;
 
-        /*if (op1->dataType == TYPE_INTEGER)
+        if (op1->dataType == TYPE_INTEGER)
             retype_op1_to_double = true;
 
         if (op3->dataType == TYPE_INTEGER)
             retype_op3_to_double = true;
-*/
+
         break;
 
     case DIV_RULE:
@@ -285,12 +287,12 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
             return SEMANTICAL_OTHER;
 
-        /*if (op1->dataType == TYPE_INTEGER)
+        if (op1->dataType == TYPE_INTEGER)
             retype_op1_to_double = true;
 
         if (op3->dataType == TYPE_INTEGER)
             retype_op3_to_double = true;
-*/
+
         break;
 
     /*case NT_IDIV_NT:
@@ -314,14 +316,13 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     case GREATER_OR_EQUAL_RULE:
     case GREATER_RULE:
 
-        /*if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT)
+        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT)
             retype_op1_to_double = true;
 
         else if (op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER)
             retype_op3_to_double = true;
-*/
-        //else if (op1->dataType != op3->dataType)
-        if (op1->dataType != op3->dataType)
+
+        else if (op1->dataType != op3->dataType)
             return SEMANTICAL_OTHER;
 
         break;
@@ -333,23 +334,27 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     if (retype_op1_to_double)
     {
         //GENERATE_CODE(generate_stack_op2_to_double);
+        codeGenOperand2toFloat(dest);
     }
 
     if (retype_op3_to_double)
     {
         //GENERATE_CODE(generate_stack_op1_to_double);
+        codeGenOperand1toFloat(dest);
     }
 
     if (retype_op1_to_integer)
     {
         //GENERATE_CODE(generate_stack_op2_to_integer);
+        codeGenOperand2toInteger(dest);
     }
 
     if (retype_op3_to_integer)
     {
         //GENERATE_CODE(generate_stack_op1_to_integer);
-    }*/
-
+        codeGenOperand1toInteger(dest);
+    }
+*/
     return SUCCESS;
 }
 /////////////////////////////////////////////////////////////////////////

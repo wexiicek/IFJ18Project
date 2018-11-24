@@ -9,6 +9,7 @@
 typedef struct {
 	Token token;
 	tSymtable localTable;
+	tSymtable globalTable;
 } parseData;
 
 int kowalskiAnalysis();

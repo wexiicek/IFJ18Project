@@ -64,6 +64,7 @@ static int mainFun(parseData* parserData){
 		//Checking function definition
 		getToken();
 		checkTokenType(tokenIdentifier);
+		//symTableInsertFunction(&parserData->globalTable, parserData->token.Data.string->value);
 		getToken();
 		checkTokenType(tokenLeftBracket);
 		getToken();
@@ -135,6 +136,7 @@ static int body(parseData* parserData){
 	//fprintf(stderr,CRED "    <BODY>\n"CWHT);
 
 	if (parserData -> token.Type == tokenIdentifier){
+
 		getToken();
 
 		if (parserData -> token.Type == tokenAssign){
@@ -231,6 +233,12 @@ static int body(parseData* parserData){
 	
 	else if(parserData -> token.Type == tokenEndOfLine){
 		getToken();
+		return body(parserData);
+	}
+	else if (parserData -> token.Type == tokenString || 
+			 parserData -> token.Type == tokenInteger ||
+			 parserData -> token.Type == tokenFloat){
+		checkRule(expression);
 		return body(parserData);
 	}
 
@@ -433,6 +441,12 @@ static int func (parseData* parserData){
 			}
 }
 
+/*
+void initVar(parseData* parserData){
+	symTableInit(&parserData->localTable);
+	symTableInit(&parserData->globalTable);
+}
+*/
 
 
 int kowalskiAnalysis(){
@@ -488,6 +502,8 @@ int kowalskiAnalysis(){
 	setDynString(&string);
 
 	parseData parserData;
+
+	//initVar(&parserData);
 	
 	/*
 	 * Check if there were any problems with opening source file
@@ -503,5 +519,6 @@ int kowalskiAnalysis(){
 	getTokens(&parserData.token);
 	res = mainFun(&parserData);
 
+	stringDispose(&string);
 	return res;
 }

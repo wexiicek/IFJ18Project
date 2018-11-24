@@ -1,118 +1,343 @@
-==8338== Memcheck, a memory error detector
-==8338== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==8338== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==8338== Command: ./compiler
-==8338== Parent PID: 8316
-==8338== 
-==8338== 
-==8338== HEAP SUMMARY:
-==8338==     in use at exit: 752 bytes in 21 blocks
-==8338==   total heap usage: 53 allocs, 32 frees, 6,352 bytes allocated
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 1 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B0FA: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 2 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B129: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 3 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A6B4: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 4 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A716: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 5 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A737: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 6 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A781: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 7 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A7A2: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 8 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A7EC: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 10 bytes in 1 blocks are definitely lost in loss record 9 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A822: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 20 bytes in 2 blocks are definitely lost in loss record 10 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10C25D: expression (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A6C0: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== 90 bytes in 9 blocks are definitely lost in loss record 11 of 12
-==8338==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==8338==    by 0x10A0E0: stringInit (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108F7E: getTokens (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10C1C9: expression (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A6C0: body (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10A495: mainFun (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x10B135: kowalskiAnalysis (in /home/wex/IFJ18Project (1)/compiler)
-==8338==    by 0x108B21: main (in /home/wex/IFJ18Project (1)/compiler)
-==8338== 
-==8338== LEAK SUMMARY:
-==8338==    definitely lost: 200 bytes in 20 blocks
-==8338==    indirectly lost: 0 bytes in 0 blocks
-==8338==      possibly lost: 0 bytes in 0 blocks
-==8338==    still reachable: 552 bytes in 1 blocks
-==8338==         suppressed: 0 bytes in 0 blocks
-==8338== Reachable blocks (those to which a pointer was found) are not shown.
-==8338== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==8338== 
-==8338== For counts of detected and suppressed errors, rerun with: -v
-==8338== ERROR SUMMARY: 11 errors from 11 contexts (suppressed: 0 from 0)
+==11808== Memcheck, a memory error detector
+==11808== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11808== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11808== Command: ./compiler
+==11808== Parent PID: 5335
+==11808== 
+==11808== Invalid free() / delete / delete[] / realloc()
+==11808==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A2D7: stringDispose (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B11C: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==  Address 0x1ffefffdf0 is on thread 1's stack
+==11808==  in frame #2, created by kowalskiAnalysis (???:)
+==11808== 
+==11808== 
+==11808== HEAP SUMMARY:
+==11808==     in use at exit: 932 bytes in 38 blocks
+==11808==   total heap usage: 79 allocs, 42 frees, 6,670 bytes allocated
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 1 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B101: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 2 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A334: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 3 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A355: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 4 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A376: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 5 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A529: params (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A382: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 6 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3B4: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 7 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3D5: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 8 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A702: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 9 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A764: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 10 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A785: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 11 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5D1: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A791: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 12 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5E8: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A791: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 13 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10C24A: expression (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10AEC4: def_value (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5F4: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A791: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 14 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A63B: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A791: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 15 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7CF: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 16 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7F0: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 17 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5D1: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 18 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5E8: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 19 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A63B: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 20 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5D1: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 21 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5E8: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 22 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10C24A: expression (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10AEC4: def_value (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5F4: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 23 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A63B: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 24 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5D1: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 25 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5E8: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 26 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A63B: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 10 bytes in 1 blocks are definitely lost in loss record 27 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A83A: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 20 bytes in 1 blocks are definitely lost in loss record 28 of 32
+==11808==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A1D1: stringAddChar (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x109826: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7F0: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 30 bytes in 3 blocks are definitely lost in loss record 29 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10C24A: expression (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A70E: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 30 bytes in 3 blocks are definitely lost in loss record 30 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10C24A: expression (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10AEC4: def_value (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5F4: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 30 bytes in 3 blocks are definitely lost in loss record 31 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x10A101: stringInit (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108F7E: getTokens (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10C24A: expression (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10AEC4: def_value (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A5F4: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A647: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A7FC: body (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10A3E1: mainFun (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x10B10D: kowalskiAnalysis (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808==    by 0x108B21: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== 552 bytes in 1 blocks are still reachable in loss record 32 of 32
+==11808==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11808==    by 0x4EBAE49: __fopen_internal (iofopen.c:65)
+==11808==    by 0x4EBAE49: fopen@@GLIBC_2.2.5 (iofopen.c:89)
+==11808==    by 0x108A4B: main (in /home/wex/IFJ18/IFJ18Project/compiler)
+==11808== 
+==11808== LEAK SUMMARY:
+==11808==    definitely lost: 380 bytes in 37 blocks
+==11808==    indirectly lost: 0 bytes in 0 blocks
+==11808==      possibly lost: 0 bytes in 0 blocks
+==11808==    still reachable: 552 bytes in 1 blocks
+==11808==         suppressed: 0 bytes in 0 blocks
+==11808== 
+==11808== For counts of detected and suppressed errors, rerun with: -v
+==11808== ERROR SUMMARY: 32 errors from 32 contexts (suppressed: 0 from 0)
