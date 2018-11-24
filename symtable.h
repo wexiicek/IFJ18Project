@@ -35,9 +35,10 @@ void BSTDispose (tBSTNodePtr *RootPtr);
 void ReplaceByLeftmost (tBSTNodePtr *PtrReplaced, tBSTNodePtr *RootPtr);
 /*------------------------------------------------- FUNCTIONS FOR SYMTABLE --------------------------------------------------*/
 typedef enum{
+    
     TYPE_INTEGER,
     TYPE_FLOAT,
-    TYPE_STRING,
+    TYPE_STRING,    
     TYPE_UNDEFINED,
 }dataTypeEnum;
 

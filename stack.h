@@ -12,6 +12,7 @@
 typedef struct item
 {
 	precAnalysisTableSymbol symbol; 
+	Token currentToken;
 	dataTypeEnum dataType; 
 	struct item *nextPtr; /// Pointer to next stack item.
 } StackItem;
@@ -21,7 +22,7 @@ typedef struct {
 } Stack;
 
 void stackInit(Stack* stack);
-bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type);
+bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type, Token token);
 bool stackPop(Stack* stack);
 StackItem* stackTop(Stack *stack);
 void stackFree(Stack* stack);

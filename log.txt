@@ -1,352 +1,528 @@
-p
-p
-r
-i
-n
-t
-
-
-
-
-
-
-ÿ
-p
-p
-p
-r
-i
-n
-t
-
-
-p
-p
-r
-i
-n
-t
- 
-p
-p
-r
-i
-n
-t
- 
-p
-p
-r
-i
-n
-t
- 
-p
-p
-r
-i
-n
-t
- 
-p
-p
-r
-i
-n
-t
- 
- 
-t
-t
-e
-s
-t
- 
- 
-f
-f
-u
-n
-g
-u
-j
-e
- 
- 
-m
-m
-r
-d
-k
-a
- 
- 
-p
-p
-r
-i
-n
-t
- 
- 
-t
-t
-e
-s
-t
- 
- 
-f
-f
-u
-n
-g
-u
-j
-e
- 
- 
-m
-m
-r
-d
-k
-a
- 
- 
- 
-d
-d
-e
-f
- 
- 
-d
-d
-o
-
-
-
-
-ÿ
-ÿ
-ÿ
-p
-p
-r
-i
-n
-t
- 
-p
-p
-r
-i
-n
-t
- 
- 
-t
-t
-e
-s
-t
- 
- 
-f
-f
-u
-n
-g
-u
-j
-e
- 
- 
-m
-m
-r
-d
-k
-a
- 
- 
- 
-d
-d
-e
-f
- 
- 
-d
-d
-o
-
-
-
-
-ÿ
-p
-p
-r
-i
-n
-t
- 
- 
-t
-t
-e
-s
-t
- 
- 
-f
-f
-u
-n
-g
-u
-j
-e
- 
- 
-m
-m
-r
-d
-k
-a
- 
- 
- 
-d
-d
-e
-f
- 
- 
-d
-d
-o
-
-
-
-
-ÿ
-p
-p
-r
-i
-n
-t
- 
- 
-t
-t
-e
-s
-t
- 
- 
-f
-f
-u
-n
-g
-u
-j
-e
- 
- 
-m
-m
-r
-d
-k
-a
- 
- 
-p
-p
-r
-e
-m
-e
-n
-n
-a
-?
- 
-d
-d
-e
-f
- 
- 
-d
-d
-o
-
-
-
-
-ÿ
-p
-p
-r
-i
-n
-t
- 
- 
-t
-t
-e
-s
-t
- 
- 
-f
-f
-u
-n
-g
-u
-j
-e
- 
- 
-m
-m
-r
-d
-k
-a
- 
- 
-p
-p
-r
-e
-m
-e
-n
-n
-a
-?
- 
-d
-d
-e
-f
- 
- 
-d
-d
-o
-
-
-
-
-ÿ
+[32m[MAIN][37m Debug file opened succesfully.
+[32m[MAIN][37m Launching main program.
+[32m[MAIN][37m Setting source file.
+[32m[MAIN][37m File set properly.
+[32m[PARSER][37m Starting parser.
+[32m[PARSER][37m Requesting token.
+[31m1. ALLOCATING STRING 
+[37m[32m[SCANNER][37m File [32mOK[37m, Dynamic String [32mOK
+[32m[SCANNER][37m Looking for tokens->
+[31m2. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m3. ALLOCATING STRING 
+[37m    KEYWORD: 1,     TOKEN TYPE: 25 | TOKEN VAL: "def"
+[31m4. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "factorial"
+[31m5. ALLOCATING STRING 
+[37m    TOKEN TYPE: LBRACK
+[31m6. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "n"
+[31m7. ALLOCATING STRING 
+[37m    TOKEN TYPE: RBRACK
+[31m8. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m9. ALLOCATING STRING 
+[37m    KEYWORD: 5,     TOKEN TYPE: 25 | TOKEN VAL: "if"
+[31m10. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "1"
+[31m11. ALLOCATING STRING 
+[37m    TOKEN TYPE: LESS
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m12. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "2"
+[31m13. ALLOCATING STRING 
+[37m    KEYWORD: 13,     TOKEN TYPE: 25 | TOKEN VAL: "then"
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :8
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :8
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[31m    Stack[37m 1 :8
+[31m    Stack[37m 2 :19
+[31m    Stack[37m 3 :18
+[31m    Stack[37m 4 :17
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :8
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 3
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 3
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :8
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[31m    Stack[37m 1 :17
+[31m14. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m15. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "result"
+[31m16. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m17. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "1"
+[31m18. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m19. ALLOCATING STRING 
+[37m    KEYWORD: 3,     TOKEN TYPE: 25 | TOKEN VAL: "else"
+[31m20. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m21. ALLOCATING STRING 
+[37m[31m22. REALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "decremented_n"
+[31m23. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m24. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "2"
+[31m25. ALLOCATING STRING 
+[37m    TOKEN TYPE: SUB
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m26. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "1"
+[31m27. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :1
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :1
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[31m    Stack[37m 1 :1
+[31m    Stack[37m 2 :19
+[31m    Stack[37m 3 :18
+[31m    Stack[37m 4 :17
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :1
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 3
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 3
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :1
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[31m    Stack[37m 1 :17
+[31m28. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "temp_result"
+[31m29. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m30. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "2"
+[31m31. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m32. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "result"
+[31m33. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m34. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "1"
+[31m35. ALLOCATING STRING 
+[37m    TOKEN TYPE: MUL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m36. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "2"
+[31m37. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :2
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :2
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[31m    Stack[37m 1 :2
+[31m    Stack[37m 2 :19
+[31m    Stack[37m 3 :18
+[31m    Stack[37m 4 :17
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :2
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 3
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 3
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :2
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[31m    Stack[37m 1 :17
+[31m38. ALLOCATING STRING 
+[37m    KEYWORD: 4,     TOKEN TYPE: 25 | TOKEN VAL: "end"
+[31m39. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m40. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "result"
+[31m41. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m42. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "1"
+[31m43. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m44. ALLOCATING STRING 
+[37m    KEYWORD: 4,     TOKEN TYPE: 25 | TOKEN VAL: "end"
+[31m45. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m46. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m47. ALLOCATING STRING 
+[37m    KEYWORD: 15,     TOKEN TYPE: 25 | TOKEN VAL: "print"
+[31m48. ALLOCATING STRING 
+[37m[31m49. REALLOCATING STRING 
+[37m[31m50. REALLOCATING STRING 
+[37m    TOKEN TYPE: 23 | TOKEN VAL: "Zadejte cislo pro vypocet faktorialu:"
+[31m51. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 16 16
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m52. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "a"
+[31m53. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m54. ALLOCATING STRING 
+[37m    KEYWORD: 7,     TOKEN TYPE: 25 | TOKEN VAL: "inputi"
+[31m55. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m56. ALLOCATING STRING 
+[37m    KEYWORD: 5,     TOKEN TYPE: 25 | TOKEN VAL: "if"
+[31m57. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "2"
+[31m58. ALLOCATING STRING 
+[37m    TOKEN TYPE: LESS
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m59. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "0"
+[31m60. ALLOCATING STRING 
+[37m    KEYWORD: 13,     TOKEN TYPE: 25 | TOKEN VAL: "then"
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :8
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :8
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[31m    Stack[37m 1 :8
+[31m    Stack[37m 2 :19
+[31m    Stack[37m 3 :18
+[31m    Stack[37m 4 :17
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :8
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 3
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 3
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :8
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[31m    Stack[37m 1 :17
+[31m61. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m62. ALLOCATING STRING 
+[37m    KEYWORD: 15,     TOKEN TYPE: 25 | TOKEN VAL: "print"
+[31m63. ALLOCATING STRING 
+[37m    TOKEN TYPE: 23 | TOKEN VAL: "kokot"
+[31m64. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 16 16
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m65. ALLOCATING STRING 
+[37m    KEYWORD: 3,     TOKEN TYPE: 25 | TOKEN VAL: "else"
+[31m66. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m67. ALLOCATING STRING 
+[37m    TOKEN TYPE: 26 | TOKEN VAL: "vysl"
+[31m68. ALLOCATING STRING 
+[37m    TOKEN TYPE: ASSIGN
+[31m69. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "2"
+[31m70. ALLOCATING STRING 
+[37m    TOKEN TYPE: MUL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m71. ALLOCATING STRING 
+[37m    TOKEN TYPE: INT | TOKEN VAL: "1"
+[31m72. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :2
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 14 14
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :14
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :2
+[31m    Stack[37m 4 :19
+[31m    Stack[37m 5 :18
+[31m    Stack[37m 6 :17
+[31m    Stack[37m 1 :2
+[31m    Stack[37m 2 :19
+[31m    Stack[37m 3 :18
+[31m    Stack[37m 4 :17
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :2
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 3
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 3
+[31m    Stack[37m 1 :19
+[31m    Stack[37m 2 :2
+[31m    Stack[37m 3 :19
+[31m    Stack[37m 4 :18
+[31m    Stack[37m 5 :17
+[31m    Stack[37m 1 :17
+[31m73. ALLOCATING STRING 
+[37m    KEYWORD: 15,     TOKEN TYPE: 25 | TOKEN VAL: "print"
+[31m74. ALLOCATING STRING 
+[37m    TOKEN TYPE: 23 | TOKEN VAL: "
+Vysledek je:"
+[31m75. ALLOCATING STRING 
+[37m    TOKEN TYPE: COMMA
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 16 16
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m76. ALLOCATING STRING 
+[37m    TOKEN TYPE: 23 | TOKEN VAL: "vysl"
+[31m77. ALLOCATING STRING 
+[37m    TOKEN TYPE: COMMA
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 16 16
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m78. ALLOCATING STRING 
+[37m    TOKEN TYPE: STRING | TOKEN VAL: EOL
+[31m79. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[32m    [EXPR][31m FUN [37m reduceByRule
+[32m    [EXPR][31m FUN [37m numberOfSymbolsAfterStop 
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[32m    [EXPR][37m numberOfSymbolsAfterStop 1
+TOPPPPPP: 16 16
+[32m    [EXPR][37m testWhichRuleToUse.. Operand count: 1
+[32m    [EXPR][31m RET [37mOPERAND RULE
+[31m    Stack[37m 1 :16
+[31m    Stack[37m 2 :18
+[31m    Stack[37m 3 :17
+[31m    Stack[37m 1 :17
+[31m80. ALLOCATING STRING 
+[37m    KEYWORD: 4,     TOKEN TYPE: 25 | TOKEN VAL: "end"
+[31m81. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOL
+[31m82. ALLOCATING STRING 
+[37m    TOKEN TYPE: EOF
+[32m[MAIN][37m Parser finished succesfully.
+KKT
+then
+KKT
+then

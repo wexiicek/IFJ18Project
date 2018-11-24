@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "string.h"
+#include "err.h"
 
 #define CRED  "\x1B[31m"
 #define CGRN  "\x1B[32m"
@@ -67,6 +68,28 @@ void stringDispose(dynString *str) {
     //str->length = 0;
     //str->lengthAllocated = 0;
 }
+
+bool pushToToken(dynString *from, dynString *to){
+    int len = from -> length;
+    printf("len%d\n", len);
+    if (len >= to -> lengthAllocated ){
+
+        to -> value = (char *) realloc(to -> value, len + 1); 
+        to -> lengthAllocated = len +1;
+    }
+
+        fprintf(stderr, "%s\n","realloc" );
+    strcpy(from -> value, to -> value);
+    printf("%s\n", to->value);
+    to -> length = len;
+    return true;
+}
+/*
+bool strToNumToken(Token token){
+    int value = atoi(token->Data.string->value);
+    printf("%d\n",value);
+    return true;
+}*/
 
 bool charIsLowercase(char c){
 	if (c >= 'a' && c <= 'z')

@@ -66,10 +66,9 @@ unsigned int keywordCompare (dynString *kwstring, Token *token){
 		{token->Data.keyword = KW_SUBSTR; kw = true;}
 	
 	if(kw)
-		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;}
+		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;return 0;}
 
-
-	return SUCCESS;
+	return 1;
 }
 
 dynString *kwstring;
@@ -144,13 +143,13 @@ int getTokens (Token *token) {
 													if(c == 'd'){
 														nextChar(c);
 														if(c == '\n' || c == EOF){
-															ungetc(c, code);
 															state = stateStart;
 															break;
 	}}}}}}}}}}}}}} else ungetc(c, code);
 
 	//Go through every character of a file
 	while (1){
+		//printf("%c\n",c );
 		nextChar(c);
 		switch (state){
 			case (stateStart):
@@ -188,15 +187,15 @@ int getTokens (Token *token) {
 	                													if(c == '\n' || c == EOF){
 	                														ungetc(c, code);
 	                														state = stateStart;
+	                														token -> Type = tokenEmpty;
 	                														break;
-	                									   }}}}}}}}}}}}}}
-                										
+	            	}}}}}}}}}}}}}}                										
 												
 					else{
 						ungetc(c, code);
 						token -> Type = tokenEndOfLine;
 						state = stateEnd;
-						}
+					}
 				}
 
 				else if (isspace(c))
@@ -338,7 +337,7 @@ int getTokens (Token *token) {
 
 			case (stateComment):
 				if (c == '\n')
-					{state = stateStart;}
+					{state = stateStart; token->Type = tokenEndOfLine;}
 				if (c == EOF)
 					{token->Type = tokenEndOfFile; state = stateEnd;}
 				else
@@ -402,22 +401,28 @@ int getTokens (Token *token) {
 				else
 					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
 				state = stateStart;
+				if(!pushToToken(kwstring, token->Data.string)) return INTERNAL;
 				stringClear(kwstring);
 				ungetc(c, code);
 				scanRet(kwstring, LEXICAL);
 			break;
 
 			case (stateIdentifierEnd):
-			keywordCompare(kwstring, token);
-				if(!stringCompare(kwstring,"\n") == 0)
-					fprintf(stderr,"    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
-				else
-					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
-				state = stateStart;
-				stringClear(kwstring);
-				ungetc(c, code);
-				//scanRet(kwstring, LEXICAL);
+				if(!keywordCompare(kwstring, token)) {state = stateStart; fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);stringClear(kwstring); ungetc(c, code);return SUCCESS;}
+				else {
+					if(!stringCompare(kwstring,"\n") == 0)
+						fprintf(stderr,"    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
+					else
+						fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
+					state = stateStart;
+					if(!pushToToken(kwstring, token->Data.string)) return INTERNAL;
+					fprintf(stderr, "%s ..... %s\n",kwstring->value, token->Data.string -> value);
+					stringClear(kwstring);
+					ungetc(c, code);
+					
 				return SUCCESS;
+				}
+				//scanRet(kwstring, LEXICAL);
 			break;
 
 			case (stateNumberEnd):
@@ -425,9 +430,12 @@ int getTokens (Token *token) {
 					fprintf(stderr,"    TOKEN TYPE: FLOAT | TOKEN VAL: ");
 				else if (token->Type == 12)
 					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: ");
+					//	char tmp[10] = kwstring;
+					//	token->Data.integer = atoi(tmp);}
 				else if (token->Type == 22)
 					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: ");
-				fprintf(stderr,"\"%s\"\n", kwstring->value);
+				fprintf(stderr,"\"%s\"\n", token->Data.string->value);
+				//strToNumToken(token);
 				state = stateStart;
 				stringClear(kwstring);
 				ungetc(c, code);

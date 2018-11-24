@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+
 #define initAllocSize 10
 
 typedef struct {
@@ -18,5 +19,7 @@ int stringClear(dynString *);
 bool stringCompare(dynString *a, char *b);
 void stringDispose(dynString *str);
 bool charIsLowercase(char c);
+bool pushToToken(dynString *from, dynString *to);
+//bool strToNumToken(Token token);
 
 #endif

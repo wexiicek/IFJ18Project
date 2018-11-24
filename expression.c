@@ -14,7 +14,7 @@
 #define tableSize 7
 //We will work with this stack for the whole time
 Stack stack;
-
+Token token;
 // 2-dimensional array
 int precTable[tableSize][tableSize] =
 {
@@ -169,7 +169,7 @@ static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
  * @return NOT_A_RULE if no rule is found or returns rule which is valid.
  */
 static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *operand1, StackItem *operand2, StackItem *operand3){
-	printf(CGRN"    [EXPR]"CWHT" testWhichRuleToUse.. Operand count: %d\n", numberOfOperands);
+	fprintf(stderr, CGRN"    [EXPR]"CWHT" testWhichRuleToUse.. Operand count: %d\n", numberOfOperands);
 
     if (numberOfOperands == 1){
 		// rule E -> i
@@ -220,11 +220,11 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
 static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type)
 {
     
-    bool retype_op1_to_double = false;
+    /*bool retype_op1_to_double = false;
     bool retype_op3_to_double = false;
     bool retype_op1_to_integer = false;
     bool retype_op3_to_integer = false;
-
+*/
     if (rule == OPERAND_RULE)
     {
         if (op1->dataType == TYPE_UNDEFINED)
@@ -272,13 +272,13 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             return SEMANTICAL_OTHER;
 
         *final_type = TYPE_FLOAT;
-
+/*
         if (op1->dataType == TYPE_INTEGER)
             retype_op1_to_double = true;
 
         if (op3->dataType == TYPE_INTEGER)
             retype_op3_to_double = true;
-
+*/
         break;
 
     case DIV_RULE:
@@ -287,12 +287,13 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
             return SEMANTICAL_OTHER;
 
+/*
         if (op1->dataType == TYPE_INTEGER)
             retype_op1_to_double = true;
 
         if (op3->dataType == TYPE_INTEGER)
             retype_op3_to_double = true;
-
+  */      //fprintf(stderr, "%s\n", op1->currentToken.Data.string->value);
         break;
 
     /*case NT_IDIV_NT:
@@ -315,14 +316,14 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     case LESS_RULE:
     case GREATER_OR_EQUAL_RULE:
     case GREATER_RULE:
-
+/*
         if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT)
             retype_op1_to_double = true;
 
         else if (op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER)
             retype_op3_to_double = true;
-
-        else if (op1->dataType != op3->dataType)
+*/
+        if (op1->dataType != op3->dataType)
             return SEMANTICAL_OTHER;
 
         break;
@@ -414,109 +415,19 @@ static int reduceByRule(parseData* parserData)
         printStack(&stack);
 		stackPopCount(&stack, count + 1);
         printStack(&stack);
-		stackPush(&stack, NON_TERMINAL, finalType);
+		stackPush(&stack, NON_TERMINAL, finalType, token);
 
 	}
     
 	return SUCCESS;
 }
 
-//TODO REMOVE
-//#define HARMIM 1
-
-#ifdef HARMIM
-int expression(parseData *parserData)
-{
-    int result = SYNTACTICAL;
-
-    stackInit(&stack);
-
-    if (!stackPush(&stack, DOLLAR, TYPE_UNDEFINED)){
-        stackFree(&stack);
-        return INTERNAL;
-    }
-    StackItem* top_stack_terminal;
-    precAnalysisTableSymbol actual_symbol;
-
-    bool success = false;
-
-    do
-    {
-        actual_symbol = getSymbolFromToken(&parserData->token);
-        top_stack_terminal = stackTopTerminal(&stack);
-
-        if (top_stack_terminal == NULL){
-            stackFree(&stack);
-            return INTERNAL;
-        }
-        switch (precTable[getPrecTableIndex(top_stack_terminal->symbol)][getPrecTableIndex(actual_symbol)]){
-        case S:
-            if (!symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED)){
-                stackFree(&stack);
-                return INTERNAL;
-            }
-
-            if(!stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData))){
-                stackFree(&stack);
-                return INTERNAL;
-            }
-
-            if ((result = getTokens(&parserData->token))){
-                stackFree(&stack);
-                return result;
-            }
-            break;
-
-        case E:
-            stackPush(&stack, actual_symbol, getDataType(&parserData->token, parserData));
-
-            if ((result = getTokens(&parserData->token))){
-                stackFree(&stack);
-                return result; 
-            }
-            break;
-
-        case R:
-            if ((result = reduceByRule(parserData))){
-                stackFree(&stack);
-                return result;
-            }
-            break;
-
-        case N:
-            if (actual_symbol == DOLLAR && top_stack_terminal->symbol == DOLLAR)
-                success = true;
-            else{
-                stackFree(&stack);
-                return SYNTACTICAL;
-        }
-            break;
-        }
-    } while (!success);
-
-    StackItem* final_non_terminal = stackTop(&stack);
-    if (final_non_terminal == NULL){
-            stackFree(&stack);
-            return SYNTACTICAL;
-        }
-    if (final_non_terminal->symbol != NON_TERMINAL){
-            stackFree(&stack);
-            return SYNTACTICAL;
-        }
-
-    
-            stackFree(&stack);
-            return SUCCESS;
-        
-}
-
-#else
 int expression(parseData *parserData){
     bool success = false;
     int result = SYNTACTICAL;
     stackInit(&stack);
 
-    int continue0 = stackPush(&stack, DOLLAR, TYPE_UNDEFINED);
+    int continue0 = stackPush(&stack, DOLLAR, TYPE_UNDEFINED, token);
     
     if(continue0 == false){
         stackFree(&stack);
@@ -542,7 +453,7 @@ int expression(parseData *parserData){
                 return INTERNAL;
             }
 
-            int continue2 = stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData));
+            int continue2 = stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData), token);
             if (continue2 == false){
                 stackFree(&stack);
                 return INTERNAL;
@@ -556,7 +467,7 @@ int expression(parseData *parserData){
         }
 
         else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
-            stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData));
+            stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData), token);
 
             result = getTokens(&parserData->token);
             if (result){
@@ -594,4 +505,3 @@ int expression(parseData *parserData){
     stackFree(&stack);
     return SUCCESS;
 }
-#endif

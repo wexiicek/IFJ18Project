@@ -1,9 +1,3 @@
-par11
-
-=begin
-asfnnoiqwnfq
-rqf
-sdgawergweg
-wer
-werwer
-=end
+def fun()
+	var = "hello" 
+end

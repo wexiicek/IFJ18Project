@@ -9,12 +9,13 @@ void stackInit(Stack* stack) {
 	stack->topPtr = NULL;
 }
 
-bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type) {
+bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type, Token token) {
 	StackItem* newElemPtr = (StackItem *) malloc(sizeof(StackItem));
 	if (newElemPtr == NULL) {
 		return false;
 	}
 	newElemPtr->symbol = symbol;
+	newElemPtr->currentToken = token;
 	newElemPtr->dataType = type;
 	newElemPtr->nextPtr = stack->topPtr;
 	stack->topPtr = newElemPtr;
@@ -138,7 +139,7 @@ void printStack(Stack* stack){
 	StackItem *item = stack -> topPtr;
 	int i = 0;
 	while (item != NULL){
-		printf(CRED"    Stack"CWHT" %d :%d\n", ++i, item->symbol);
+		fprintf(stderr,CRED"    Stack"CWHT" %d :%d\n", ++i, item->symbol);
 		item = item -> nextPtr;
 	}
 	return;

@@ -62,6 +62,7 @@ static int mainFun(parseData* parserData){
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
 	if((parserData -> token.Type == tokenKeyword) && (parserData->token.Data.keyword == KW_DEF)){
 		//Checking function definition
+
 		getToken();
 		checkTokenType(tokenIdentifier);
 		//symTableInsertFunction(&parserData->globalTable, parserData->token.Data.string->value);
@@ -109,7 +110,7 @@ static int mainFun(parseData* parserData){
 }
 
 static int params(parseData* parserData){
-	int res;
+	int res = 0;
 	if(parserData -> token.Type == tokenIdentifier){
 		getToken();
 		checkRule(params_n);
