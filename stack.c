@@ -9,13 +9,13 @@ void stackInit(Stack* stack) {
 	stack->topPtr = NULL;
 }
 
-bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type, Token token) {
+bool stackPush(Stack* stack, precAnalysisTableSymbol symbol, dataTypeEnum type, Token currentToken) {
 	StackItem* newElemPtr = (StackItem *) malloc(sizeof(StackItem));
 	if (newElemPtr == NULL) {
 		return false;
 	}
 	newElemPtr->symbol = symbol;
-	newElemPtr->currentToken = token;
+	newElemPtr->currentToken = currentToken;
 	newElemPtr->dataType = type;
 	newElemPtr->nextPtr = stack->topPtr;
 	stack->topPtr = newElemPtr;

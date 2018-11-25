@@ -286,7 +286,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
 
         if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
             return SEMANTICAL_OTHER;
-
+        //fprintf(stderr, "tok val: %s\n",op3->currentToken.Data.string->value);
 /*
         if (op1->dataType == TYPE_INTEGER)
             retype_op1_to_double = true;

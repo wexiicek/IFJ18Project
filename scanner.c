@@ -419,7 +419,7 @@ int getTokens (Token *token) {
 					fprintf(stderr, "%s ..... %s\n",kwstring->value, token->Data.string -> value);
 					stringClear(kwstring);
 					ungetc(c, code);
-					
+
 				return SUCCESS;
 				}
 				//scanRet(kwstring, LEXICAL);
@@ -434,7 +434,7 @@ int getTokens (Token *token) {
 					//	token->Data.integer = atoi(tmp);}
 				else if (token->Type == 22)
 					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: ");
-				fprintf(stderr,"\"%s\"\n", token->Data.string->value);
+				pushToToken(kwstring, token->Data.string);
 				//strToNumToken(token);
 				state = stateStart;
 				stringClear(kwstring);
