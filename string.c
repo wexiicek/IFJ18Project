@@ -9,6 +9,7 @@
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
 int allocCounter = 0;
+
 int stringInit(dynString *str) {
     fprintf(stderr, CRED"       %d. ALLOCATING STRING \n"CWHT, ++allocCounter );
     str->value = (char*) malloc(initAllocSize * sizeof(char)); 
@@ -36,7 +37,7 @@ int stringAddChar(dynString *str, char c) {
     // If we need more space for additional char,
     //Then we use realloc.
     if (str->length+1 >= str->lengthAllocated) {
-        str->value = (char *) realloc(str->value, str->lengthAllocated + initAllocSize * sizeof(char));
+        str->value = (char *) realloc(str->value, (str->lengthAllocated + initAllocSize * sizeof(char)));
         fprintf(stderr, CRED"       %d. REALLOCATING STRING \n"CWHT, ++allocCounter );
 
         if (str->value == NULL){    
@@ -64,9 +65,6 @@ int stringClear(dynString *str) {
 
 void stringDispose(dynString *str) {
     free(str->value);
-    //str->value = NULL;
-    //str->length = 0;
-    //str->lengthAllocated = 0;
 }
 
 bool pushToToken(dynString *from, dynString *to){
@@ -74,6 +72,7 @@ bool pushToToken(dynString *from, dynString *to){
     printf("len%d\n", len);
     if (len >= to -> lengthAllocated ){
 
+    fprintf(stderr, "%s\n", "chyba je tu");
         to -> value = (char *) realloc(to -> value, len); 
         to -> lengthAllocated = len;
     }

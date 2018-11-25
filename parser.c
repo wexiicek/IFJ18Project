@@ -65,7 +65,7 @@ static int mainFun(parseData* parserData){
 
 		getToken();
 
-		fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
+		//fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
 		checkTokenType(tokenIdentifier);
 		//symTableInsertFunction(&parserData->globalTable, parserData->token.Data.string->value);
 		getToken();
@@ -508,11 +508,6 @@ int kowalskiAnalysis(){
 
 	//initVar(&parserData);
 	
-	/*
-	 * Check if there were any problems with opening source file
-	 * or creating dynamic string
-	*/
-	checkAndSet(&parserData.token);
 	
 	int res;
 
@@ -523,5 +518,7 @@ int kowalskiAnalysis(){
 	res = mainFun(&parserData);
 
 	stringDispose(&string);
+	//free symtabel vars
+
 	return res;
 }

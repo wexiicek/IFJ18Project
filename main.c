@@ -32,7 +32,7 @@ int main( int argc, const char* argv[] ){
     fprintf(stderr,CGRN "[MAIN]" CWHT " Launching main program.\n" CGRN "[MAIN]" CWHT " Setting source file.\n");
 
     if(!setSourceFile(sourceCode))
-    	{fprintf(stderr,CRED"[MAIN]"CWHT" File couldnt be set.\n"); return 1;}
+    	{fprintf(stderr,CRED"[MAIN]"CWHT" File couldnt be set.\n"); return INTERNAL;}
     fprintf(stderr,CGRN"[MAIN]"CWHT" File set properly.\n");
 
 

@@ -15,7 +15,7 @@
 #define CWHT  "\x1B[37m"
 
 
-#define nextChar(character) character = getc(code)
+#define nextChar(character) character = (char)getc(code)
 #define returnChar(character, source) ungetc(character, source)
 
 FILE *code;
@@ -68,7 +68,7 @@ unsigned int keywordCompare (dynString *str, Token *token){
 		{token->Data.keyword = KW_SUBSTR; kw = true;}
 	
 	if(kw)
-		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword; return scanRet(str, true);}
+		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword; return true;}
 
 	//return scanRet(str, false);
 	return false;
@@ -85,19 +85,7 @@ void setDynString(dynString *string){
 	kwstring = string;
 }
 
-int checkAndSet(Token *token){
-	if(code == NULL || kwstring == NULL)
-		return INTERNAL;
 
-
-
-	fprintf(stderr,CGRN"[SCANNER]"CWHT" File "CGRN"OK"CWHT", Dynamic String "CGRN"OK\n");
-	
-	token -> Data.string = kwstring;
-
-	fprintf(stderr,CGRN "[SCANNER]"CWHT" Looking for tokens->\n");
-	return SUCCESS;
-}
 
 bool strToIntToken(dynString *from, Token *to){
     int value = atoi(from->value);
@@ -114,8 +102,10 @@ bool strToFltToken(dynString *from, Token *to){
 }
 
 int getTokens (Token *token) {	
+	if(code == NULL || kwstring == NULL)
+		return INTERNAL;
 
-
+	token->Data.string = kwstring;
 
 	dynString string;
 	dynString *str = &string; 
@@ -280,7 +270,7 @@ int getTokens (Token *token) {
 					{ungetc(c, code); state = stateIdentifierOrKeyword; token->Type = tokenIdentifier;}
 				
 				else 
-					{token->Type = tokenEmpty; return LEXICAL;}
+					{token->Type = tokenEmpty; scanRet(str, LEXICAL);}
 			break;
 
 			case (stateNumber):
@@ -305,7 +295,7 @@ int getTokens (Token *token) {
 
 			case (stateIdentifierOrKeyword):
 				if ( (c == '_') || isalnum(c))
-					{if(stringAddChar(str, c)) scanRet(str, INTERNAL);}
+					{if(stringAddChar(str, c)) return scanRet(str, LEXICAL);}
 				else if ( (c == '?') || (c == '!')){
 					if(stringAddChar(str, c))
 						scanRet(str, INTERNAL);
@@ -352,7 +342,7 @@ int getTokens (Token *token) {
 				if (c == '=')
 					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); return scanRet(str, SUCCESS);}
 				else
-					return LEXICAL;
+					return scanRet(str, LEXICAL);
 			break;
 
 			case (stateComment):
@@ -427,7 +417,8 @@ int getTokens (Token *token) {
 				else
 					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 				state = stateStart;
-				if(!pushToToken(str, token->Data.string)) return INTERNAL;
+				fprintf(stderr, "%p\n", (void*)&str->value);
+				if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
 				//stringClear(kwstring);
 				ungetc(c, code);
 				scanRet(str, LEXICAL);
@@ -446,6 +437,7 @@ int getTokens (Token *token) {
 					else
 						fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 					state = stateStart;
+					//fprintf(stderr, "MAME STRING%s\n", token->Data.string->value);
 					if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
 					else fprintf(stderr,CGRN "SUCCESS\n");
 					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
@@ -475,7 +467,7 @@ int getTokens (Token *token) {
 				//stringClear(kwstring);
 				//fprintf(stderr, "Mame hodnotu %d\n",token->Data.integer );
 				ungetc(c, code);
-				return SUCCESS;
+				scanRet(str, SUCCESS);
 
 			break;
 
@@ -525,6 +517,7 @@ int getTokens (Token *token) {
 			break;
 		case 19:
 			fprintf(stderr,"%s EOL\n", tType);
+			//return scanRet(str, SUCCESS);
 			return scanRet(str, SUCCESS);
 			break;
 		case 20:
