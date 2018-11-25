@@ -10,17 +10,17 @@
 #define CWHT  "\x1B[37m"
 int allocCounter = 0;
 int stringInit(dynString *str) {
-    fprintf(stderr, CRED"%d. ALLOCATING STRING \n"CWHT, ++allocCounter );
+    fprintf(stderr, CRED"       %d. ALLOCATING STRING \n"CWHT, ++allocCounter );
     str->value = (char*) malloc(initAllocSize * sizeof(char)); 
     if(str->value == NULL){
-        return 1;
+        return INTERNAL;
     }
     
     str->length = 0;
     str->value[0] = '\0';
     str->lengthAllocated = initAllocSize;
     
-    return 0;
+    return SUCCESS;
 }
 
 bool stringCompare(dynString *str1, char *str2){
@@ -37,10 +37,10 @@ int stringAddChar(dynString *str, char c) {
     //Then we use realloc.
     if (str->length+1 >= str->lengthAllocated) {
         str->value = (char *) realloc(str->value, str->lengthAllocated + initAllocSize * sizeof(char));
-        fprintf(stderr, CRED"%d. REALLOCATING STRING \n"CWHT, ++allocCounter );
+        fprintf(stderr, CRED"       %d. REALLOCATING STRING \n"CWHT, ++allocCounter );
 
         if (str->value == NULL){    
-            return 1;
+            return INTERNAL;
         }
         str->lengthAllocated = str->lengthAllocated + initAllocSize;
     }
@@ -49,7 +49,7 @@ int stringAddChar(dynString *str, char c) {
     str->value[str->length+1] = '\0';
     str->length++;
 
-    return 0;
+    return SUCCESS;
 }
 
 int stringClear(dynString *str) {
@@ -59,7 +59,7 @@ int stringClear(dynString *str) {
     }
     str->length = 0;
     
-    return 0;
+    return SUCCESS;
 }
 
 void stringDispose(dynString *str) {
@@ -70,26 +70,20 @@ void stringDispose(dynString *str) {
 }
 
 bool pushToToken(dynString *from, dynString *to){
-    int len = from -> length;
+    int len = from -> length + 1;
     printf("len%d\n", len);
     if (len >= to -> lengthAllocated ){
 
-        to -> value = (char *) realloc(to -> value, len + 1); 
-        to -> lengthAllocated = len +1;
+        to -> value = (char *) realloc(to -> value, len); 
+        to -> lengthAllocated = len;
     }
 
         fprintf(stderr, "%s\n","realloc" );
-    strcpy(from -> value, to -> value);
+    strcpy(to -> value, from -> value);
     printf("%s\n", to->value);
-    to -> length = len;
+    to -> length = len - 1;
     return true;
 }
-/*
-bool strToNumToken(Token token){
-    int value = atoi(token->Data.string->value);
-    printf("%d\n",value);
-    return true;
-}*/
 
 bool charIsLowercase(char c){
 	if (c >= 'a' && c <= 'z')

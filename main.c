@@ -42,6 +42,6 @@ int main( int argc, const char* argv[] ){
 		fprintf(stderr,CRED"[MAIN]"CWHT" Error in parser.\n");
 	else
 		fprintf(stderr,CGRN"[MAIN]"CWHT" Parser finished succesfully.\n");
-	
+	fclose(sourceCode);
 	return parser;
 }

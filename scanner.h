@@ -5,33 +5,33 @@
 
 #include "string.h"
 typedef enum {
-	tokenEmpty,
-	tokenAdd,
-	tokenSub,
-	tokenMul,
-	tokenDiv,
-	tokenLeftBracket,
-	tokenRightBracket,
-	tokenLeftBrace,
-	tokenRightBrace,
-	tokenComma,
-	tokenEndOfFile,
-	tokenFloat,
-	tokenExponential,
-	tokenEqual,
-	tokenNotEqual,
-	tokenLess,
-	tokenGreater,
-	tokenLessEqual,
-	tokenGreaterEqual,
-	tokenEndOfLine,
-	tokenNumber,
-	tokenAssign,
-	tokenInteger,
-	tokenString,
-	tokenEscapeSequence,
-	tokenKeyword,
-	tokenIdentifier
+	tokenEmpty,				//0
+	tokenAdd, 				//1
+	tokenSub,				//2
+	tokenMul,				//3
+	tokenDiv,				//4
+	tokenLeftBracket,		//5
+	tokenRightBracket,		//6
+	tokenLeftBrace,			//7
+	tokenRightBrace,		//8
+	tokenComma,				//9
+	tokenEndOfFile,			//10
+	tokenFloat,				//11
+	tokenExponential,		//12
+	tokenEqual,				//13
+	tokenNotEqual,			//14
+	tokenLess,				//15
+	tokenGreater,			//16
+	tokenLessEqual,			//17
+	tokenGreaterEqual,		//18
+	tokenEndOfLine,			//19
+	tokenNumber,			//20
+	tokenAssign,			//21
+	tokenInteger,			//22
+	tokenString,			//23
+	tokenEscapeSequence,	//24
+	tokenKeyword,			//25
+	tokenIdentifier			//26
 } TokenType;
 
 typedef enum {

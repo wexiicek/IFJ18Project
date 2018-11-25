@@ -115,7 +115,7 @@ static int numberOfSymbolsAfterStop(bool* stopFound)
 {
     fprintf(stderr,CGRN"    [EXPR]" CRED" FUN "CWHT" numberOfSymbolsAfterStop \n");
 	StackItem* tmp = stackTop(&stack);
-    printStack(&stack);
+    //printStack(&stack);
 	int count = 0;
 //for debugging purposes
     //return count;
@@ -412,9 +412,9 @@ static int reduceByRule(parseData* parserData)
 			//GENERATE_CODE(generate_concat_stack_strings);
 		}
 		else //GENERATE_CODE(generate_stack_operation, rule_for_code_gen);*/
-        printStack(&stack);
+        //printStack(&stack);
 		stackPopCount(&stack, count + 1);
-        printStack(&stack);
+        //printStack(&stack);
 		stackPush(&stack, NON_TERMINAL, finalType, token);
 
 	}

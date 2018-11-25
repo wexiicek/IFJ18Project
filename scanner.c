@@ -15,63 +15,65 @@
 #define CWHT  "\x1B[37m"
 
 
-#define scanRet(string, value)\
-			stringDispose(string);\
-			return value
-
 #define nextChar(character) character = getc(code)
 #define returnChar(character, source) ungetc(character, source)
 
 FILE *code;
 
+dynString *kwstring;
 
-unsigned int keywordCompare (dynString *kwstring, Token *token){
+static int scanRet(dynString *string, int error){
+	stringDispose(string);
+	return error;
+}
+
+unsigned int keywordCompare (dynString *str, Token *token){
 
 	bool kw = false;
 
 
-	if(stringCompare(kwstring, "chr"))
+	if(stringCompare(str, "chr"))
 		{token -> Data.keyword = KW_CHR; kw = true;}
-	else if (stringCompare(kwstring, "def"))
+	else if (stringCompare(str, "def"))
 		{token->Data.keyword = KW_DEF; kw = true;}
-	else if (stringCompare(kwstring, "do"))
+	else if (stringCompare(str, "do"))
 		{token->Data.keyword = KW_DO; kw = true;}
-	else if (stringCompare(kwstring, "else"))
+	else if (stringCompare(str, "else"))
 		{token->Data.keyword = KW_ELSE; kw = true;}
-	else if (stringCompare(kwstring, "end"))  
+	else if (stringCompare(str, "end"))  
 		{token->Data.keyword = KW_END; kw = true;}
-	else if (stringCompare(kwstring, "if"))
+	else if (stringCompare(str, "if"))
 		{token->Data.keyword = KW_IF; kw = true;}
-	else if (stringCompare(kwstring, "inputf"))
+	else if (stringCompare(str, "inputf"))
 		{token->Data.keyword = KW_INPUTF; kw = true;}
-	else if (stringCompare(kwstring, "inputi"))
+	else if (stringCompare(str, "inputi"))
 		{token->Data.keyword = KW_INPUTI; kw = true;}
-	else if (stringCompare(kwstring, "inputs"))
+	else if (stringCompare(str, "inputs"))
 		{token->Data.keyword = KW_INPUTS; kw = true;}
-	else if (stringCompare(kwstring, "length"))
+	else if (stringCompare(str, "length"))
 		{token -> Data.keyword = KW_LENGTH; kw = true;}
-	else if (stringCompare(kwstring, "not"))
+	else if (stringCompare(str, "not"))
 		{token->Data.keyword = KW_NOT; kw = true;}
-	else if (stringCompare(kwstring, "nil"))
+	else if (stringCompare(str, "nil"))
 		{token->Data.keyword = KW_NIL; kw = true;}
-	else if (stringCompare(kwstring, "ord"))
+	else if (stringCompare(str, "ord"))
 		{token->Data.keyword = KW_ORD; kw = true;}
-	else if (stringCompare(kwstring, "then"))
+	else if (stringCompare(str, "then"))
 		{token->Data.keyword = KW_THEN; kw = true;}
-	else if (stringCompare(kwstring, "while"))
+	else if (stringCompare(str, "while"))
 		{token->Data.keyword = KW_WHILE; kw = true;}
-	else if (stringCompare(kwstring, "print"))
+	else if (stringCompare(str, "print"))
 		{token->Data.keyword = KW_PRINT; kw = true;}
-	else if (stringCompare(kwstring, "substr"))
+	else if (stringCompare(str, "substr"))
 		{token->Data.keyword = KW_SUBSTR; kw = true;}
 	
 	if(kw)
-		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword;return 0;}
+		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword; return scanRet(str, true);}
 
-	return 1;
+	//return scanRet(str, false);
+	return false;
 }
 
-dynString *kwstring;
 
 int setSourceFile(FILE *sourceFile) {
 	if((code = sourceFile) == NULL)
@@ -97,16 +99,30 @@ int checkAndSet(Token *token){
 	return SUCCESS;
 }
 
+bool strToIntToken(dynString *from, Token *to){
+    int value = atoi(from->value);
+    //fprintf(stderr, "ATOI %d\n", value);
+    to->Data.integer = value;
+    return scanRet(from, SUCCESS);
+}
+
+bool strToFltToken(dynString *from, Token *to){
+	float value = strtof(from->value, NULL);
+	to->Data.flt = value;
+	//fprintf(stderr, "FLOAT TOKEN VAL: %f\n", to->Data.flt);
+	return scanRet(from, SUCCESS);
+}
+
 int getTokens (Token *token) {	
 
+
+
 	dynString string;
-	dynString *str = &string;
+	dynString *str = &string; 
 
 	if(stringInit(str))
 		return INTERNAL;
-
-	token -> Data.string = kwstring;
-	
+	//stringClear(kwstring);
 	bool zeroSwitch = false;
 	int state = stateStart; token -> Type = tokenEmpty;
 	char c;
@@ -202,31 +218,31 @@ int getTokens (Token *token) {
 					{state = stateStart; token->Type = tokenEmpty;}
 
 				else if (c == '+')
-					{token->Type = tokenAdd; fprintf(stderr,"%s ADD\n", prt); return SUCCESS;}
+					{token->Type = tokenAdd; fprintf(stderr,"%s ADD\n", prt); return scanRet(str, SUCCESS);}
 
 				else if (c == '-')
-					{token->Type = tokenSub; fprintf(stderr,"%s SUB\n", prt); return SUCCESS;}
+					{token->Type = tokenSub; fprintf(stderr,"%s SUB\n", prt); return scanRet(str, SUCCESS);}
 				
 				else if (c == '*')
-					{token->Type = tokenMul; fprintf(stderr,"%s MUL\n", prt); return SUCCESS;}
+					{token->Type = tokenMul; fprintf(stderr,"%s MUL\n", prt); return scanRet(str, SUCCESS);}
 				
 				else if (c == '/') 
-					{token->Type = tokenDiv; fprintf(stderr,"%s DIV\n", prt); return SUCCESS;}
+					{token->Type = tokenDiv; fprintf(stderr,"%s DIV\n", prt); return scanRet(str, SUCCESS);}
 				
 				else if (c == '(')
-					{token->Type = tokenLeftBracket; fprintf(stderr,"%s LBRACK\n", prt); return SUCCESS;}
+					{token->Type = tokenLeftBracket; fprintf(stderr,"%s LBRACK\n", prt); return scanRet(str, SUCCESS);}
 				
 				else if (c == ')')
-					{token->Type = tokenRightBracket; fprintf(stderr,"%s RBRACK\n", prt); return SUCCESS;}
+					{token->Type = tokenRightBracket; fprintf(stderr,"%s RBRACK\n", prt); return scanRet(str, SUCCESS);}
 
 				else if (c == '{')
-					{token->Type = tokenLeftBrace; fprintf(stderr,"%s LBRACE\n", prt); return SUCCESS;}
+					{token->Type = tokenLeftBrace; fprintf(stderr,"%s LBRACE\n", prt); return scanRet(str, SUCCESS);}
 
 				else if (c == '}')
-					{token->Type = tokenRightBrace; fprintf(stderr,"%s RBRACE\n", prt); return SUCCESS;}
+					{token->Type = tokenRightBrace; fprintf(stderr,"%s RBRACE\n", prt); return scanRet(str, SUCCESS);}
 
 				else if (c == ',')
-					{token->Type = tokenComma; fprintf(stderr,"%s COMMA\n", prt); return SUCCESS;}
+					{token->Type = tokenComma; fprintf(stderr,"%s COMMA\n", prt); return scanRet(str, SUCCESS);}
 
 
 			/*	Cases, where we CAN'T determine the type definitely	*/
@@ -274,14 +290,14 @@ int getTokens (Token *token) {
 				if (isdigit(c)){
 					if (c == '0')
 						zeroSwitch = true;
-					stringAddChar(kwstring, c);
+					stringAddChar(str, c);
 				}
 
 				else if (c == '.')
-					{token->Type = tokenFloat; stringAddChar(kwstring, c);}
+					{token->Type = tokenFloat; stringAddChar(str, c);}
 
 				else if ((c == 'e')||(c == 'E'))
-					{token->Type = tokenExponential; stringAddChar(kwstring, c);}
+					{token->Type = tokenExponential; stringAddChar(str, c);}
 
 				else
 					{state = stateNumberEnd; zeroSwitch = false; ungetc(c, code); }
@@ -289,10 +305,14 @@ int getTokens (Token *token) {
 
 			case (stateIdentifierOrKeyword):
 				if ( (c == '_') || isalnum(c))
-					{stringAddChar(kwstring, c);}
-				else if ( (c == '?') || (c == '!') )
-					{stringAddChar(kwstring, c); state = stateIdentifierEnd;}
-				else if (  (c == ',')  || (c == '=') || isspace(c) || (c == EOF))
+					{if(stringAddChar(str, c)) scanRet(str, INTERNAL);}
+				else if ( (c == '?') || (c == '!')){
+					if(stringAddChar(str, c))
+						scanRet(str, INTERNAL);
+					else
+						 state = stateIdentifierEnd;
+				}
+				else if (  (c == ',')  || (c == '=') || isspace(c) || (c == EOF) )
 					{ungetc(c, code); state = stateIdentifierEnd;}
 				else
 					{ungetc(c, code); state = stateIdentifierEnd;}
@@ -306,7 +326,7 @@ int getTokens (Token *token) {
 
 			case (stateEqual):
 				if (c == '=')
-					{token->Type = tokenEqual; state = stateStart;  fprintf(stderr,"%s EQUAL", prt); return SUCCESS;}
+					{token->Type = tokenEqual; state = stateStart;  fprintf(stderr,"%s EQUAL", prt); return scanRet(str, SUCCESS);}
 				else if(c == 'b')
 					{ungetc(c, code); state = stateBlockComment;}
 				else 
@@ -316,21 +336,21 @@ int getTokens (Token *token) {
 
 			case (stateLess):
 				if (c == '=')
-					{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr,"%s LESS EQUAL", prt); return SUCCESS;}
+					{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr,"%s LESS EQUAL", prt); return scanRet(str, SUCCESS);}
 				else
 					{ungetc(c, code); token->Type = tokenLess; state = stateStart;}
 			break;
 
 			case (stateGreater):
 				if (c == '=')
-					{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr,"%s GREATER EQUAL", prt); return SUCCESS;}
+					{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr,"%s GREATER EQUAL", prt); return scanRet(str, SUCCESS);}
 				else
 					{ungetc(c, code); token->Type = tokenGreater; state = stateStart;}
 			break;
 
 			case (stateExclamation):
 				if (c == '=')
-					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); return SUCCESS;}
+					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); return scanRet(str, SUCCESS);}
 				else
 					return LEXICAL;
 			break;
@@ -352,13 +372,15 @@ int getTokens (Token *token) {
 				token->Type = tokenString;
 
 				if (c < 32)
-					{scanRet(kwstring, LEXICAL);}
+					{scanRet(str, LEXICAL);}
 
 				else if (c == '\\')
 					{state = stateEscapeSequence;}
 
-				else if (c != '\"')
-					stringAddChar(kwstring, c);
+				else if (c != '\"'){
+					if(stringAddChar(str, c))
+						scanRet(str, INTERNAL);
+				}
 				else 
 					{state = stateStringEnd;}
 			break;
@@ -371,84 +393,98 @@ int getTokens (Token *token) {
 				if (c == 'n'){
 					c = '\n';
 					token->Type = tokenEscapeSequence;
-					stringAddChar(kwstring, c);
+					if(stringAddChar(str, c))
+						scanRet(str, SUCCESS);
 					state = stateStringStart;
 				}
 
 				else if (c == 't'){
 					c = '\t';
-					stringAddChar(kwstring, c);
+					if(stringAddChar(str, c))
+						scanRet(str, SUCCESS);
 					state = stateStringStart;
 				}
 
 				else if (c == 's'){
 					c = ' ';
-					stringAddChar(kwstring, c);
+					if(stringAddChar(str, c))
+						scanRet(str, SUCCESS);
 					state = stateStringStart;
 				}
 
 				else if (c == '"'){
 					c = '"';
-					stringAddChar(kwstring, c);
+					if(stringAddChar(str, c))
+						scanRet(str, SUCCESS);
 					state = stateStringStart;
 				}
 
 			break;
 
 			case (stateStringEnd):
-				if(!stringCompare(kwstring,"\n") == 0)
+				if(!stringCompare(str,"\n") == 0)
 					fprintf(stderr,"    TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
 				else
-					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
+					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 				state = stateStart;
-				if(!pushToToken(kwstring, token->Data.string)) return INTERNAL;
-				stringClear(kwstring);
+				if(!pushToToken(str, token->Data.string)) return INTERNAL;
+				//stringClear(kwstring);
 				ungetc(c, code);
-				scanRet(kwstring, LEXICAL);
+				scanRet(str, LEXICAL);
 			break;
 
 			case (stateIdentifierEnd):
-				if(!keywordCompare(kwstring, token)) {state = stateStart; fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);stringClear(kwstring); ungetc(c, code);return SUCCESS;}
+				if(keywordCompare(str, token)){
+					state = stateStart; 
+					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
+					//stringClear(kwstring); 
+					ungetc(c, code);
+					return scanRet(str, SUCCESS);}
 				else {
-					if(!stringCompare(kwstring,"\n") == 0)
+					if(!stringCompare(str,"\n") == 0)
 						fprintf(stderr,"    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
 					else
-						fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,kwstring->value);
+						fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 					state = stateStart;
-					if(!pushToToken(kwstring, token->Data.string)) return INTERNAL;
-					fprintf(stderr, "%s ..... %s\n",kwstring->value, token->Data.string -> value);
-					stringClear(kwstring);
+					if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
+					else fprintf(stderr,CGRN "SUCCESS\n");
+					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
+					//stringClear(kwstring);
+					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
 					ungetc(c, code);
-
-				return SUCCESS;
+					return scanRet(str, SUCCESS);
 				}
-				//scanRet(kwstring, LEXICAL);
 			break;
 
 			case (stateNumberEnd):
-				if (token->Type == 11)
-					fprintf(stderr,"    TOKEN TYPE: FLOAT | TOKEN VAL: ");
+				//FLOAT
+				if (token->Type == 11){
+					strToFltToken(str, token);
+					fprintf(stderr, "    TOKEN TYPE: FLOAT | TOKEN VAL: %f\n", token->Data.flt);
+				}
+				//EXPONENTIAL
 				else if (token->Type == 12)
-					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: ");
-					//	char tmp[10] = kwstring;
-					//	token->Data.integer = atoi(tmp);}
-				else if (token->Type == 22)
-					fprintf(stderr,"    TOKEN TYPE: INT | TOKEN VAL: ");
-				pushToToken(kwstring, token->Data.string);
-				//strToNumToken(token);
+					fprintf(stderr,"    TOKEN TYPE: EXP | TOKEN VAL: ");
+
+				//INTEGER
+				else if (token->Type == 22){
+					strToIntToken(str, token);
+					fprintf(stderr, "    TOKEN TYPE: INT | TOKEN VAL:  %d\n", token->Data.integer);
+				}
 				state = stateStart;
-				stringClear(kwstring);
+				//stringClear(kwstring);
+				//fprintf(stderr, "Mame hodnotu %d\n",token->Data.integer );
 				ungetc(c, code);
 				return SUCCESS;
 
 			break;
 
 			case (stateError):
-				scanRet(kwstring, LEXICAL);
+				scanRet(str, LEXICAL);
 				break;
 
 			case (stateEnd):
-				return SUCCESS;
+				return scanRet(str, SUCCESS);
 			break;	
 	}
 	
@@ -457,47 +493,47 @@ int getTokens (Token *token) {
 		
 		case 10:
 			fprintf(stderr,"%s EOF\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 12:
 			fprintf(stderr,"%s EXPONENTIAL\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 13:
 			fprintf(stderr,"%s EQUAL\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 14:
 			fprintf(stderr,"%s NOT EQUAL\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 15:
 			fprintf(stderr,"%s LESS\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 16:
 			fprintf(stderr,"%s GREATER\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 17:
 			fprintf(stderr,"%s LESS EQUAL\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 18:
 			fprintf(stderr,"%s GREATER EQUAL\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 19:
 			fprintf(stderr,"%s EOL\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 20:
 			fprintf(stderr,"%s NUMBER\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		case 21:
 			fprintf(stderr,"%s ASSIGN\n", tType);
-			return SUCCESS;
+			return scanRet(str, SUCCESS);
 			break;
 		default:
 			break;
