@@ -203,7 +203,7 @@ void symTableDispose(tSymtable *Table) {
 /*
  * Function inserts a data about a function into the symtable
  */
-int symTableInsertFunction(tSymtable *Table, dynString Key){ 
+int symTableInsertFunction(tSymtable *Table, char *Key){ 
     // Memory allocation for data
     tDataFunction *dataPtr;
     dataPtr = (tDataFunction*)malloc(sizeof(tDataFunction)); 
@@ -218,14 +218,14 @@ int symTableInsertFunction(tSymtable *Table, dynString Key){
     dataPtr->defined = false;
     dataPtr->parameters = parameters;
     // Here we create a new intem in symtable
-    BSTInsert(&(Table->root), Key.value, dataPtr, ndtFunction);
+    BSTInsert(&(Table->root), Key, dataPtr, ndtFunction);
     return SUCCESS;
 }
 
 /*
  *  Function inserts data about a variable
  */
-int symTableInsertVariable(tSymtable* Table, dynString Key) { 
+int symTableInsertVariable(tSymtable* Table, char *Key) { 
     // Memory allocation
     tDataVariable * dataPtr;
     dataPtr = (tDataVariable*)malloc(sizeof(tDataVariable));
@@ -235,7 +235,48 @@ int symTableInsertVariable(tSymtable* Table, dynString Key) {
     
     dataPtr->dataType = -1;
     // Here we create a new intem in symtable
-    BSTInsert(&(Table->root), Key.value, dataPtr, ndtVariable);
+    BSTInsert(&(Table->root), Key, dataPtr, ndtVariable);
     return SUCCESS;
 }
 
+
+void Print_tree2(tBSTNodePtr TempTree, char* sufix, char fromdir)
+/* vykresli sktrukturu binarniho stromu */
+
+{
+     if (TempTree != NULL)
+     {
+    char* suf2 = (char*) malloc(strlen(sufix) + 4);
+    strcpy(suf2, sufix);
+        if (fromdir == 'L')
+    {
+       suf2 = strcat(suf2, "  |");
+       printf("%s\n", suf2);
+    }
+    else
+       suf2 = strcat(suf2, "   ");
+    Print_tree2(TempTree->RPtr, suf2, 'R');
+        printf("%s  +-[%s,%p]\n", sufix, TempTree->Key, TempTree->Data);
+    strcpy(suf2, sufix);
+        if (fromdir == 'R')
+       suf2 = strcat(suf2, "  |");  
+    else
+       suf2 = strcat(suf2, "   ");
+    Print_tree2(TempTree->LPtr, suf2, 'L');
+    if (fromdir == 'R') printf("%s\n", suf2);
+    free(suf2);
+    }
+}
+
+
+void Print_tree(tBSTNodePtr TempTree)
+{
+  printf("Struktura binarniho stromu:\n");
+  printf("\n");
+  if (TempTree != NULL)
+     Print_tree2(TempTree, "", 'X');
+  else
+     printf("strom je prazdny\n");
+  printf("\n");
+  printf("=================================================\n");
+} 

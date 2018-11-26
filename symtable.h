@@ -63,8 +63,10 @@ void symTableInit(tSymtable* Table);
 tBSTNodePtr symTableSearch(tSymtable *Table, char *Key);
 void symTableDelete(tSymtable *Table, dynString Key);
 void symTableDispose(tSymtable *Table);
-int symTableInsertFunction(tSymtable *Table, dynString Key);
-int symTableInsertVariable(tSymtable* Table, dynString Key);
+int symTableInsertFunction(tSymtable *Table, char *Key);
+int symTableInsertVariable(tSymtable* Table, char *Key);
+void Print_tree2(tBSTNodePtr TempTree, char* sufix, char fromdir);
+void Print_tree(tBSTNodePtr TempTree);
 
 
 #endif

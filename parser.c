@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "string.h"
 #include "parser.h"
 #include "err.h"
@@ -51,7 +53,7 @@ static int func(parseData* parserData);
 	   || parserData -> token.Data.keyword != (_keyword)) return SYNTACTICAL
 
 
-
+char* tempString;
 
 
 static int mainFun(parseData* parserData){
@@ -64,12 +66,27 @@ static int mainFun(parseData* parserData){
 		//Checking function definition
 
 		getToken();
-
+		printf("BEFORE INSERT\n");
+		Print_tree(parserData->globalTable.root);
 		//fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
 		checkTokenType(tokenIdentifier);
-		//symTableInsertFunction(&parserData->globalTable, parserData->token.Data.string->value);
+
+		tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
+
+		strcpy(tempString, parserData->token.Data.string->value);
+
+		if (symTableSearch(&parserData->globalTable, parserData->token.Data.string->value) == NULL)
+		{
+			symTableInsertFunction(&parserData->globalTable, tempString);
+		}
+		else{
+			return 42;
+		}
+		printf("AFTER INSERT\n");
+		Print_tree(parserData->globalTable.root);
 		getToken();
 		checkTokenType(tokenLeftBracket);
+		
 		getToken();
 		
 		//Check parameter syntax
@@ -77,13 +94,13 @@ static int mainFun(parseData* parserData){
 		
 		//Check body of the function
 		checkTokenType(tokenRightBracket);
-
+		
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		
 		getToken();
 		checkRule(body);
-
+		
 		checkKeyword(KW_END);
 		getToken();
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
@@ -140,7 +157,10 @@ static int body(parseData* parserData){
 
 	if (parserData -> token.Type == tokenIdentifier){
 
+		
+		
 		getToken();
+
 
 		if (parserData -> token.Type == tokenAssign){
 			getToken();
@@ -446,12 +466,17 @@ static int func (parseData* parserData){
 			}
 }
 
-/*
-void initVar(parseData* parserData){
+
+void initTables(parseData* parserData){
 	symTableInit(&parserData->localTable);
 	symTableInit(&parserData->globalTable);
 }
-*/
+
+void freeTables(parseData* parserData){
+	symTableDispose(&parserData->localTable);
+	symTableDispose(&parserData->globalTable);
+}
+
 
 
 int kowalskiAnalysis(){
@@ -508,9 +533,9 @@ int kowalskiAnalysis(){
 
 	parseData parserData;
 
-	//initVar(&parserData);
+	initTables(&parserData);
 	
-	
+	//tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 	int res;
 
 	/*
@@ -521,6 +546,9 @@ int kowalskiAnalysis(){
 
 	stringDispose(&string);
 	//free symtabel vars
+	freeTables(&parserData);
+	//free(tempString);
+
 
 	return res;
 }
