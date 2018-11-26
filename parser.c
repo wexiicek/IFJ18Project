@@ -144,6 +144,7 @@ static int body(parseData* parserData){
 
 		if (parserData -> token.Type == tokenAssign){
 			getToken();
+			fprintf(stderr, "char: %d\n", parserData->token.Type);
 			checkRule(def_value);
 			//getToken();
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
@@ -394,6 +395,7 @@ static int def_value(parseData* parserData){
 		}
 
 	}
+	fprintf(stderr, "%s\n", "sračka");
 	checkRule(expression);
 	return SUCCESS;
 }

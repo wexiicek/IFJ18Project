@@ -67,10 +67,15 @@ unsigned int keywordCompare (dynString *str, Token *token){
 	else if (stringCompare(str, "substr"))
 		{token->Data.keyword = KW_SUBSTR; kw = true;}
 	
-	if(kw)
-		{fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); token->Type = tokenKeyword; return true;}
+	if(kw){
+		fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); 
+		token->Type = tokenKeyword; 
+		return true;
+	//	return scanRet(str, 1);
+	}
 
 	//return scanRet(str, false);
+	//return scanRet(str, 0);
 	return false;
 }
 
@@ -91,14 +96,14 @@ bool strToIntToken(dynString *from, Token *to){
     int value = atoi(from->value);
     //fprintf(stderr, "ATOI %d\n", value);
     to->Data.integer = value;
-    return scanRet(from, SUCCESS);
+    return SUCCESS;
 }
 
 bool strToFltToken(dynString *from, Token *to){
 	float value = strtof(from->value, NULL);
 	to->Data.flt = value;
 	//fprintf(stderr, "FLOAT TOKEN VAL: %f\n", to->Data.flt);
-	return scanRet(from, SUCCESS);
+	return SUCCESS;
 }
 
 int getTokens (Token *token) {	
@@ -138,19 +143,20 @@ int getTokens (Token *token) {
 							if (c ==  '\n') {
 								while (1){
 									nextChar(c);
-									if(c == '\n'){
+									if(c == '\n' || c == '='){
 										nextChar(c);
-										if(c == '='){
+										if(c == '=' || c == 'e'){
 											nextChar(c);
-											if( c == 'e'){
-												nextChar(c);
-												if(c == 'n'){
-													nextChar(c);
-													if(c == 'd'){
-														nextChar(c);
-														if(c == '\n' || c == EOF){
-															state = stateStart;
-															break;
+											if( c == 'e' || c == 'n'){
+    											nextChar(c);
+    											if(c == 'n' || c == 'd'){
+    												nextChar(c);
+    												if(c == 'd' || c == '\n' || c == EOF){
+    													nextChar(c);
+    													if(c == '\n' || c == EOF){ungetc(c, code);
+    														state = stateStart;
+    														token -> Type = tokenEmpty;
+    														break;
 	}}}}}}}}}}}}}} else ungetc(c, code);
 
 	//Go through every character of a file
@@ -176,24 +182,25 @@ int getTokens (Token *token) {
 									if(c == 'i'){
 										nextChar(c);                								
 										if(c == 'n'){
-											nextChar(c);                					
+											nextChar(c);  
+											//fprintf(stderr, "%c\n",c );              					
                 							if (c ==  '\n') {
                 								while (1){
                 									nextChar(c);
-                									if(c == '\n'){
+                									if(c == '\n' || c == '='){
                 										nextChar(c);
-                										if(c == '='){
+                										if(c == '=' || c == 'e'){
                 											nextChar(c);
-                											if( c == 'e'){
+                											if( c == 'e' || c == 'n'){
 	                											nextChar(c);
-	                											if(c == 'n'){
+	                											if(c == 'n' || c == 'd'){
 	                												nextChar(c);
-	                												if(c == 'd'){
+	                												if(c == 'd' || c == '\n' || c == EOF){
 	                													nextChar(c);
 	                													if(c == '\n' || c == EOF){
 	                														ungetc(c, code);
 	                														state = stateStart;
-	                														token -> Type = tokenEmpty;
+	                														token -> Type = tokenEmpty; //TODO možno pokazí
 	                														break;
 	            	}}}}}}}}}}}}}}                										
 												
@@ -270,7 +277,7 @@ int getTokens (Token *token) {
 					{ungetc(c, code); state = stateIdentifierOrKeyword; token->Type = tokenIdentifier;}
 				
 				else 
-					{token->Type = tokenEmpty; scanRet(str, LEXICAL);}
+					{token->Type = tokenEmpty; return scanRet(str, LEXICAL);}
 			break;
 
 			case (stateNumber):
@@ -418,10 +425,10 @@ int getTokens (Token *token) {
 					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 				state = stateStart;
 				fprintf(stderr, "%p\n", (void*)&str->value);
-				if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
+				if(!pushToToken(str, kwstring)) return scanRet(str, INTERNAL);
 				//stringClear(kwstring);
 				ungetc(c, code);
-				scanRet(str, LEXICAL);
+				return scanRet(str, LEXICAL);
 			break;
 
 			case (stateIdentifierEnd):
@@ -432,6 +439,7 @@ int getTokens (Token *token) {
 					ungetc(c, code);
 					return scanRet(str, SUCCESS);}
 				else {
+					
 					if(!stringCompare(str,"\n") == 0)
 						fprintf(stderr,"    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
 					else
@@ -439,12 +447,13 @@ int getTokens (Token *token) {
 					state = stateStart;
 					//fprintf(stderr, "MAME STRING%s\n", token->Data.string->value);
 					if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
-					else fprintf(stderr,CGRN "SUCCESS\n");
+					else fprintf(stderr,CGRN "SUCCESS\n"CWHT);
 					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
 					//stringClear(kwstring);
 					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
 					ungetc(c, code);
 					return scanRet(str, SUCCESS);
+					//return SUCCESS;
 				}
 			break;
 
@@ -467,12 +476,12 @@ int getTokens (Token *token) {
 				//stringClear(kwstring);
 				//fprintf(stderr, "Mame hodnotu %d\n",token->Data.integer );
 				ungetc(c, code);
-				scanRet(str, SUCCESS);
+				return scanRet(str, SUCCESS);
 
 			break;
 
 			case (stateError):
-				scanRet(str, LEXICAL);
+				return scanRet(str, LEXICAL);
 				break;
 
 			case (stateEnd):
@@ -517,8 +526,8 @@ int getTokens (Token *token) {
 			break;
 		case 19:
 			fprintf(stderr,"%s EOL\n", tType);
-			//return scanRet(str, SUCCESS);
 			return scanRet(str, SUCCESS);
+			//return SUCCESS;
 			break;
 		case 20:
 			fprintf(stderr,"%s NUMBER\n", tType);
@@ -527,6 +536,7 @@ int getTokens (Token *token) {
 		case 21:
 			fprintf(stderr,"%s ASSIGN\n", tType);
 			return scanRet(str, SUCCESS);
+			//return SUCCESS;
 			break;
 		default:
 			break;
