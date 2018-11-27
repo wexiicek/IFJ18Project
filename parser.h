@@ -6,6 +6,8 @@
 #include "scanner.h"
 #include "symtable.h"
 
+int setDestFile(FILE *destFile);
+
 typedef struct {
 	Token token;
 	tSymtable localTable;

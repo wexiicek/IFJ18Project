@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "err.h"
 #include "expression.h"
+#include "generator.h"
 
 /*
  * Macros for colored output
@@ -27,6 +28,8 @@ static int args(parseData* parserData);
 static int args_n(parseData* parserData);
 static int func(parseData* parserData);
 
+
+FILE* output;
 /*
  * Macro declaration
  * Makes our work easier and keeps the code clean and understandable
@@ -82,6 +85,10 @@ static int mainFun(parseData* parserData){
 		else{
 			return 42;
 		}
+
+		codeGenFuncBegin(output, tempString);
+
+
 		printf("AFTER INSERT\n");
 		Print_tree(parserData->globalTable.root);
 		getToken();
@@ -131,6 +138,12 @@ static int mainFun(parseData* parserData){
 static int params(parseData* parserData){
 	int res = 0;
 	if(parserData -> token.Type == tokenIdentifier){
+		if (symTableSearch(&parserData->globalTable, parserData->token.Data.string->value))
+		{
+			return 43;
+		}
+
+
 		getToken();
 		checkRule(params_n);
 	}
@@ -477,6 +490,12 @@ void freeTables(parseData* parserData){
 	symTableDispose(&parserData->globalTable);
 }
 
+int setDestFile(FILE *destFile) {
+	if((output = destFile) == NULL)
+		return SUCCESS;
+	return INTERNAL;
+	}
+
 
 
 int kowalskiAnalysis(){
@@ -531,12 +550,15 @@ int kowalskiAnalysis(){
 	
 	setDynString(&string);
 
+
 	parseData parserData;
 
 	initTables(&parserData);
 	
 	//tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 	int res;
+
+	codeGenBegin(output);
 
 	/*
 	 * Get first token and start parser
