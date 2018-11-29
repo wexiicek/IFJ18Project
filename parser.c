@@ -70,27 +70,32 @@ static int mainFun(parseData* parserData){
 
 		getToken();
 		printf("BEFORE INSERT\n");
-		Print_tree(parserData->globalTable.root);
+		Print_tree(parserData->globalTable);
 		//fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
 		checkTokenType(tokenIdentifier);
-
+		
 		tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 
 		strcpy(tempString, parserData->token.Data.string->value);
-
-		if (symTableSearch(&parserData->globalTable, parserData->token.Data.string->value) == NULL)
+		if (BSTSearch(parserData->globalTable, parserData->token.Data.string->value) == NULL)
 		{
-			symTableInsertFunction(&parserData->globalTable, tempString);
+			tData kokot = *(struct tData*) malloc(sizeof(tData));
+			kokot.dataType = TYPE_UNDEFINED;
+			kokot.defined = false;
+			kokot.global = false;
+			kokot. parameters = NULL;
+			kokot.identifier = NULL;
+			BSTInsert(&parserData->globalTable, tempString, kokot);
 		}
 		else{
 			return 42;
 		}
 
-		codeGenFuncBegin(output, tempString);
-
+		//codeGenFuncBegin(output, tempString);
+		
 
 		printf("AFTER INSERT\n");
-		Print_tree(parserData->globalTable.root);
+		Print_tree(parserData->globalTable);
 		getToken();
 		checkTokenType(tokenLeftBracket);
 		
@@ -138,11 +143,12 @@ static int mainFun(parseData* parserData){
 static int params(parseData* parserData){
 	int res = 0;
 	if(parserData -> token.Type == tokenIdentifier){
+		/*
 		if (symTableSearch(&parserData->globalTable, parserData->token.Data.string->value))
 		{
 			return 43;
 		}
-
+		*/
 
 		getToken();
 		checkRule(params_n);
@@ -177,7 +183,6 @@ static int body(parseData* parserData){
 
 		if (parserData -> token.Type == tokenAssign){
 			getToken();
-			fprintf(stderr, "char: %d\n", parserData->token.Type);
 			checkRule(def_value);
 			//getToken();
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
@@ -186,9 +191,12 @@ static int body(parseData* parserData){
 		}
 
 		else if (parserData -> token.Type == tokenEndOfLine || parserData -> token.Type == tokenEndOfFile){
+			/*
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 			getToken();
 			return body(parserData);
+			*/
+			return SYNTACTICAL;
 		}
 
 		else{
@@ -203,10 +211,8 @@ static int body(parseData* parserData){
 		//TODO expression in IF statement
 		getToken();
 		checkRule(expression);
-		printf("KKT\n");
 		//getToken();
 		checkKeyword(KW_THEN);
-		printf("then\n");
 		getToken();
 		checkTokenType(tokenEndOfLine);
 		getToken();
@@ -428,7 +434,6 @@ static int def_value(parseData* parserData){
 		}
 
 	}
-	fprintf(stderr, "%s\n", "sračka");
 	checkRule(expression);
 	return SUCCESS;
 }
@@ -481,14 +486,16 @@ static int func (parseData* parserData){
 
 
 void initTables(parseData* parserData){
-	symTableInit(&parserData->localTable);
-	symTableInit(&parserData->globalTable);
+	BSTInit(&parserData->localTable);
+	BSTInit(&parserData->globalTable);
 }
 
 void freeTables(parseData* parserData){
-	symTableDispose(&parserData->localTable);
-	symTableDispose(&parserData->globalTable);
+	BSTDispose(&parserData->localTable);
+	BSTDispose(&parserData->globalTable);
 }
+
+
 
 int setDestFile(FILE *destFile) {
 	if((output = destFile) == NULL)
@@ -558,7 +565,7 @@ int kowalskiAnalysis(){
 	//tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 	int res;
 
-	codeGenBegin(output);
+	//codeGenBegin(output);
 
 	/*
 	 * Get first token and start parser

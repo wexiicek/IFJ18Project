@@ -10,8 +10,8 @@ int setDestFile(FILE *destFile);
 
 typedef struct {
 	Token token;
-	tSymtable localTable;
-	tSymtable globalTable;
+	tBSTNodePtr localTable;
+	tBSTNodePtr globalTable;
 } parseData;
 
 int kowalskiAnalysis();

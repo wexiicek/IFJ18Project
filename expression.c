@@ -91,13 +91,13 @@ static precAnalysisTableSymbol getSymbolFromToken(Token* token)
  * @return Returns data type of actual token.
  */
 static dataTypeEnum getDataType(Token* token, parseData* parserData){
-	tBSTNodePtr symbol;
+	tData* symbol;
 
 	if(token->Type == tokenIdentifier){
-		symbol = symTableSearch(&parserData->localTable, token->Data.string->value);
+		symbol = BSTSearch(parserData->localTable, token->Data.string->value);
 		if (symbol == NULL)
 			return TYPE_UNDEFINED;
-		return (symbol)->nodeDataType;
+		return (symbol)->dataType;
 	}
 	else if(token->Type == tokenInteger)
 		return TYPE_INTEGER;

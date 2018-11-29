@@ -1,1 +1,18 @@
-kokot!!
+a = 1/1
+b = "kokot"
+def x (par)
+end
+
+def a (kkt)
+if 1<3 then
+print "kktko", "kktci", "novak"
+else
+print "math is fucked"
+end
+end
+
+def z()
+end
+
+def jebek (pls)
+end

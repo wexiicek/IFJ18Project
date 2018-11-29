@@ -5,68 +5,42 @@
 
 #include "string.h"
 #include "err.h"
+#define TRUE 1
+#define FALSE 0
 
+extern int solved;                        /* indikace, zda byla funkce řešena */
 
-/* ----------------------------------------BINARY SEARCH(ING??????????) TREE-------------------------------------------------*/
+/* uzel stromu */
 
-
-typedef enum {
-    ndtVariable,     /* nodeDataTypeVariable */
-    ndtFunction,     /* nodeDataTypeFunction */
-} tNodeDataType;
-
-/*
- * Tree node
- */
-typedef struct tBSTNode {
-    char* Key;			                             
-    tNodeDataType nodeDataType;                      
-    void* Data;                                      
-    struct tBSTNode * LPtr;                          
-    struct tBSTNode * RPtr;                          
-} *tBSTNodePtr;
-
-
-void BSTInit (tBSTNodePtr *RootPtr);
-tBSTNodePtr BSTSearch (tBSTNodePtr RootPtr, char *tmpKey);
-int BSTInsert (tBSTNodePtr *RootPtr, char *tmpKey, void *Data, tNodeDataType nodeDataType);
-void BSTDelete (tBSTNodePtr *RootPtr, char* tmpKey);
-void BSTDispose (tBSTNodePtr *RootPtr);
-void ReplaceByLeftmost (tBSTNodePtr *PtrReplaced, tBSTNodePtr *RootPtr);
-/*------------------------------------------------- FUNCTIONS FOR SYMTABLE --------------------------------------------------*/
 typedef enum{
-    
     TYPE_INTEGER,
     TYPE_FLOAT,
-    TYPE_STRING,    
+    TYPE_STRING,
     TYPE_UNDEFINED,
 }dataTypeEnum;
 
-typedef struct variable {
+typedef struct tData{
     dataTypeEnum dataType;
-} tDataVariable;
-
-typedef struct function {
-    dataTypeEnum returnDataType;
-    bool declared;
     bool defined;
-    dynString parameters;   
-    dynString paramName[10];
-} tDataFunction;
+    bool global;
+    dynString *parameters;   
+    char *identifier;
+} tData;
+                                                                                                            
+typedef struct tBSTNode {
+	char *Key;			                                                      /* klíč */
+	tData Data;                                            /* užitečný obsah uzlu */
+	struct tBSTNode * LPtr;                                    /* levý podstrom */
+	struct tBSTNode * RPtr;                                   /* pravý podstrom */
+} *tBSTNodePtr;	
 
-typedef struct symtable {
-    tBSTNodePtr root;
-} tSymtable;
+/* prototypy funkcí */
 
+void BSTInit   (tBSTNodePtr *);
+tData* BSTSearch  (tBSTNodePtr, char*);
+void BSTInsert (tBSTNodePtr *, char*, tData);
+void BSTDelete (tBSTNodePtr *, char);
+void BSTDispose(tBSTNodePtr *);
 
-void symTableInit(tSymtable* Table);
-tBSTNodePtr symTableSearch(tSymtable *Table, char *Key);
-void symTableDelete(tSymtable *Table, dynString Key);
-void symTableDispose(tSymtable *Table);
-int symTableInsertFunction(tSymtable *Table, char *Key);
-int symTableInsertVariable(tSymtable* Table, char *Key);
-void Print_tree2(tBSTNodePtr TempTree, char* sufix, char fromdir);
-void Print_tree(tBSTNodePtr TempTree);
-
-
+/* konec c401.h */
 #endif
