@@ -141,7 +141,7 @@ int getTokens (Token *token) {
 						if(c == 'n'){
 							nextChar(c);                					
 							if (c ==  '\n') {
-								while (1){
+								while (c != EOF){
 									nextChar(c);
 									if(c == '\n' || c == '='){
 										nextChar(c);
@@ -151,13 +151,26 @@ int getTokens (Token *token) {
     											nextChar(c);
     											if(c == 'n' || c == 'd'){
     												nextChar(c);
-    												if(c == 'd' || c == '\n' || c == EOF){
-    													nextChar(c);
-    													if(c == '\n' || c == EOF){ungetc(c, code);
-    														state = stateStart;
-    														token -> Type = tokenEmpty;
-    														break;
-	}}}}}}}}}}}}}} else ungetc(c, code);
+    													if(c == 'd' || c == '\n' || c == EOF){
+	                													fprintf(stderr, "%d\n",c );
+	                													if(c == EOF){
+	                														state=stateEnd;	                													
+	                														token->Type = tokenEndOfFile;
+	                														break;
+	                													}
+	                													else if (c == 'd'){
+	                														state = stateStart;
+	                														token -> Type = tokenEmpty; //TODO možno pokazí
+	                														break;}
+	                													
+	                													else if (c == '\n'){
+	                														//ungetc(c, code);
+	                														state = stateStart;
+	                														token -> Type = tokenEmpty; //TODO možno pokazí
+	                														break;}}
+	                												else return INTERNAL;
+    								return INTERNAL;
+	}}}}}}}}}}}} else ungetc(c, code);
 
 	//Go through every character of a file
 	while (1){
@@ -185,7 +198,7 @@ int getTokens (Token *token) {
 											nextChar(c);  
 											//fprintf(stderr, "%c\n",c );              					
                 							if (c ==  '\n') {
-                								while (1){
+                								while (c != EOF){
                 									nextChar(c);
                 									if(c == '\n' || c == '='){
                 										nextChar(c);
@@ -196,13 +209,29 @@ int getTokens (Token *token) {
 	                											if(c == 'n' || c == 'd'){
 	                												nextChar(c);
 	                												if(c == 'd' || c == '\n' || c == EOF){
-	                													nextChar(c);
-	                													if(c == '\n' || c == EOF){
+	                													//fprintf(stderr, "%c\n",c );
+	                													if(c == EOF){
+	                														state=stateEnd;	                													
+	                														token->Type = tokenEndOfFile;
+	                														break;
+	                													}
+	                													else if (c == 'd'){
+	                														nextChar(c);	                													
 	                														ungetc(c, code);
 	                														state = stateStart;
 	                														token -> Type = tokenEmpty; //TODO možno pokazí
-	                														break;
-	            	}}}}}}}}}}}}}}                										
+	                														break;}
+	                													
+	                													else if (c == '\n'){
+	                														//ungetc(c, code);
+	                														state = stateStart;
+	                														token -> Type = tokenEmpty; //TODO možno pokazí
+	                														break;}}
+	                												else return INTERNAL;
+	                							return INTERNAL;
+	           								}}}}}}
+	            							else if (c == EOF) return INTERNAL;
+	            }}}}}}                										
 												
 					else{
 						ungetc(c, code);
