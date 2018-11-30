@@ -94,10 +94,10 @@ static dataTypeEnum getDataType(Token* token, parseData* parserData){
 	tData* symbol;
 
 	if(token->Type == tokenIdentifier){
-		symbol = BSTSearch(parserData->localTable, token->Data.string->value);
+		symbol = BSTsearchSymbol(parserData->localTable, token->Data.string->value);
 		if (symbol == NULL)
 			return TYPE_UNDEFINED;
-		return (symbol)->dataType;
+		return symbol->dataType;
 	}
 	else if(token->Type == tokenInteger)
 		return TYPE_INTEGER;
@@ -210,7 +210,7 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
             return BRACKETS_RULE;                       // rule E -> (E)
         }
         else
-            {printf("chyba here\n");return NOT_A_RULE;}
+            {return NOT_A_RULE;}
     }
     else
         return NOT_A_RULE;
@@ -384,7 +384,6 @@ static int reduceByRule(parseData* parserData)
     if(count == 1){
         if(found == true){
             op1 = stack.topPtr;
-            fprintf(stderr, "TOPPPPPP: %d %d\n", (stackTop(&stack)->symbol), op1->symbol);
 		    rule = testWhichRuleToUse(count, op1, NULL, NULL);
         }
     }
@@ -396,7 +395,7 @@ static int reduceByRule(parseData* parserData)
             rule = testWhichRuleToUse(count, op1, op2, op3);
         }
 	}
-	else {printf("kktina 1\n");return SYNTACTICAL;}
+	else {return SYNTACTICAL;}
 
 	if (rule == NOT_A_RULE){
        fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" NOT A RULE (SYNTACTICAL)\n");

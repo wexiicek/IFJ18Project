@@ -6,42 +6,46 @@
 #include "symtable.h"
 #include "scanner.h"
 
-void codeGenBuiltIn(FILE *dest, int builtInFun);
-void codeGenBegin(FILE* dest, int builtInFun);
-void codeGenMainFrameBegin(FILE *dest);
-void codeGenMainFrameEnd(FILE *dest);
-void codeGenTypeOfVarValue(FILE *dest, dataTypeEnum type);
-void codeGenTypeOfTermValue(FILE *dest, Token token);
-void codeGenDeclarationOfVar(FILE *dest, char *var);
-void codeGenValueOfVar(FILE *dest, char *var, dataTypeEnum type);
-void codeGenInput(FILE *dest, char *var, dataTypeEnum type);
-void codeGenPrint(FILE *dest);
+void codeGenBuiltIn(int builtInFun);
+void codeGenBegin();
+void codeGenMainFrameBegin();
+void codeGenMainFrameEnd();
+void codeGenTypeOfVarValue(dataTypeEnum type);
+void codeGenTypeOfTermValue(parseData parserData);
+void codeGenDeclarationOfVar(char *var);
+void codeGenValueOfVar(char *var, dataTypeEnum type);
+void codeGenInput(char *var, dataTypeEnum type);
+void codeGenPrint(char *var);
 /*-------------------------------------------Functions for operations with stack---------------------------------------------------*/
-void codeGenPush(FILE *dest, Token token);
-void codeGenStackOperation(FILE *dest, precAnalysisRules rule);
-void codeGenConcatStackStrings(FILE *dest);
-void codeGenSaveExpressionResult(FILE *dest, char *var, char *frame, dataTypeEnum left, dataTypeEnum right);
-void codeGenOperand1toFloat(FILE *dest);
-void codeGenOperand1toInteger(FILE *dest);
-void codeGenOperand2toFloat(FILE *dest);
-void codeGenOperand2toInteger(FILE *dest);
+void codeGenPush(parseData parserData);
+void codeGenStackOperation(precAnalysisRules rule);
+void codeGenConcatStackStrings();
+void codeGenSaveExpressionResult(char *var, char *frame, dataTypeEnum left, dataTypeEnum right);
+void codeGenOperand1toFloat();
+void codeGenOperand1toInteger();
+void codeGenOperand2toFloat();
+void codeGenOperand2toInteger();
 /*------------------------------------------Functions for conditional statements------------------------------------------------------*/
-void codeGenLabel(FILE *dest, char *func, int numOfLabel, int deep);
-void codeGenIfBegin(FILE *dest, char *func, int numOfLabel, int deep);
-void codeGenIfElse(FILE *dest, char *func, int numOfLabel, int deep);
-void codeGenIfEnd(FILE *dest, char *func, int numOfLabel, int deep);
-void codeGenWhileBegin(FILE *dest, char *func, int numOfLabel, int deep);
-void codeGenWhileEnd(FILE *dest, char *func, int numOfLabel, int deep);
+void codeGenLabel(char *func, int numOfLabel, int deep);
+void codeGenIfBegin(char *func, int numOfLabel, int deep);
+void codeGenIfElse(char *func, int numOfLabel, int deep);
+void codeGenIfEnd(char *func, int numOfLabel, int deep);
+void codeGenWhileBegin(char *func, int numOfLabel, int deep);
+void codeGenWhileEnd(char *func, int numOfLabel, int deep);
 /*-----------------------------------------Functions for generating functions---------------------------------------------------------*/
-void codeGenFuncBegin(FILE *dest, char *func);
-void codeGenFuncEnd(FILE *dest, char *func);
-void codeGenFuncReturnValue(FILE *dest, dataTypeEnum type);
-void codeGenFuncCall(FILE *dest, char *func);
-void codeGenFuncReturnValueAssign(FILE *dest, char *leftValue, dataTypeEnum left, dataTypeEnum ret);
-void codeGenFuncDeclarationOfParam(FILE *dest, char *param, int i);
-void codeGenFuncBeforeEnterParam(FILE *dest);
-void codeGenFuncConvertEnterParam(FILE *dest, dataTypeEnum origin, dataTypeEnum converted, int i);
-void codeGenFuncEnterParam(FILE *dest, Token token, int i);
-void codeGenFuncReturn(FILE *dest, char *func);
+void codeGenFuncBegin( char *func);
+void codeGenFuncEnd( char *func);
+void codeGenFuncReturnValue( dataTypeEnum type);
+void codeGenFuncCall(char *func);
+void codeGenFuncReturnValueAssign(char *leftValue, dataTypeEnum left, dataTypeEnum ret);
+void codeGenFuncDeclarationOfParam(char *param, int i);
+void codeGenFuncBeforeEnterParam();
+void codeGenFuncConvertEnterParam(dataTypeEnum origin, dataTypeEnum converted, int i);
+void codeGenFuncEnterParam(parseData parserData, int i);
+void codeGenFuncReturn(char *func);
+
+int codeGenStart();
+int codeGenClear();
+void codeGenPutToFile(FILE *out);
 
 #endif

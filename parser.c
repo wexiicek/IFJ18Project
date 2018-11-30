@@ -6,6 +6,7 @@
 #include "err.h"
 #include "expression.h"
 #include "generator.h"
+#include "symtable.h"
 
 /*
  * Macros for colored output
@@ -13,6 +14,8 @@
 #define CRED  "\x1B[31m"
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
+
+
 
 /*
  * FORWARD DECLARATION
@@ -69,23 +72,18 @@ static int mainFun(parseData* parserData){
 		//Checking function definition
 
 		getToken();
-		printf("BEFORE INSERT\n");
-		Print_tree(parserData->globalTable);
+		//fprintf(stderr, "print %d\n", Print_tree(parserData->globalTable));
 		//fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
 		checkTokenType(tokenIdentifier);
 		
-		tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
+		//tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 
-		strcpy(tempString, parserData->token.Data.string->value);
-		if (BSTSearch(parserData->globalTable, parserData->token.Data.string->value) == NULL)
+		//strcpy(tempString, parserData->token.Data.string->value);
+		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value) == NULL)
 		{
-			tData kokot = *(struct tData*) malloc(sizeof(tData));
-			kokot.dataType = TYPE_UNDEFINED;
-			kokot.defined = false;
-			kokot.global = false;
-			kokot. parameters = NULL;
-			kokot.identifier = NULL;
-			BSTInsert(&parserData->globalTable, tempString, kokot);
+
+			BSTinsertSymbol(&parserData->globalTable, parserData->token.Data.string->value);
+
 		}
 		else{
 			return 42;
@@ -94,8 +92,7 @@ static int mainFun(parseData* parserData){
 		//codeGenFuncBegin(output, tempString);
 		
 
-		printf("AFTER INSERT\n");
-		Print_tree(parserData->globalTable);
+		//Print_tree(parserData->globalTable);
 		getToken();
 		checkTokenType(tokenLeftBracket);
 		
@@ -143,6 +140,7 @@ static int mainFun(parseData* parserData){
 static int params(parseData* parserData){
 	int res = 0;
 	if(parserData -> token.Type == tokenIdentifier){
+		//fprintf(stderr, "%s\n", parserData->globalTable->Data.identifier);
 		/*
 		if (symTableSearch(&parserData->globalTable, parserData->token.Data.string->value))
 		{
@@ -491,8 +489,8 @@ void initTables(parseData* parserData){
 }
 
 void freeTables(parseData* parserData){
-	BSTDispose(&parserData->localTable);
-	BSTDispose(&parserData->globalTable);
+	BSTdispose(&parserData->localTable);
+	BSTdispose(&parserData->globalTable);
 }
 
 
@@ -557,7 +555,6 @@ int kowalskiAnalysis(){
 	
 	setDynString(&string);
 
-
 	parseData parserData;
 
 	initTables(&parserData);
@@ -565,19 +562,19 @@ int kowalskiAnalysis(){
 	//tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 	int res;
 
-	//codeGenBegin(output);
 
 	/*
 	 * Get first token and start parser
 	*/
-	getTokens(&parserData.token);
-	res = mainFun(&parserData);
+	res = getTokens(&parserData.token);
+	
+	if (!res){		
+		codeGenStart();
+		res = mainFun(&parserData);
+	}
 
 	stringDispose(&string);
-	//free symtabel vars
 	freeTables(&parserData);
-	//free(tempString);
-
 
 	return res;
 }

@@ -8,6 +8,9 @@
 
 int setDestFile(FILE *destFile);
 
+#define addToOutput(_funCall, ...)\
+			_funCall(__VA_ARGS__)
+
 typedef struct {
 	Token token;
 	tBSTNodePtr localTable;

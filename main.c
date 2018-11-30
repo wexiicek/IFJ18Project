@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "parser.h"
-
+#include "generator.h"
+#include "err.h"
 /*
  * Macros for colored output
 */
@@ -16,7 +17,6 @@ int main( int argc, const char* argv[] ){
 	#define DEBUG 1
 
     FILE *sourceCode;
-    FILE *output;
     
 	#ifdef DEBUG
 		//if((sourceCode = fopen("example1.src", "r"))==NULL){
@@ -36,20 +36,18 @@ int main( int argc, const char* argv[] ){
     	{fprintf(stderr,CRED"[MAIN]"CWHT" File couldnt be set.\n"); return INTERNAL;}
     fprintf(stderr,CGRN"[MAIN]"CWHT" File set properly.\n");
 
-    output = fopen("output", "w");
-    setDestFile(output);
-
-
     int parser = kowalskiAnalysis();
     
 	if(parser){
 		fprintf(stderr,CRED"[MAIN]"CWHT" Error in parser.\n");
-		fclose(output);
-		fopen("output", "w");
+		codeGenClear();
+		fclose(sourceCode);
+		return parser;
 	}
-	else
+	else{
+		codeGenPutToFile(stdout);
 		fprintf(stderr,CGRN"[MAIN]"CWHT" Parser finished succesfully.\n");
+	}
 	fclose(sourceCode);
-	fclose(output);
-	return parser;
+	return SUCCESS;
 }

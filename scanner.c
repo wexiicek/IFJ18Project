@@ -71,11 +71,7 @@ unsigned int keywordCompare (dynString *str, Token *token){
 		fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); 
 		token->Type = tokenKeyword; 
 		return true;
-	//	return scanRet(str, 1);
 	}
-
-	//return scanRet(str, false);
-	//return scanRet(str, 0);
 	return false;
 }
 
@@ -94,7 +90,6 @@ void setDynString(dynString *string){
 
 bool strToIntToken(dynString *from, Token *to){
     int value = atoi(from->value);
-    //fprintf(stderr, "ATOI %d\n", value);
     to->Data.integer = value;
     return SUCCESS;
 }
@@ -102,7 +97,6 @@ bool strToIntToken(dynString *from, Token *to){
 bool strToFltToken(dynString *from, Token *to){
 	float value = strtof(from->value, NULL);
 	to->Data.flt = value;
-	//fprintf(stderr, "FLOAT TOKEN VAL: %f\n", to->Data.flt);
 	return SUCCESS;
 }
 
@@ -117,7 +111,6 @@ int getTokens (Token *token) {
 
 	if(stringInit(str))
 		return INTERNAL;
-	//stringClear(kwstring);
 	bool zeroSwitch = false;
 	int state = stateStart; token -> Type = tokenEmpty;
 	char c;
@@ -127,54 +120,66 @@ int getTokens (Token *token) {
 	//Checking for block comment at the beginning, when there is no EOL before.. 
 	// .. dont ask
 	nextChar(c);
-	if ((c == '=')){
-		state = stateError;
-		nextChar(c);               										
-		if (c == 'b'){
-			nextChar(c);
-			if(c == 'e'){
-				nextChar(c);                										
-				if(c == 'g'){
+	ungetc(c, code);
+		if ((c == '=')){
+			state = stateError;
+			nextChar(c);                										
+			if (c == 'b'){
+				nextChar(c);
+				if(c == 'e'){
 					nextChar(c);                										
-					if(c == 'i'){
-						nextChar(c);                								
-						if(c == 'n'){
-							nextChar(c);                					
-							if (c ==  '\n') {
-								while (c != EOF){
-									nextChar(c);
-									if(c == '\n' || c == '='){
-										nextChar(c);
-										if(c == '=' || c == 'e'){
-											nextChar(c);
-											if( c == 'e' || c == 'n'){
+					if(c == 'g'){
+						nextChar(c);                										
+						if(c == 'i'){
+							nextChar(c);                								
+							if(c == 'n'){
+								nextChar(c);  
+								//fprintf(stderr, "%c\n",c );              					
+    							if (c ==  '\n') {
+    								while (c != EOF){
+    									nextChar(c);
+    									if(c == '\n' || c == '='){
+    										nextChar(c);
+    										if(c == '=' || c == 'e'){
     											nextChar(c);
-    											if(c == 'n' || c == 'd'){
-    												nextChar(c);
-    													if(c == 'd' || c == '\n' || c == EOF){
-	                													fprintf(stderr, "%d\n",c );
-	                													if(c == EOF){
-	                														state=stateEnd;	                													
-	                														token->Type = tokenEndOfFile;
-	                														break;
-	                													}
-	                													else if (c == 'd'){
-	                														state = stateStart;
-	                														token -> Type = tokenEmpty; //TODO možno pokazí
-	                														break;}
-	                													
-	                													else if (c == '\n'){
-	                														//ungetc(c, code);
-	                														state = stateStart;
-	                														token -> Type = tokenEmpty; //TODO možno pokazí
-	                														break;}}
-	                												else return INTERNAL;
-    								return INTERNAL;
-	}}}}}}}}}}}} else ungetc(c, code);
+    											if( c == 'e' || c == 'n'){
+        											nextChar(c);
+        											if(c == 'n' || c == 'd'){
+        												nextChar(c);
+        												if(c == 'd' || c == '\n' || c == EOF){
+        													//fprintf(stderr, "%c\n",c );
+        													if(c == EOF){
+        														state=stateEnd;	                													
+        														token->Type = tokenEndOfFile;
+        														break;
+        													}
+        													else if (c == 'd'){
+        														nextChar(c);	                													
+        														ungetc(c, code);
+        														state = stateStart;
+        														token -> Type = tokenEmpty; //TODO možno pokazí
+        														break;}
+        													
+        													else if (c == '\n'){
+        														//ungetc(c, code);
+        														state = stateStart;
+        														token -> Type = tokenEmpty; //TODO možno pokazí
+        														break;}}
+        												else return LEXICAL;
+        							return LEXICAL;
+   								}}}}}}
+    							else if (c == EOF) return LEXICAL;
+    }}}}}                										
+									
+		else{
+			ungetc(c, code);
+			//token -> Type = tokenEndOfLine;
+			state = stateEnd;
+		}
+	}
 
 	//Go through every character of a file
 	while (1){
-		//printf("%c\n",c );
 		nextChar(c);
 		switch (state){
 			case (stateStart):
@@ -227,10 +232,10 @@ int getTokens (Token *token) {
 	                														state = stateStart;
 	                														token -> Type = tokenEmpty; //TODO možno pokazí
 	                														break;}}
-	                												else return INTERNAL;
-	                							return INTERNAL;
+	                												else return LEXICAL;
+	                							return LEXICAL;
 	           								}}}}}}
-	            							else if (c == EOF) return INTERNAL;
+	            							else if (c == EOF) return LEXICAL;
 	            }}}}}}                										
 												
 					else{
@@ -311,19 +316,19 @@ int getTokens (Token *token) {
 
 			case (stateNumber):
 				if ((zeroSwitch) && (token->Type == tokenInteger) && (isdigit(c)))
-					{fprintf(stderr,"%d\n", zeroSwitch); zeroSwitch = false;return LEXICAL; }
+					{zeroSwitch = false;return LEXICAL; }
 
 				if (isdigit(c)){
 					if (c == '0')
 						zeroSwitch = true;
-					stringAddChar(str, c);
+					if(stringAddChar(str, c)) return scanRet(str, INTERNAL);
 				}
 
 				else if (c == '.')
-					{token->Type = tokenFloat; stringAddChar(str, c);}
+					{token->Type = tokenFloat; if(stringAddChar(str, c)) return scanRet(str, INTERNAL);}
 
 				else if ((c == 'e')||(c == 'E'))
-					{token->Type = tokenExponential; stringAddChar(str, c);}
+					{token->Type = tokenExponential; if(stringAddChar(str, c)) return scanRet(str, INTERNAL);}
 
 				else
 					{state = stateNumberEnd; zeroSwitch = false; ungetc(c, code); }
@@ -331,10 +336,10 @@ int getTokens (Token *token) {
 
 			case (stateIdentifierOrKeyword):
 				if ( (c == '_') || isalnum(c))
-					{if(stringAddChar(str, c)) return scanRet(str, LEXICAL);}
+					{if(stringAddChar(str, c)) return scanRet(str, INTERNAL);}
 				else if ( (c == '?') || (c == '!')){
 					if(stringAddChar(str, c))
-						scanRet(str, INTERNAL);
+						return scanRet(str, INTERNAL);
 					else
 						 state = stateIdentifierEnd;
 				}
@@ -405,7 +410,7 @@ int getTokens (Token *token) {
 
 				else if (c != '\"'){
 					if(stringAddChar(str, c))
-						scanRet(str, INTERNAL);
+						return scanRet(str, INTERNAL);
 				}
 				else 
 					{state = stateStringEnd;}
@@ -420,28 +425,28 @@ int getTokens (Token *token) {
 					c = '\n';
 					token->Type = tokenEscapeSequence;
 					if(stringAddChar(str, c))
-						scanRet(str, SUCCESS);
+						return scanRet(str, INTERNAL);
 					state = stateStringStart;
 				}
 
 				else if (c == 't'){
 					c = '\t';
 					if(stringAddChar(str, c))
-						scanRet(str, SUCCESS);
+						return scanRet(str, INTERNAL);
 					state = stateStringStart;
 				}
 
 				else if (c == 's'){
 					c = ' ';
 					if(stringAddChar(str, c))
-						scanRet(str, SUCCESS);
+						return scanRet(str, INTERNAL);
 					state = stateStringStart;
 				}
 
 				else if (c == '"'){
 					c = '"';
 					if(stringAddChar(str, c))
-						scanRet(str, SUCCESS);
+						return scanRet(str, INTERNAL);
 					state = stateStringStart;
 				}
 
@@ -453,11 +458,12 @@ int getTokens (Token *token) {
 				else
 					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 				state = stateStart;
-				fprintf(stderr, "%p\n", (void*)&str->value);
+				//fprintf(stderr, "%p\n", (void*)&str->value);
 				if(!pushToToken(str, kwstring)) return scanRet(str, INTERNAL);
+
 				//stringClear(kwstring);
 				ungetc(c, code);
-				return scanRet(str, LEXICAL);
+				return scanRet(str, SUCCESS);//TODO CHeck if its SUCCESS
 			break;
 
 			case (stateIdentifierEnd):
@@ -466,7 +472,7 @@ int getTokens (Token *token) {
 					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
 					//stringClear(kwstring); 
 					ungetc(c, code);
-					return scanRet(str, SUCCESS);}
+					return scanRet(str, SUCCESS);} 
 				else {
 					
 					if(!stringCompare(str,"\n") == 0)
@@ -476,10 +482,6 @@ int getTokens (Token *token) {
 					state = stateStart;
 					//fprintf(stderr, "MAME STRING%s\n", token->Data.string->value);
 					if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
-					else fprintf(stderr,CGRN "SUCCESS\n"CWHT);
-					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
-					//stringClear(kwstring);
-					fprintf(stderr, "l%sl ..... l%sl %d\n",str->value, token->Data.string -> value, token->Data.string -> length);
 					ungetc(c, code);
 					return scanRet(str, SUCCESS);
 					//return SUCCESS;

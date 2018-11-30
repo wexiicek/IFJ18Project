@@ -53,6 +53,20 @@ int stringAddChar(dynString *str, char c) {
     return SUCCESS;
 }
 
+int stringAddString(dynString *str, char *input){
+    int len = strlen(input);
+    int requiredLength = str->length + len + 1;
+    if (requiredLength >= str->lengthAllocated){
+        if(!(str->value = (char *) realloc(str->value, requiredLength)))
+            return INTERNAL;
+        str->lengthAllocated = requiredLength;
+    }
+    str -> length += len;
+    strcat(str->value, input);
+    str->value[str->length] = '\0';
+    return SUCCESS;
+}
+
 int stringClear(dynString *str) {
     int i;
     for (i = 0; i < str->lengthAllocated; i++) {
@@ -69,15 +83,11 @@ void stringDispose(dynString *str) {
 
 bool pushToToken(dynString *from, dynString *to){
     int len = from -> length + 1;
-    printf("len%d\n", to->length);
     if (len >= to -> lengthAllocated ){
         to -> value = (char *) realloc(to -> value, len); 
         to -> lengthAllocated = len;
     }
-
-        fprintf(stderr, "%s\n","realloc" );
     strcpy(to -> value, from -> value);
-    printf("%s\n", to->value);
     to -> length = len - 1;
     return true;
 }

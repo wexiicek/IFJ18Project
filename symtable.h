@@ -2,22 +2,15 @@
 #define IFJ_SYMTABLE_H
 
 #include <stdbool.h>
-
 #include "string.h"
 #include "err.h"
-#define TRUE 1
-#define FALSE 0
-
-extern int solved;                        /* indikace, zda byla funkce řešena */
-
-/* uzel stromu */
 
 typedef enum{
     TYPE_INTEGER,
     TYPE_FLOAT,
     TYPE_STRING,
     TYPE_UNDEFINED,
-}dataTypeEnum;
+} dataTypeEnum;
 
 typedef struct tData{
     dataTypeEnum dataType;
@@ -25,22 +18,21 @@ typedef struct tData{
     bool global;
     dynString *parameters;   
     char *identifier;
-} tData;
+} tData; //TODO hvezdicka?
                                                                                                             
 typedef struct tBSTNode {
-	char *Key;			                                                      /* klíč */
-	tData Data;                                            /* užitečný obsah uzlu */
-	struct tBSTNode * LPtr;                                    /* levý podstrom */
-	struct tBSTNode * RPtr;                                   /* pravý podstrom */
+	char *Key;
+	tData Data;
+	struct tBSTNode * LPtr;
+	struct tBSTNode * RPtr;
 } *tBSTNodePtr;	
 
-/* prototypy funkcí */
+void BSTInit (tBSTNodePtr *);
+tData *BSTinsertSymbol (tBSTNodePtr *, char *k); //, tData
+tData *BSTsearchSymbol (tBSTNodePtr, char*);
+void BSTdispose (tBSTNodePtr*);
+void Print_tree2(tBSTNodePtr TempTree, char*, char fromdir);
+int Print_tree(tBSTNodePtr TempTree);
+void freeTree(tBSTNodePtr *);
 
-void BSTInit   (tBSTNodePtr *);
-tData* BSTSearch  (tBSTNodePtr, char*);
-void BSTInsert (tBSTNodePtr *, char*, tData);
-void BSTDelete (tBSTNodePtr *, char);
-void BSTDispose(tBSTNodePtr *);
-
-/* konec c401.h */
 #endif

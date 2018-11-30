@@ -15,6 +15,7 @@ typedef struct {
 
 int stringInit(dynString *str);
 int stringAddChar(dynString *, char);
+int stringAddString(dynString *, char *);
 int stringClear(dynString *);
 bool stringCompare(dynString *a, char *b);
 void stringDispose(dynString *str);

@@ -1,12 +1,22 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include "generator.h"
 #include "symtable.h"
 #include "string.h"
 #include "expression.h"
+#include "err.h"
 
 
-FILE *test;
+
+#define INS(_code)\
+			stringAddString(&outcode, (_code))
+
+#define INSINT(_code)\
+			do{	char tmp[50];\
+				sprintf(tmp, "%d", _code);\
+				INS(tmp);} while(false)
+
 //Decides which built in function will be used
 // 1 - inputs
 // 2 - inputi
@@ -18,13 +28,15 @@ FILE *test;
 // 8 - chr
 //int builtInFun = 0;
 
-void codeGenBuiltIn(FILE *dest, int builtInFun){
+
+dynString outcode;
+
+void codeGenBuiltIn(int builtInFun){
 	switch(builtInFun) {
 
 		//inputs
 		case(1):
-		fprintf(dest, 
-"\
+		stringAddString(&outcode,"\
 LABEL $inputs\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -35,8 +47,7 @@ RETURN\n");
 
 		//inputi
 		case(2):
-		fprintf(dest, \
-"\
+		stringAddString(&outcode, "\
 LABEL $inputi\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -47,8 +58,7 @@ RETURN\n");
 
 		//inputf
 		case(3):
-		fprintf(dest, \
-"\
+		stringAddString(&outcode, "\
 LABEL $inputf\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -59,8 +69,7 @@ RETURN\n");
 
 		//print
 		case(4):
-		fprintf(dest, \
-"\
+		stringAddString(&outcode, "\
 LABEL $print\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -71,8 +80,7 @@ RETURN\n");
 
 		//length
 		case(5):
-			fprintf(dest, \
-"\
+			stringAddString(&outcode, "\
 LABEL $length\n\
 PUSHFRAME \n\
 DEFVAR LF@%%retval\n\
@@ -83,8 +91,7 @@ RETURN\n");
 
 		//substr
 		case(6):
-		fprintf(dest, \
-"\
+		stringAddString(&outcode, "\
 LABEL $substr\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -124,8 +131,7 @@ RETURN\n");
 
 		//ord
 		case(7):
-			fprintf(dest, \
-"\
+			stringAddString(&outcode, "\
 LABEL $ord\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -148,8 +154,7 @@ RETURN\n");
 
 		//char
 		case(8):
-			fprintf(dest, \
-"\
+			stringAddString(&outcode, "\
 LABEL $chr\n\
 PUSHFRAME\n\
 DEFVAR LF@%%retval\n\
@@ -168,9 +173,8 @@ RETURN\n");
 
 }
 
-void codeGenBegin(FILE* dest) {
-	fprintf(dest, \
-"\
+void codeGenBegin() {
+	stringAddString(&outcode, "\
 .IFJcode18\n\
 DEFVAR GF@%%input\n\
 DEFVAR GF@%%result\n\
@@ -180,126 +184,133 @@ DEFVAR GF@%%operand3\n\
 JUMP $$main\n");
 
 	for (int i = 1; i <= 8; i++)
-		codeGenBuiltIn(dest, i);
+		codeGenBuiltIn(i);
 }
 
-void codeGenMainFrameBegin(FILE *dest) {
-	fprintf(dest, \
-"\
-LABEL $$main\n\
+void codeGenMainFrameBegin() {
+	stringAddString(&outcode, "LABEL $$main\n\
+JEBEK\n\
 CREATEFRAME\n\
 PUSHFRAME\n");
+
 }
 
-void codeGenMainFrameEnd(FILE *dest) {
-	fprintf(dest, \
-"\
-POPFRAME\n\
+void codeGenMainFrameEnd() {
+	stringAddString(&outcode, "POPFRAME\n\
 CLEARS\n");
 }
 
-void codeGenTypeOfVarValue(FILE *dest, dataTypeEnum type) {
+void codeGenTypeOfVarValue(dataTypeEnum type) {
 	switch (type) {
 		case TYPE_INTEGER:
-			fprintf(dest, "int@0");
+			stringAddString(&outcode, "int@0");
 			break;
 		case TYPE_FLOAT:
-			fprintf(dest, "float@0.0");
+			stringAddString(&outcode, "float@0.0");
 			break;
 		case TYPE_STRING:
-			fprintf(dest, "string@");
+			stringAddString(&outcode, "string@");
 			break;
 		default:
 			return;
 	}
 }
 
-void codeGenTypeOfTermValue(FILE *dest, Token token) {
+void codeGenTypeOfTermValue(parseData parserData) {
 	unsigned char c;
+	char val[50]; //TODO
 	int i = 0;
+	dynString tmp;
+	stringInit(&tmp);
 
-	switch (token.Type) {
+	switch (parserData.token.Type) {
 		case tokenInteger:
-			fprintf(dest, "int@%d", token->Data.integer);
+			sprintf(val, "%d", parserData.token.Data.integer);
+			INS("int@");INS(val);INS("\n");
 			break;
 		case tokenFloat:
-			fprintf(dest, "float@%f", token.Data.float);
+			sprintf(val, "%f", parserData.token.Data.flt);
+			INS("float@");INS(val);INS("\n");
 			break;
 		case tokenString:
-			fprintf(dest, "string@");
-			while ((c = (unsigned char) (token.Data.string->value)[i]) != '\0') {
+			stringAddString(&outcode, "string@");
+			while ((c = (unsigned char) (parserData.token.Data.string->value)[i]) != '\0') {
 				if (c == '#' || c == '\\' || c <= 32 || !isprint(c)) {
-					fprintf(dest, "\\%03d", c);
+					stringAddChar(&tmp, '\\'); sprintf(val, "%03d", c); stringAddString(&tmp, val);
 				} else {
-					fprintf(dest, "%c", c);
+					stringAddChar(&tmp, c);
 				}
 				i++;
 			}
 			break;
 		case tokenIdentifier:
-			fprintf(dest, "LF@%s", token.Data.string->value);
+			INS("LF@%");INS(parserData.token.Data.string->value);
 			break;
 		default:
 			return;
 	}
 }
 
-void codeGenDeclarationOfVar(FILE *dest, char *var) {
-	fprintf(dest, "DEFVAR LF@%s\n", var);
+void codeGenDeclarationOfVar(char *var) {
+	//stringAddString(&outcode, "DEFVAR LF@%s\n", var);
+	INS("DEFVAR LF@");INS(var);INS("\n");
 }
 
-void codeGenValueOfVar(FILE *dest, char *var, dataTypeEnum type) {
-	fprintf(dest, "MOVE LF@%s ", var);
-	codeGenTypeOfVarValue(dest, type);
-	fprintf(dest, "\n");
+void codeGenValueOfVar(char *var, dataTypeEnum type) {
+	//stringAddString(&outcode, "MOVE LF@%s ", var);
+	INS("MOVE LF@");INS(var);
+	codeGenTypeOfVarValue(type);
+	stringAddString(&outcode, "\n");
 }
 
-void codeGenInput(FILE *dest, char *var, dataTypeEnum type) {
-	fprintf(dest, "READ LF@%s ", var);
+void codeGenInput(char *var, dataTypeEnum type) {
+	//stringAddString(&outcode, "READ LF@%s ", var);
+	INS("READ LF@"); INS(var);
 	switch (type) {
 	 	case TYPE_INTEGER:
-	 		fprintf(dest, "int");
+	 		stringAddString(&outcode, "int");
 	 		break;
 	 	case TYPE_FLOAT:
-	 		fprintf(dest, "float");
+	 		stringAddString(&outcode, "float");
 	 		break;
 	 	case TYPE_STRING:
-	 		fprintf(dest, "string");
+	 		stringAddString(&outcode, "string");
 	 		break;
 	 	default:
 	 		return;
 	}
-	fprintf(dest, "\n");
+	stringAddString(&outcode, "\n");
 }
 
-void codeGenPrint(FILE *dest, char *var) {
-    fprintf(dest, "WRITE LF@%s\n", var);
+void codeGenPrint(char *var) {
+    //stringAddString(&outcode, "WRITE LF@%s\n", var);
+    INS("WRITE LF@"); INS(var); INS("\n");
 }
 
 /*----------------------------------------Functions for operations with stack------------------------------------------------------------------*/
 
-void codeGenPush(FILE *dest, Token token) {
-	fprintf(dest, "PUSHS ");
-	codeGenTypeOfTermValue(dest, token);
-	fprintf(dest, "\n");
+void codeGenPush(parseData parserData) {
+	stringAddString(&outcode, "PUSHS ");
+	codeGenTypeOfTermValue(parserData);
+	stringAddString(&outcode, "\n");
 }
 
-void codeGenStackOperation(FILE *dest, precAnalysisRules rule) {
+void codeGenStackOperation(precAnalysisRules rule) {
 	switch (rule) {
 		case PLUS_RULE:
-			fprintf(dest, "ADDS\n");
+			stringAddString(&outcode, "ADDS\n");
 			break;
 		case MINUS_RULE:
-			fprintf(dest, "SUBS\n");
+			stringAddString(&outcode, "SUBS\n");
 			break;
 		case MUL_RULE:
-			fprintf(dest, "MULS\n");
+			stringAddString(&outcode, "MULS\n");
 			break;
 		case DIV_RULE:
-			fprintf(dest, "DIVS\n");
+			stringAddString(&outcode, "DIVS\n");
 			break;
 		/*case IDIV_RULE:
-			fprintf(dest, "POPS GF@%%operand1\n\
+			stringAddString(&outcode, "POPS GF@%%operand1\n\
 				INT2FLOATS\n\
 				PUSHS GF@%%operand1\n\
 				INT2FLOATS\n\
@@ -307,18 +318,17 @@ void codeGenStackOperation(FILE *dest, precAnalysisRules rule) {
 				FLOAT2INTS\n");
 			break;*/
 		case EQUAL_RULE:
-			fprintf(dest, "EQS\n");
+			stringAddString(&outcode, "EQS\n");
 			break;
 		case NOT_EQUAL_RULE:
-			fprintf(dest, "EQS\n\
+			stringAddString(&outcode, "EQS\n\
 				NOTS\n");
 			break;
 		case LESS_RULE:
-			fprintf(dest, "LTS\n");
+			stringAddString(&outcode, "LTS\n");
 			break;
 		case LESS_OR_EQUAL_RULE:
-			fprintf(dest, \
-"POPS GF@%%operand1\n\
+			stringAddString(&outcode, "POPS GF@%%operand1\n\
 POPS GF@%%operand2\n\
 PUSHS GF@%%operand2\n\
 PUSHS GF@%%operand1\n\
@@ -329,11 +339,10 @@ EQS\n\
 ORS\n");
 			break;
 		case GREATER_RULE:
-			fprintf(dest, "GTS\n");
+			stringAddString(&outcode, "GTS\n");
 			break;
 		case GREATER_OR_EQUAL_RULE:
-			fprintf(dest, \
-"POPS GF@%%operand1\n\
+			stringAddString(&outcode, "POPS GF@%%operand1\n\
 POPS GF@%%operand2\n\
 PUSHS GF@%%operand2\n\
 PUSHS GF@%%operand1\n\
@@ -348,164 +357,163 @@ ORS\n");
 	}
 }
 
-void codeGenConcatStackStrings(FILE *dest) {
-	fprintf(dest, \
-"POPS GF@%%operand3\n\
+void codeGenConcatStackStrings() {
+	stringAddString(&outcode, "POPS GF@%%operand3\n\
 POPS GF@%%operand2\n\
 CONCAT GF@%%operand1 GF@%%operand2 GF@%%operand3\n\
 PUSHS GF@%%operand1\n");
 }
 
-void codeGenSaveExpressionResult(FILE *dest, char *var, char *frame, dataTypeEnum left, dataTypeEnum right) {
+void codeGenSaveExpressionResult(char *var, char *frame, dataTypeEnum left, dataTypeEnum right) {
 	if (left == TYPE_INTEGER && right == TYPE_FLOAT) {
-		fprintf(dest, "FLOAT2INTS\n");
+		stringAddString(&outcode, "FLOAT2INTS\n");
 	} else if (left == TYPE_FLOAT && right == TYPE_INTEGER) {
-		fprintf(dest, "INT2FLOATS\n");
+		stringAddString(&outcode, "INT2FLOATS\n");
 	}
-	fprintf(dest, "POPS %s@%s\n", frame, var);
+	//stringAddString(&outcode, "POPS %s@%s\n", frame, var);
+	INS("POPS "); INS(frame); INS("@"); INS(var); INS("\n");
 }
 
-void codeGenOperand1toFloat(FILE *dest) {
-	fprintf(dest, "INT2FLOATS\n");
+void codeGenOperand1toFloat() {
+	stringAddString(&outcode, "INT2FLOATS\n");
 }
 
-void codeGenOperand1toInteger(FILE *dest) {
-	fprintf(dest, "FLOAT2INTS\n");
+void codeGenOperand1toInteger() {
+	stringAddString(&outcode, "FLOAT2INTS\n");
 }
 
-void codeGenOperand2toFloat(FILE *dest) {
-	fprintf(dest, \
-"POPS GF@%%operand1\n\
+void codeGenOperand2toFloat() {
+	stringAddString(&outcode, "POPS GF@%%operand1\n\
 INT2FLOATS\n\
 PUSHS GF@%%operand1\n");
 }
 
-void codeGenOperand2toInteger(FILE *dest) {
-	fprintf(dest, \
-"POPS GF@%%operand1\n\
+void codeGenOperand2toInteger() {
+	stringAddString(&outcode, "POPS GF@%%operand1\n\
 FLOAT2INTS\n\
 PUSHS GF@%%operand1\n");
 }
 
 /*---------------------------------------Functions for conditional statements------------------------------------*/
 
-void codeGenLabel(FILE *dest, char *func, int numOfLabel, int deep) {
-	fprintf(dest, "LABEL $%s%%%d%%%d\n", func, deep, numOfLabel);
+void codeGenLabel(char *func, int numOfLabel, int deep) {
+	//stringAddString(&outcode, "LABEL $%s%%%d%%%d\n", func, deep, numOfLabel);
+	INS("LABEL $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel); INS("\n");
 }
 
-void codeGenIfBegin(FILE *dest, char *func, int numOfLabel, int deep) {
-	fprintf(dest, "JUMPIFEQ $%s%%%d%%%d GF@%%result bool@false\n", func, deep, numOfLabel);
+void codeGenIfBegin(char *func, int numOfLabel, int deep) {
+	//stringAddString(&outcode, "JUMPIFEQ $%s%%%d%%%d GF@%%result bool@false\n", func, deep, numOfLabel);
+	INS("JUMPIFEQ $"); INS(func); INS("$"); INSINT(deep); INS("$"); INSINT(numOfLabel); INS("GF@%result bool@dalse\n");
 }
 
-void codeGenIfElse(FILE *dest, char *func, int numOfLabel, int deep) {
-	fprintf(dest, "JUMP $%s%%%d%%%d\n", func, deep, numOfLabel + 1);
-	codeGenLabel(dest, func, numOfLabel, deep);
+void codeGenIfElse(char *func, int numOfLabel, int deep) {
+	//stringAddString(&outcode, "JUMP $%s%%%d%%%d\n", func, deep, numOfLabel + 1);
+	INS("JUMP $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel+1);INS("\n");
+	codeGenLabel(func, numOfLabel, deep);
 }
 
-void codeGenIfEnd(FILE *dest, char *func, int numOfLabel, int deep) {
-	codeGenLabel(dest, func, numOfLabel, deep);
+void codeGenIfEnd(char *func, int numOfLabel, int deep) {
+	codeGenLabel(func, numOfLabel, deep);
 }
 
-void codeGenWhileBegin(FILE *dest, char *func, int numOfLabel, int deep) {
-	codeGenLabel(dest, func, numOfLabel, deep);
-	fprintf(dest, "JUMPIFEQ $%s%%%d%%%d GF@%%result bool@false\n", func, deep, numOfLabel);
+void codeGenWhileBegin(char *func, int numOfLabel, int deep) {
+	codeGenLabel(func, numOfLabel, deep);
+	//stringAddString(&outcode, "JUMPIFEQ $%s%%%d%%%d GF@%%result bool@false\n", func, deep, numOfLabel);
+	INS("JUMPIFEQ $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel); INS("GF%result bool@false\n");
 }
 
-void codeGenWhileEnd(FILE *dest, char *func, int numOfLabel, int deep) {
-	fprintf(dest, "JUMP $%s%%%d%%%d\n", func, deep, numOfLabel - 1);
-	codeGenLabel(dest, func, numOfLabel, deep);
+void codeGenWhileEnd(char *func, int numOfLabel, int deep) {
+	//stringAddString(&outcode, "JUMP $%s%%%d%%%d\n", func, deep, numOfLabel - 1);
+	INS("JUMP $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel-1); INS("\n");
+	codeGenLabel(func, numOfLabel, deep);
 }
 
 /*----------------------------------------Functions for generating functions----------------------------------------------*/
 //for user functions
-void codeGenFuncBegin(FILE *dest, char *func) {
-	fprintf(dest, \
-"LABEL $%s\n\
-PUSHFRAME\n", func);
+void codeGenFuncBegin(char *func) {
+	//stringAddString(&outcode, "LABEL $%s\n\PUSHFRAME\n", func);
+	INS("LABEL $"); INS(func); INS("\n"); INS("PUSHFRAME\n");
 }
 
 //for user functions
-void codeGenFuncEnd(FILE *dest, char *func) {
-	fprintf(dest, \
-"LABEL $%s%%return\n\
-POPFRAME\n\
-RETURN\n", func);
+void codeGenFuncEnd(char *func) {
+	//stringAddString(&outcode, "LABEL $%s%%return\n\POPFRAME\n\RETURN\n", func);
+	INS("LABEL $"); INS(func); INS("%return\n");
+	INS("POPFRAME\n");
+	INS("RETURN\n");
 }
 
 //for user functions
-void codeGenFuncReturnValue(FILE *dest, dataTypeEnum type) {
-	fprintf(dest, \
-"DEFVAR LF@%%retval\n\
+void codeGenFuncReturnValue(dataTypeEnum type) {
+	stringAddString(&outcode, "DEFVAR LF@%%retval\n\
 MOVE LF@%%retval ");
-	codeGenTypeOfVarValue(dest ,type);
-	fprintf(dest, "\n");
+	codeGenTypeOfVarValue(type);
+	stringAddString(&outcode, "\n");
 }
 
 //for calling function
-void codeGenFuncCall(FILE *dest, char *func) {
-	fprintf(dest, "CALL $%s\n", func);
+void codeGenFuncCall(char *func) {
+	//stringAddString(&outcode, "CALL $%s\n", func);
+	INS("CALL $"); INS(func); INS("\n");
 }
 
-void codeGenFuncReturnValueAssign(FILE *dest, char *leftValue, dataTypeEnum left, dataTypeEnum ret) {
+void codeGenFuncReturnValueAssign(char *leftValue, dataTypeEnum left, dataTypeEnum ret) {
 	if (left == TYPE_FLOAT && ret == TYPE_INTEGER) {
-		fprintf(dest, "INT2FLOAT TF@%%retval TF@%%retval\n");
+		stringAddString(&outcode, "INT2FLOAT TF@%%retval TF@%%retval\n");
 	} else if (left == TYPE_INTEGER && ret == TYPE_FLOAT) {
-		fprintf(dest, "FLOAT2INT TF@%%retval TF@%%retval\n");
+		stringAddString(&outcode, "FLOAT2INT TF@%%retval TF@%%retval\n");
 	}
-	fprintf(dest, "MOVE LF@%s TF@%%retval\n", leftValue);
+	//stringAddString(&outcode, "MOVE LF@%s TF@%%retval\n", leftValue);
+	INS("MOVE LF@"); INS(leftValue); INS(" TF@%retval\n");
 }
 
 //agruments instead of params?
-void codeGenFuncDeclarationOfParam(FILE *dest, char *param, int i) {
-	fprintf(dest, "DEFVAR LF@%s\n", param);
-	fprintf(dest, "MOVE LF@%s LF@%%%d\n", param, i);
+void codeGenFuncDeclarationOfParam(char *param, int i) {
+	//stringAddString(&outcode, "DEFVAR LF@%s\n", param);
+	//stringAddString(&outcode, "MOVE LF@%s LF@%%%d\n", param, i);
+	INS("DEFVAR LF@"); INS(param); INS("\n");
+	INS("MOVE LF@"); INS(param); INS(" LF@%"); INSINT(i); INS("\n");
 }
 
-void codeGenFuncBeforeEnterParam(FILE *dest) {
-	fprintf(dest, "CREATEFRAME\n");
+void codeGenFuncBeforeEnterParam() {
+	stringAddString(&outcode, "CREATEFRAME\n");
 }
 
-void codeGenFuncConvertEnterParam(FILE *dest, dataTypeEnum origin, dataTypeEnum converted, int i) {
+void codeGenFuncConvertEnterParam(dataTypeEnum origin, dataTypeEnum converted, int i) {
 	if (origin == TYPE_INTEGER && converted == TYPE_FLOAT) {
-		fprintf(dest, "INT2FLOAT TF@%%%d TF@%%%d\n", i, i);
+		//stringAddString(&outcode, "INT2FLOAT TF@%%%d TF@%%%d\n", i, i);
+		INS("INT2FLOAT TF@%"); INSINT(i); INS("TF@%"); INSINT(i); INS("\n");
 	} else if (origin == TYPE_FLOAT && converted == TYPE_INTEGER) {
-		fprintf(dest, "FLOAT2INT TF@%%%d TF@%%%d\n", i, i);
+		//stringAddString(&outcode, "FLOAT2INT TF@%%%d TF@%%%d\n", i, i);
+		INS("FLOAT2INT TF@%"); INSINT(i); INS("TF@%"); INSINT(i); INS("\n");
 	}
 }
 
-void codeGenFuncEnterParam(FILE *dest, Token token, int i) {
-	fprintf(dest, \
-"DEFVAR TF@%%%d\n\
-MOVE TF@%%%d ", i, i);
-	codeGenTypeOfTermValue(dest, token);
-	fprintf(dest, "\n");
+void codeGenFuncEnterParam(parseData parserData, int i) {
+	//stringAddString(&outcode, "DEFVAR TF@%%%d\n\MOVE TF@%%%d ", i, i);
+	INS("DEFVAR TF@%"); INSINT(i); INS("\nMOVE TF@%"); INSINT(i);
+	codeGenTypeOfTermValue(parserData);
+	stringAddString(&outcode, "\n");
 }
 
-void codeGenFuncReturn(FILE *dest, char *func) {
- 	fprintf(dest, \
-"MOVE LF@%%retval GF@%%result\n\
-JUMP $%s%%return\n", func);
+void codeGenFuncReturn(char *func) {
+ 	//stringAddString(&outcode, "MOVE LF@%%retval GF@%%result\n\JUMP $%s%%return\n", func);
+ 	INS("MOVE LF@%retval GF@%result\n");
+ 	INS("JUMP $"); INS(func); INS("%return\n");
 }
 
-int main(){
-	printf("[GENERATOR] Running.\n");
-	test = fopen("test", "w");
-	codeGenBegin(test);
-	codeGenMainFrameBegin(test);
-	//codeGenFuncBegin(test, "kokot");
-	//codeGenFuncCall(test, "kokot");
-	//codeGenFuncReturnValue(test, TYPE_UNDEFINED);
-	//codeGenFuncEnd(test, "kokot");
-	/*codeGenDeclarationOfVar(test, "jebek");
-	codeGenInput(test, "jebek", TYPE_STRING);
-	codeGenValueOfVar(test, "jebek", TYPE_STRING);
+int codeGenStart(){
+	stringInit(&outcode);
+	codeGenBegin();
+	return true;
+}
 
-	codeGenPrint(test, "jebek");*/
-	codeGenFuncBeforeEnterParam(test);
-	codeGenTypeOfTermValue(test, )
-	codeGenFuncCall(test, "substr");
+int codeGenClear(){
+	stringDispose(&outcode);
+	return true;
+}
 
-	codeGenMainFrameEnd(test);
-	fclose(test);
-return 0;
+void codeGenPutToFile(FILE *out){
+	fputs(outcode.value, out);
+	codeGenClear();
 }
