@@ -89,7 +89,9 @@ static int mainFun(parseData* parserData){
 			return 42;
 		}
 
-		//codeGenFuncBegin(output, tempString);
+		parserData->currentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
+		//fprintf(stderr, "%s\n", parserData->currentID->identifier);
+		addToOutput(codeGenFuncBegin, parserData->currentID->identifier);
 		
 
 		Print_tree(parserData->globalTable);
@@ -111,6 +113,7 @@ static int mainFun(parseData* parserData){
 		checkRule(body);
 		
 		checkKeyword(KW_END);
+		addToOutput(codeGenFuncEnd, parserData->currentID->identifier);
 		BSTdispose(&parserData->localTable);
 		getToken();
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
@@ -140,6 +143,7 @@ static int mainFun(parseData* parserData){
 
 static int params(parseData* parserData){
 	int res = 0;
+	parserData->parameterIndex = 0;
 	if(parserData -> token.Type == tokenIdentifier){
 		//fprintf(stderr, "%s\n", parserData->globalTable->Data.identifier);
 		
@@ -152,8 +156,8 @@ static int params(parseData* parserData){
 			fprintf(stderr, CGRN"L O C A L\n" CWHT);
 			Print_tree(parserData->localTable);
 		}
-		
-
+		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
+		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		checkRule(params_n);
 	}
@@ -167,7 +171,8 @@ static int params_n(parseData* parserData){
 	if (parserData -> token.Type == tokenComma){
 		getToken();
 		checkTokenType(tokenIdentifier);
-				if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
+		parserData->parameterIndex++;
+		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
 		{
 			return 43;
 		}
@@ -176,6 +181,8 @@ static int params_n(parseData* parserData){
 			fprintf(stderr, CGRN"L O C A L\n" CWHT);
 			Print_tree(parserData->localTable);
 		}
+		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
+		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		return(params_n(parserData));
 	}
@@ -501,6 +508,17 @@ static int func (parseData* parserData){
 void initTables(parseData* parserData){
 	BSTInit(&parserData->localTable);
 	BSTInit(&parserData->globalTable);
+
+	parserData->currentID = NULL;
+	parserData->lID = NULL;
+	parserData->rID = NULL;
+
+	parserData->parameterIndex = 0;
+	parserData->labelIndex = 0;
+	parserData->labelDeep = -1;
+
+	parserData->inFunction = false;
+	parserData->inWhileOrIf = false;
 }
 
 void freeTables(parseData* parserData){

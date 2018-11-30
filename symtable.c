@@ -47,16 +47,47 @@ tData *BSTinsertSymbol(tBSTNodePtr* RootPtr, char *k){
 }
 
 tData *BSTsearchSymbol (tBSTNodePtr RootPtr, char* Key) {
+	/*
+
 	if(RootPtr == NULL)
 		return NULL;
-	fprintf(stderr, "Hodnota strcmp: %d\n",strcmp(Key, RootPtr -> Key) );
-	if (strcmp(Key, RootPtr->Key) > 0)
+	
+	int compare = strcmp(Key, RootPtr -> Key);
+	fprintf(stderr, "Hodnota strcmp: %d\n", compare);
+	if (compare == 0) {
+		fprintf(stderr, "%s\n", "HELLO");
+		return &RootPtr -> Data;
+		} //TODO
+	else if (compare > 0)
 		BSTsearchSymbol(RootPtr->RPtr, Key);
-	else if (strcmp(Key, RootPtr -> Key) < 0)
+	else if (compare < 0)
 		BSTsearchSymbol(RootPtr->LPtr, Key);
-	else if (strcmp(Key, RootPtr -> Key) == 0)
-		return &(RootPtr) -> Data; //TODO
-	return NULL;
+	fprintf(stderr, "%s\n", "SIEG");
+	return NULL;	
+	*/
+	if (RootPtr)										
+	{
+		if (!strcmp(RootPtr->Key, Key))								//pokud je nalezen
+		{
+			return &RootPtr -> Data;										//vracim TRUE
+		}
+		else if (strcmp(RootPtr->Key, Key) < 0)							//pokud jsem za uzlem
+		{
+			return(BSTsearchSymbol(RootPtr -> RPtr, Key));		//rekurzivne volam funkci posunutou zpatky
+		}
+		else if (strcmp(RootPtr->Key, Key) > 0)							//pokud jsem pred uzlem
+		{
+			return(BSTsearchSymbol(RootPtr -> LPtr, Key));		//rekurzivne volam funkci posunutou dopredu
+		}
+		else {													//pokud uzel neni nalezen, vracim false
+			return NULL;
+		}
+	}
+	else 
+	{
+		return NULL;
+	}
+
 }
 
 void BSTdispose (tBSTNodePtr(*RootPtr)) {

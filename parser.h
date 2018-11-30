@@ -15,6 +15,19 @@ typedef struct {
 	Token token;
 	tBSTNodePtr localTable;
 	tBSTNodePtr globalTable;
+
+	tData* currentID;
+	tData* lID;
+	tData* rID;
+
+	unsigned parameterIndex;
+	int labelIndex;
+	int labelDeep;
+
+	bool inFunction;
+	bool inDecleration;
+	bool inWhileOrIf;
+	bool nonDeclaredFunction;
 } parseData;
 
 int kowalskiAnalysis();
