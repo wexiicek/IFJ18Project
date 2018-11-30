@@ -7,6 +7,10 @@
 
 #define dataInit() malloc(sizeof(struct tData))
 
+#define CRED  "\x1B[31m"
+#define CGRN  "\x1B[32m"
+#define CWHT  "\x1B[37m"
+
 void BSTInit (tBSTNodePtr *RootPtr){
 	*RootPtr = NULL;
 }
@@ -25,7 +29,7 @@ tData *BSTinsertSymbol(tBSTNodePtr* RootPtr, char *k){
 		stringInit((*RootPtr) -> Data . parameters);
 		//fprintf(stderr, "%s\n", k);
 		strcpy((*RootPtr) -> Key, k);
-		//fprintf(stderr, "%s\n", RootPtr -> Key);
+		fprintf(stderr, CRED"    Allocating "CWHT"%s\n", (*RootPtr) -> Key);
 		(*RootPtr) -> Data . identifier = (*RootPtr) -> Key;
 		(*RootPtr) -> Data . defined = false;
 		(*RootPtr) -> Data . global = false;
@@ -42,21 +46,15 @@ tData *BSTinsertSymbol(tBSTNodePtr* RootPtr, char *k){
 	
 }
 
-void freeTree(tBSTNodePtr *tree){
-	free(*tree);
-	(*tree) = NULL;
-}
-
-
 tData *BSTsearchSymbol (tBSTNodePtr RootPtr, char* Key) {
 	if(RootPtr == NULL)
 		return NULL;
-
+	fprintf(stderr, "Hodnota strcmp: %d\n",strcmp(Key, RootPtr -> Key) );
 	if (strcmp(Key, RootPtr->Key) > 0)
 		BSTsearchSymbol(RootPtr->RPtr, Key);
 	else if (strcmp(Key, RootPtr -> Key) < 0)
 		BSTsearchSymbol(RootPtr->LPtr, Key);
-	else
+	else if (strcmp(Key, RootPtr -> Key) == 0)
 		return &(RootPtr) -> Data; //TODO
 	return NULL;
 }
@@ -71,8 +69,12 @@ void BSTdispose (tBSTNodePtr(*RootPtr)) {
 			BSTdispose(&(*RootPtr)->LPtr);
 			//Keep iterating through the left branch until there are no more items
 		if ( !((*RootPtr) -> RPtr) && (!((*RootPtr) -> LPtr))){
+			free((*RootPtr) -> Key);
+			stringDispose((*RootPtr) -> Data . parameters);
+			free((*RootPtr) -> Data . parameters);
 			free(*RootPtr);
 			*RootPtr = NULL;
+			fprintf(stderr, CGRN"    Disposing..\n"CWHT );
 			//When there are no more items, we free the memory and set the pointer to NULL
 		}
 	}

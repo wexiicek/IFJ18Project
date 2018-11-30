@@ -92,7 +92,7 @@ static int mainFun(parseData* parserData){
 		//codeGenFuncBegin(output, tempString);
 		
 
-		//Print_tree(parserData->globalTable);
+		Print_tree(parserData->globalTable);
 		getToken();
 		checkTokenType(tokenLeftBracket);
 		
@@ -111,6 +111,7 @@ static int mainFun(parseData* parserData){
 		checkRule(body);
 		
 		checkKeyword(KW_END);
+		BSTdispose(&parserData->localTable);
 		getToken();
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		getToken();
@@ -141,12 +142,17 @@ static int params(parseData* parserData){
 	int res = 0;
 	if(parserData -> token.Type == tokenIdentifier){
 		//fprintf(stderr, "%s\n", parserData->globalTable->Data.identifier);
-		/*
-		if (symTableSearch(&parserData->globalTable, parserData->token.Data.string->value))
+		
+		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
 		{
 			return 43;
 		}
-		*/
+		else {
+			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
+			fprintf(stderr, CGRN"L O C A L\n" CWHT);
+			Print_tree(parserData->localTable);
+		}
+		
 
 		getToken();
 		checkRule(params_n);
@@ -161,6 +167,15 @@ static int params_n(parseData* parserData){
 	if (parserData -> token.Type == tokenComma){
 		getToken();
 		checkTokenType(tokenIdentifier);
+				if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
+		{
+			return 43;
+		}
+		else {
+			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
+			fprintf(stderr, CGRN"L O C A L\n" CWHT);
+			Print_tree(parserData->localTable);
+		}
 		getToken();
 		return(params_n(parserData));
 	}
