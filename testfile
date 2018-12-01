@@ -3,3 +3,8 @@ end
 
 def fnf(fnuk, ahoj, cau, cuskundus, zabejanapicovina)
 end
+ 
+fn (1,2,3,4)
+fn(2,3,4,4)
+
+fnf(1,2,3,4,5)

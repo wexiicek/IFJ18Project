@@ -101,6 +101,7 @@ static int mainFun(parseData* parserData){
 		getToken();
 		
 		//Check parameter syntax
+
 		checkRule(params);
 		
 		//Check body of the function
@@ -144,6 +145,7 @@ static int mainFun(parseData* parserData){
 static int params(parseData* parserData){
 	int res = 0;
 	parserData->parameterIndex = 0;
+
 	if(parserData -> token.Type == tokenIdentifier){
 		//fprintf(stderr, "%s\n", parserData->globalTable->Data.identifier);
 		
@@ -152,7 +154,9 @@ static int params(parseData* parserData){
 			return 43;
 		}
 		else {
+			parserData->currentID->argCounter = 0;
 			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
+			parserData->currentID->argCounter+=1;
 			fprintf(stderr, CGRN"L O C A L\n" CWHT);
 			Print_tree(parserData->localTable);
 		}
@@ -172,6 +176,7 @@ static int params_n(parseData* parserData){
 		getToken();
 		checkTokenType(tokenIdentifier);
 		parserData->parameterIndex++;
+		parserData->currentID->argCounter+=1;
 		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
 		{
 			return 43;
@@ -186,7 +191,7 @@ static int params_n(parseData* parserData){
 		getToken();
 		return(params_n(parserData));
 	}
-
+	fprintf(stderr, "ARG COUNTER: %d\n", parserData->currentID->argCounter);
 	return res;
 }
 
@@ -196,33 +201,36 @@ static int body(parseData* parserData){
 
 	if (parserData -> token.Type == tokenIdentifier){
 
-		
-		
-		getToken();
-
-
-		if (parserData -> token.Type == tokenAssign){
+		//If the function we are calling was defined before..
+		if((parserData->currentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value)) != NULL){
+			parserData->currentID->callArgCounter = 0;
 			getToken();
-			checkRule(def_value);
-			//getToken();
-			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
-			getToken();
-			return body(parserData);
-		}
 
-		else if (parserData -> token.Type == tokenEndOfLine || parserData -> token.Type == tokenEndOfFile){
-			/*
-			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
-			getToken();
-			return body(parserData);
-			*/
-			return SYNTACTICAL;
-		}
 
-		else{
-			checkRule(func);
-			return body(parserData);
+			if (parserData -> token.Type == tokenAssign){
+				getToken();
+				checkRule(def_value);
+				//getToken();
+				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
+				getToken();
+				return body(parserData);
+			}
+
+			else if (parserData -> token.Type == tokenEndOfLine || parserData -> token.Type == tokenEndOfFile){
+				/*
+				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
+				getToken();
+				return body(parserData);
+				*/
+				return SYNTACTICAL;
+			}
+
+			else{
+				checkRule(func);
+				return body(parserData);
+			}
 		}
+		else return SEMANTICAL_UNDEF;
 	}
 	
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_IF){
@@ -462,6 +470,7 @@ static int args (parseData* parserData){
 	int res;
 	if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger || 
 		parserData -> token.Type == tokenFloat || parserData -> token.Type == tokenString) {
+		parserData->currentID->callArgCounter += 1;
 		getToken();
 		checkRule(args_n);
 		return SUCCESS;
@@ -473,6 +482,7 @@ static int args_n (parseData* parserData){
 	int res = 0;
 	//getToken();
 	if (parserData -> token.Type == tokenComma){
+		parserData->currentID->callArgCounter += 1;
 		getToken();
 		checkMultipleTokenType(tokenIdentifier, tokenInteger, tokenFloat, tokenString); 
 		getToken();
@@ -490,6 +500,9 @@ static int func (parseData* parserData){
 				checkRule(args);
 				//getToken();
 				checkTokenType(tokenRightBracket);
+				fprintf(stderr, "FN ARGS:%d - FN CALL ARGS:%d\n",parserData->currentID->argCounter, parserData->currentID->callArgCounter );
+				if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
+					return SEMANTICAL_OTHER;
 				getToken();
 				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 				//getToken();

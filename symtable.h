@@ -18,6 +18,8 @@ typedef struct tData{
     bool global;
     dynString *parameters;   
     char *identifier;
+    int argCounter;
+    int callArgCounter;
 } tData; //TODO hvezdicka?
                                                                                                             
 typedef struct tBSTNode {

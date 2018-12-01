@@ -1,241 +1,300 @@
-==185== Memcheck, a memory error detector
-==185== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==185== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==185== Command: ./compiler
-==185== Parent PID: 161
-==185== 
---185-- 
---185-- Valgrind options:
---185--    --leak-check=full
---185--    --log-file=leak.txt
---185--    -v
---185--    --show-leak-kinds=all
---185-- Contents of /proc/version:
---185--   Linux version 4.4.0-17763-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #55-Microsoft Sat Oct 06 18:05:00 PST 2018
---185-- 
---185-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
---185-- Page sizes: currently 4096, max supported 4096
---185-- Valgrind library directory: /usr/lib/valgrind
---185-- Reading syms from /home/cattitude/IFJ18Project/compiler
---185-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
---185--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
---185--   .. CRC mismatch (computed 1b7c895e wanted 2943108a)
---185--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
---185--   .. CRC is valid
---185-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
---185--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
---185--   .. CRC mismatch (computed 62965bbf wanted eeb84137)
---185--    object doesn't have a symbol table
---185--    object doesn't have a dynamic symbol table
---185-- Scheduler: using generic scheduler lock implementation.
---185-- Reading suppressions file: /usr/lib/valgrind/default.supp
-==185== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-185-by-cattitude-on-???
-==185== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-185-by-cattitude-on-???
-==185== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-185-by-cattitude-on-???
-==185== 
-==185== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==185== don't want to do, unless you know exactly what you're doing,
-==185== or are doing some strange experiment):
-==185==   /usr/lib/valgrind/../../bin/vgdb --pid=185 ...command...
-==185== 
-==185== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==185==   /path/to/gdb ./compiler
-==185== and then give GDB the following command
-==185==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=185
-==185== --pid is optional if only one valgrind process is running
-==185== 
-==185== error calling PR_SET_PTRACER, vgdb might block
---185-- REDIR: 0x401f2f0 (ld-linux-x86-64.so.2:strlen) redirected to 0x58060901 (???)
---185-- REDIR: 0x401f0d0 (ld-linux-x86-64.so.2:index) redirected to 0x5806091b (???)
---185-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
---185--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
---185--   .. CRC mismatch (computed 13d5e98a wanted 1786ecf1)
---185--    object doesn't have a symbol table
---185-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
---185--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
---185--   .. CRC mismatch (computed 8f77ef36 wanted fcbde737)
---185--    object doesn't have a symbol table
-==185== WARNING: new redirection conflicts with existing -- ignoring it
---185--     old: 0x0401f2f0 (strlen              ) R-> (0000.0) 0x58060901 ???
---185--     new: 0x0401f2f0 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
---185-- REDIR: 0x401d360 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
---185-- REDIR: 0x401f830 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
---185-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
---185--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
---185--   .. CRC mismatch (computed b1c74187 wanted 042cc048)
---185--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
---185--   .. CRC is valid
---185-- REDIR: 0x4edac70 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9d40 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edaf50 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9790 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9d70 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edc7c0 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edade0 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edac10 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9d00 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9800 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edad40 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ef80f0 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9ca0 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9870 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edafa0 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9840 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edb0e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9da0 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed97c0 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ed9c70 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ee46c0 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edaff0 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edabe0 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4ef8eb0 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4eda050 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edaf20 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edaef0 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edc7f0 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4edb040 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---185-- REDIR: 0x4fca3c0 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
---185-- REDIR: 0x4ed3070 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
---185-- REDIR: 0x4eda590 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
---185-- REDIR: 0x4fa5d60 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---185-- REDIR: 0x4fca1d0 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
---185-- REDIR: 0x4fca590 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
---185-- REDIR: 0x4ed3950 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---185-- REDIR: 0x4ed4c30 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
---185-- REDIR: 0x4eed9e0 (libc.so.6:__strcat_ssse3) redirected to 0x4c32990 (strcat)
---185-- REDIR: 0x4fb7950 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
---185-- REDIR: 0x4fcaab0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E988DA: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== Use of uninitialised value of size 8
-==185==    at 0x4E9486B: _itoa_word (_itoa.c:179)
-==185==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E94875: _itoa_word (_itoa.c:179)
-==185==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E98014: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E98B4C: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== 
-==185== HEAP SUMMARY:
-==185==     in use at exit: 0 bytes in 0 blocks
-==185==   total heap usage: 211 allocs, 211 frees, 217,200 bytes allocated
-==185== 
-==185== All heap blocks were freed -- no leaks are possible
-==185== 
-==185== Use --track-origins=yes to see where uninitialised values come from
-==185== ERROR SUMMARY: 140 errors from 5 contexts (suppressed: 0 from 0)
-==185== 
-==185== 28 errors in context 1 of 5:
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E98B4C: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== 
-==185== 28 errors in context 2 of 5:
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E98014: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== 
-==185== 28 errors in context 3 of 5:
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E94875: _itoa_word (_itoa.c:179)
-==185==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== 
-==185== 28 errors in context 4 of 5:
-==185== Use of uninitialised value of size 8
-==185==    at 0x4E9486B: _itoa_word (_itoa.c:179)
-==185==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== 
-==185== 28 errors in context 5 of 5:
-==185== Conditional jump or move depends on uninitialised value(s)
-==185==    at 0x4E988DA: vfprintf (vfprintf.c:1642)
-==185==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==185==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==185==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==185==    by 0x10C09D: Print_tree2 (symtable.c:134)
-==185==    by 0x10C1C5: Print_tree (symtable.c:151)
-==185==    by 0x10AB9B: mainFun (parser.c:97)
-==185==    by 0x10BBE1: kowalskiAnalysis (parser.c:606)
-==185==    by 0x108D64: main (main.c:39)
-==185== 
-==185== ERROR SUMMARY: 140 errors from 5 contexts (suppressed: 0 from 0)
+==8121== Memcheck, a memory error detector
+==8121== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==8121== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==8121== Command: ./compiler
+==8121== Parent PID: 8095
+==8121== 
+--8121-- 
+--8121-- Valgrind options:
+--8121--    --leak-check=full
+--8121--    --show-leak-kinds=all
+--8121--    --track-origins=yes
+--8121--    -v
+--8121--    --log-file=leak.txt
+--8121-- Contents of /proc/version:
+--8121--   Linux version 4.15.0-39-generic (buildd@lgw01-amd64-054) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) #42-Ubuntu SMP Tue Oct 23 15:48:01 UTC 2018
+--8121-- 
+--8121-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--8121-- Page sizes: currently 4096, max supported 4096
+--8121-- Valgrind library directory: /usr/lib/valgrind
+--8121-- Reading syms from /home/wex/IFJ18Project/compiler
+--8121-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--8121--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--8121--   .. CRC mismatch (computed 1b7c895e wanted 2943108a)
+--8121--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--8121--   .. CRC is valid
+--8121-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--8121--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--8121--   .. CRC mismatch (computed c25f395c wanted 0a9602a8)
+--8121--    object doesn't have a symbol table
+--8121--    object doesn't have a dynamic symbol table
+--8121-- Scheduler: using generic scheduler lock implementation.
+--8121-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==8121== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-8121-by-wex-on-???
+==8121== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-8121-by-wex-on-???
+==8121== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-8121-by-wex-on-???
+==8121== 
+==8121== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==8121== don't want to do, unless you know exactly what you're doing,
+==8121== or are doing some strange experiment):
+==8121==   /usr/lib/valgrind/../../bin/vgdb --pid=8121 ...command...
+==8121== 
+==8121== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==8121==   /path/to/gdb ./compiler
+==8121== and then give GDB the following command
+==8121==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=8121
+==8121== --pid is optional if only one valgrind process is running
+==8121== 
+--8121-- REDIR: 0x401f2f0 (ld-linux-x86-64.so.2:strlen) redirected to 0x58060901 (???)
+--8121-- REDIR: 0x401f0d0 (ld-linux-x86-64.so.2:index) redirected to 0x5806091b (???)
+--8121-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--8121--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--8121--   .. CRC mismatch (computed 4b63d83e wanted 670599e6)
+--8121--    object doesn't have a symbol table
+--8121-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--8121--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--8121--   .. CRC mismatch (computed a4b37bee wanted 8ad4dc94)
+--8121--    object doesn't have a symbol table
+==8121== WARNING: new redirection conflicts with existing -- ignoring it
+--8121--     old: 0x0401f2f0 (strlen              ) R-> (0000.0) 0x58060901 ???
+--8121--     new: 0x0401f2f0 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--8121-- REDIR: 0x401d360 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--8121-- REDIR: 0x401f830 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--8121-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--8121--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--8121--   .. CRC mismatch (computed b1c74187 wanted 042cc048)
+--8121--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--8121--   .. CRC is valid
+--8121-- REDIR: 0x4edac70 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9d40 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edaf50 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9790 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9d70 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edc7c0 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edade0 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edac10 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9d00 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9800 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edad40 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ef80f0 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9ca0 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9870 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edafa0 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9840 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edb0e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9da0 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed97c0 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ed9c70 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ee46c0 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edaff0 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edabe0 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4ef8eb0 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4eda050 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edaf20 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edaef0 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edc7f0 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4edb040 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--8121-- REDIR: 0x4fca3c0 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--8121-- REDIR: 0x4ed3070 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+--8121-- REDIR: 0x4eda590 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
+--8121-- REDIR: 0x4fa5d60 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--8121-- REDIR: 0x4fca1d0 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--8121-- REDIR: 0x4fca590 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--8121-- REDIR: 0x4ed3950 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--8121-- REDIR: 0x4ed4c30 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
+--8121-- REDIR: 0x4eed9e0 (libc.so.6:__strcat_ssse3) redirected to 0x4c32990 (strcat)
+--8121-- REDIR: 0x4fb7950 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+--8121-- REDIR: 0x4fcaab0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E988DA: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== Use of uninitialised value of size 8
+==8121==    at 0x4E9486B: _itoa_word (_itoa.c:179)
+==8121==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E94875: _itoa_word (_itoa.c:179)
+==8121==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E98014: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E98B4C: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== 
+==8121== HEAP SUMMARY:
+==8121==     in use at exit: 0 bytes in 0 blocks
+==8121==   total heap usage: 248 allocs, 248 frees, 224,826 bytes allocated
+==8121== 
+==8121== All heap blocks were freed -- no leaks are possible
+==8121== 
+==8121== ERROR SUMMARY: 140 errors from 5 contexts (suppressed: 0 from 0)
+==8121== 
+==8121== 28 errors in context 1 of 5:
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E98B4C: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== 
+==8121== 28 errors in context 2 of 5:
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E98014: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== 
+==8121== 28 errors in context 3 of 5:
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E94875: _itoa_word (_itoa.c:179)
+==8121==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== 
+==8121== 28 errors in context 4 of 5:
+==8121== Use of uninitialised value of size 8
+==8121==    at 0x4E9486B: _itoa_word (_itoa.c:179)
+==8121==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== 
+==8121== 28 errors in context 5 of 5:
+==8121== Conditional jump or move depends on uninitialised value(s)
+==8121==    at 0x4E988DA: vfprintf (vfprintf.c:1642)
+==8121==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
+==8121==    by 0x4E97725: vfprintf (vfprintf.c:1301)
+==8121==    by 0x4EA0E53: fprintf (fprintf.c:32)
+==8121==    by 0x10C1E2: Print_tree2 (symtable.c:134)
+==8121==    by 0x10C30A: Print_tree (symtable.c:151)
+==8121==    by 0x10AB9B: mainFun (parser.c:97)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121==  Uninitialised value was created by a heap allocation
+==8121==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8121==    by 0x10BD9B: BSTinsertSymbol (symtable.c:22)
+==8121==    by 0x10AB4E: mainFun (parser.c:85)
+==8121==    by 0x10BD26: kowalskiAnalysis (parser.c:619)
+==8121==    by 0x108D64: main (main.c:39)
+==8121== 
+==8121== ERROR SUMMARY: 140 errors from 5 contexts (suppressed: 0 from 0)
