@@ -502,7 +502,7 @@ static int func (parseData* parserData){
 				checkTokenType(tokenRightBracket);
 				fprintf(stderr, "FN ARGS:%d - FN CALL ARGS:%d\n",parserData->currentID->argCounter, parserData->currentID->callArgCounter );
 				if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
-					return SEMANTICAL_OTHER;
+					return SEMANTICAL_ARGCOUNT;
 				getToken();
 				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 				//getToken();
