@@ -514,6 +514,8 @@ static int func (parseData* parserData){
 			else{
 				checkRule(args);
 				//getToken();
+				if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
+					return SEMANTICAL_ARGCOUNT;
 				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 				//getToken();
 				return SUCCESS;
