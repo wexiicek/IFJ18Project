@@ -201,9 +201,11 @@ static int body(parseData* parserData){
 
 	if (parserData -> token.Type == tokenIdentifier){
 
-		//If the function we are calling was defined before..
-		if((parserData->currentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value)) != NULL){
-			parserData->currentID->callArgCounter = 0;
+			tData *tempCurrentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
+			if(tempCurrentID != NULL){
+				parserData->currentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value); 
+				parserData->currentID->callArgCounter = 0;
+			}
 			getToken();
 
 
@@ -226,12 +228,13 @@ static int body(parseData* parserData){
 			}
 
 			else{
-				checkRule(func);
-				return body(parserData);
+				if (parserData->currentID != NULL){
+					checkRule(func);
+					return body(parserData);
+				}
+				else return SEMANTICAL_UNDEF;
 			}
 		}
-		else return SEMANTICAL_UNDEF;
-	}
 	
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_IF){
 		
