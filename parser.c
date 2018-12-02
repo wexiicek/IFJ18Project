@@ -53,7 +53,7 @@ FILE* output;
 
 #define checkMultipleTokenType(_type, _type2, _type3, _type4)\
 		if (!(parserData -> token.Type == (_type)) && !(parserData -> token.Type == (_type2)) &&\
-		    !(parserData -> token.Type == (_type3)) && !(parserData -> token.Type == (_type4))) return SYNTACTICAL
+		    !(parserData -> token.Type == (_type3)) && !(parserData -> token.Type == (_type4))) return SEMANTICAL_OTHER
 
 #define checkKeyword(_keyword)\
 	if(parserData -> token.Type != tokenKeyword\
@@ -70,16 +70,12 @@ static int mainFun(parseData* parserData){
 	
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
 	if((parserData -> token.Type == tokenKeyword) && (parserData->token.Data.keyword == KW_DEF)){
-		//Checking function definition
 
 		getToken();
 		//fprintf(stderr, "print %d\n", Print_tree(parserData->globalTable));
 		//fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
 		checkTokenType(tokenIdentifier);
-		
-		//tempString = malloc(sizeof(char)*(strlen(parserData->token.Data.string->value)+1));
 
-		//strcpy(tempString, parserData->token.Data.string->value);
 		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value) == NULL)
 		{
 
@@ -124,17 +120,19 @@ static int mainFun(parseData* parserData){
 		return (mainFun(parserData));
 	}
 
+	//<main> -> EOL <main>
 	else if (parserData -> token.Type == tokenEndOfLine){
 		getToken();
 
 		return mainFun(parserData);
 	}
 
+	//<main> -> EOF
 	else if (parserData -> token.Type == tokenEndOfFile){
 		return SUCCESS;
 	}
 
-
+	//<main> -> <body> <main>
 	else if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenEndOfLine || parserData -> token.Data.keyword == KW_IF || parserData -> token.Data.keyword == KW_WHILE || parserData -> token.Data.keyword == KW_PRINT){
 		checkRule(body);
 		return mainFun(parserData);
@@ -147,59 +145,69 @@ static int params(parseData* parserData){
 	int res = 0;
 	parserData->parameterIndex = 0;
 
+	//<params> -> ID <params_n>
 	if(parserData -> token.Type == tokenIdentifier){
+
 		//fprintf(stderr, "%s\n", parserData->globalTable->Data.identifier);
-		
+		/*
 		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
 		{
 			return 43; // TODO aky err?
 		}
 		else {
-			parserData->currentID->argCounter = 0;
-			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
-			parserData->currentID->argCounter+=1;
-			fprintf(stderr, CGRN"L O C A L\n" CWHT);
-			//Print_tree(parserData->localTable);
 		}
+		*/
+
+		parserData->currentID->argCounter = 0;
+		BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
+		parserData->currentID->argCounter+=1;
+		fprintf(stderr, CGRN"L O C A L\n" CWHT);
+		//Print_tree(parserData->localTable);
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		checkRule(params_n);
 	}
-
+	//<params> -> E
 	return res;
 }
 
 static int params_n(parseData* parserData){
 	int res = 0;
 
+	//<params_n> -> , ID <params_n>
 	if (parserData -> token.Type == tokenComma){
 		getToken();
 		checkTokenType(tokenIdentifier);
 		parserData->parameterIndex++;
 		parserData->currentID->argCounter+=1;
+
+		/*
 		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
 		{
 			return 43;
 		}
 		else {
-			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
-			fprintf(stderr, CGRN"L O C A L\n" CWHT);
-			//Print_tree(parserData->localTable); 	
 		}
+		*/
+
+		BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
+		fprintf(stderr, CGRN"L O C A L\n" CWHT);
+		//Print_tree(parserData->localTable); 	
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		return(params_n(parserData));
 	}
 	fprintf(stderr, "ARG COUNTER: %d\n", parserData->currentID->argCounter);
+	//<params_n> -> E
 	return res;
 }
 
 static int body(parseData* parserData){
 	int res = 0;
 	//fprintf(stderr,CRED "    <BODY>\n"CWHT);
-
+	//<body> -> ID <id> EOL <body>
 	if (parserData -> token.Type == tokenIdentifier){
 
 			tData *tempCurrentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
@@ -209,7 +217,7 @@ static int body(parseData* parserData){
 			}
 			getToken();
 
-
+			//<id> -> = <def_value>
 			if (parserData -> token.Type == tokenAssign){
 				getToken();
 				checkRule(def_value);
@@ -218,16 +226,16 @@ static int body(parseData* parserData){
 				getToken();
 				return body(parserData);
 			}
-
+			//<id> -> E
 			else if (parserData -> token.Type == tokenEndOfLine || parserData -> token.Type == tokenEndOfFile){
-				/*
-				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
-				getToken();
-				return body(parserData);
-				*/
-				return SYNTACTICAL;
+				if (parserData->currentID->argCounter == 0) {
+					checkTokenType2(tokenEndOfLine, tokenEndOfFile);
+					getToken();
+					return body(parserData);
+				}
+				return SEMANTICAL_ARGCOUNT;
 			}
-
+			//<id> -> <func>
 			else{
 				if (parserData->currentID != NULL){
 					checkRule(func);
@@ -236,7 +244,8 @@ static int body(parseData* parserData){
 				else return SEMANTICAL_UNDEF;
 			}
 		}
-	
+
+	//<body> -> IF <expession> THEN EOL <body> ELSE EOL <body> END EOL <body>
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_IF){
 		
 
@@ -264,6 +273,7 @@ static int body(parseData* parserData){
 		return body(parserData);
 	}
 
+	//<body> -> WHILE <expression> DO EOL <body> END EOL <body>
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_WHILE){
 		
 
@@ -284,7 +294,8 @@ static int body(parseData* parserData){
 		getToken();
 		return body(parserData);
 	}
-	
+
+	//<body> -> PRINT ( <terms> ) EOL <body>
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_PRINT){
 		getToken();
 
@@ -305,11 +316,14 @@ static int body(parseData* parserData){
 		return body(parserData);
 
 	}
-	
+
+	//<body> -> E
 	else if(parserData -> token.Type == tokenEndOfLine){
 		getToken();
 		return body(parserData);
 	}
+
+	//<body> -> <expression> <body>
 	else if (parserData -> token.Type == tokenString || 
 			 parserData -> token.Type == tokenInteger ||
 			 parserData -> token.Type == tokenFloat){
@@ -322,7 +336,7 @@ static int body(parseData* parserData){
 }
 
 
-
+//<terms> -> <expression> <terms_n>
 static int terms(parseData* parserData){
 	int res;
 	
@@ -335,6 +349,7 @@ static int terms(parseData* parserData){
 static int terms_n(parseData* parserData){
 	int res = 0;
 
+	//<terms_n> -> , <expression> <terms_n>
 	if (parserData -> token.Type == tokenComma){
 		getToken();
 		checkRule(expression); //docasne ID, nahradit za expression
@@ -342,6 +357,7 @@ static int terms_n(parseData* parserData){
 		return(terms_n(parserData));
 	}
 
+	//<terms_n> -> E
 	return res;
 }
 
@@ -369,110 +385,142 @@ static int def_value(parseData* parserData){
 	{
 
 		switch (parserData -> token.Data.keyword) {
+
+			//<def_value> -> INPUTS || INPUTS()
 			case KW_INPUTS:
 				getToken();
+				if (parserData->token.Type == tokenLeftBracket)
+				{
+					getToken();
+					checkTokenType(tokenRightBracket);
+					getToken();
+					return SUCCESS;
+				}
 				return SUCCESS;
+
+			//<def_value> -> INPUTI || INPUTI()
 			case KW_INPUTI:
 				getToken();
+				if (parserData->token.Type == tokenLeftBracket)
+				{
+					getToken();
+					checkTokenType(tokenRightBracket);
+					getToken();
+					return SUCCESS;
+				}
 				return SUCCESS;
+
+			//<def_value> -> INPUTF || INPUTF()
 			case KW_INPUTF:
 				getToken();
+				if (parserData->token.Type == tokenLeftBracket)
+				{
+					getToken();
+					checkTokenType(tokenRightBracket);
+					getToken();
+					return SUCCESS;
+				}
 				return SUCCESS;
+
+			//<def_value> -> LENGHT ( ID || STRING_VALUE )
 			case KW_LENGTH:
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
-				}
-				else{
-					checkTokenType(tokenString);
-				}
+
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
 				getToken();
 				checkTokenType(tokenRightBracket);
 				getToken();
 				return SUCCESS;
+				}
+				else
+					return SEMANTICAL_TYPES;
+
+			//<def_value> -> SUBSTR ( ID || STRING_VALUE, ID || INT_VALUE, ID || INT_VALUE)
 			case KW_SUBSTR:
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					getToken();
+					checkTokenType(tokenComma);
+					getToken();
 				}
 				else{
-					checkTokenType(tokenString);
+					return SEMANTICAL_TYPES;
 				}
-				getToken();
-				checkTokenType(tokenComma);
-				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
-				}
-				else{
-					checkTokenType(tokenInteger);
-				}
-				getToken();
-				checkTokenType(tokenComma);
-				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
+				
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					getToken();
+					checkTokenType(tokenComma);
+					getToken();
 				}
 				else{
-					checkTokenType(tokenInteger);
+					return SEMANTICAL_TYPES;
 				}
-				getToken();
-				checkTokenType(tokenRightBracket);
-				getToken();
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					getToken();
+					checkTokenType(tokenRightBracket);
+					getToken();
+				}
+				else{
+					return SEMANTICAL_TYPES;
+				}
 				return SUCCESS;
+
+			//<def_value> -> ORD (ID || STRING_VALUE, ID || INT_VALUE)
 			case KW_ORD:
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					getToken();
+					checkTokenType(tokenComma);
+					getToken();
 				}
 				else{
-					checkTokenType(tokenString);
+					return SEMANTICAL_TYPES;
 				}
-				getToken();
-				checkTokenType(tokenComma);
-				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					getToken();
+					checkTokenType(tokenRightBracket);
+					getToken();
 				}
 				else{
-					checkTokenType(tokenInteger);
+					return SEMANTICAL_TYPES;
 				}
-				getToken();
-				checkTokenType(tokenRightBracket);
-				getToken();
 				return SUCCESS;
+
+			//<def_value> -> CHR (ID || INT_VALUE)
 			case KW_CHR:
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
-				if (parserData -> token.Type == tokenIdentifier){
-					//zkontrolovat, jestli je dane ID typu string
+				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					getToken();
+					checkTokenType(tokenRightBracket);
+					getToken();
 				}
 				else{
-					checkTokenType(tokenInteger);
+					return SEMANTICAL_TYPES;
 				}
-				getToken();
-				checkTokenType(tokenRightBracket);
-				getToken();
 				return SUCCESS;
 			default:
-				return 42;
+				return SYNTACTICAL;
 		}
 
 	}
+	//<def_value> -> <expression>
 	checkRule(expression);
 	return SUCCESS;
 }
 
+//<arg> -> <value> <arg_n>
 static int args (parseData* parserData){
 	int res;
 
+	//<value> -> INT_VALUE || FLOAT_VALUE || STRING_VALUE || ID
 	if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger || 
 		parserData -> token.Type == tokenFloat || parserData -> token.Type == tokenString) {
 		parserData->currentID->callArgCounter += 1;
@@ -482,15 +530,17 @@ static int args (parseData* parserData){
 	}
 	else if (parserData->currentID->argCounter == 0)
 		return SUCCESS;
-	return 42;
+	return SEMANTICAL_OTHER;
 }
 
+//<arg_n> -> , <value> <arg_n>
 static int args_n (parseData* parserData){
 	int res = 0;
-	//getToken();
 	if (parserData -> token.Type == tokenComma){
 		parserData->currentID->callArgCounter += 1;
 		getToken();
+
+		//<value> -> INT_VALUE || FLOAT_VALUE || STRING_VALUE || ID
 		checkMultipleTokenType(tokenIdentifier, tokenInteger, tokenFloat, tokenString); 
 		getToken();
 		return(args_n(parserData));
@@ -501,30 +551,29 @@ static int args_n (parseData* parserData){
 
 static int func (parseData* parserData){
 	int res;
+
+	//<func> -> ( <arg> )
 	if (parserData -> token.Type == tokenLeftBracket){
 				getToken();
 				checkRule(args);
-				//getToken();
 				checkTokenType(tokenRightBracket);
 				fprintf(stderr, "FN ARGS:%d - FN CALL ARGS:%d\n",parserData->currentID->argCounter, parserData->currentID->callArgCounter );
 				if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
 					return SEMANTICAL_ARGCOUNT;
 				getToken();
 				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
-				//getToken();
 				return SUCCESS;
 			}
+	//<func> -> <arg>
 	else{
 		//fprintf(stderr, "%d\n", parserData->currentID->argCounter);
 
 		checkRule(args);
-		//getToken();
 		if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
 			return SEMANTICAL_ARGCOUNT;
 
 		fprintf(stderr, "FN ARGS:%d - FN CALL ARGS:%d\n",parserData->currentID->argCounter, parserData->currentID->callArgCounter );
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
-		//getToken();
 		return SUCCESS;
 	}
 }
@@ -538,6 +587,7 @@ void initTables(parseData* parserData){
 	parserData->lID = NULL;
 	parserData->rID = NULL;
 
+	
 	parserData->parameterIndex = 0;
 	parserData->labelIndex = 0;
 	parserData->labelDeep = -1;
