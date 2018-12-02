@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <ctype.h>
 #include "string.h"
 #include "scanner.h"
@@ -423,7 +424,7 @@ int getTokens (Token *token) {
 					fprintf(stderr,"    TOKEN TYPE: ESCAPE\n");
 				if (c == 'n'){
 					c = '\n';
-					token->Type = tokenEscapeSequence;
+					//token->Type = tokenEscapeSequence;
 					if(stringAddChar(str, c))
 						return scanRet(str, INTERNAL);
 					state = stateStringStart;
@@ -448,6 +449,37 @@ int getTokens (Token *token) {
 					if(stringAddChar(str, c))
 						return scanRet(str, INTERNAL);
 					state = stateStringStart;
+				}
+				
+				else if (c == '\\'){
+					c = '\\';
+					if(stringAddChar(str, c))
+						return scanRet(str, INTERNAL);
+					state = stateStringStart;
+				}
+
+				else if (c == 'x'){
+					char temp[5];
+					temp[0] = '0'; temp[1] = 'x'; temp[4] = '\0';
+					nextChar(c);
+					if (isdigit(c))
+						temp[2] = c;
+					nextChar(c);
+					if (isdigit(c))
+						temp[3] = c;
+					long decval = strtol(temp, NULL, 16);
+
+					if (decval < 32 || decval > 126)
+						return LEXICAL;
+					else {
+						if (stringAddChar(str, (char) decval))
+							return scanRet(str, INTERNAL);
+					}
+					state=stateStringStart;
+				}
+
+				else{
+					return scanRet(str, LEXICAL);
 				}
 
 			break;
