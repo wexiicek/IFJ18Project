@@ -13,6 +13,7 @@ int setDestFile(FILE *destFile);
 
 typedef struct {
 	Token token;
+	Token prevToken;
 	tBSTNodePtr localTable;
 	tBSTNodePtr globalTable;
 

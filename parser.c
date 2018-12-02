@@ -38,6 +38,7 @@ FILE* output;
  * Makes our work easier and keeps the code clean and understandable
 */
 #define getToken()\
+	parserData->prevToken = parserData->token;\
 	getTokens(&parserData->token)
 
 #define checkRule(rule)\
@@ -86,7 +87,7 @@ static int mainFun(parseData* parserData){
 
 		}
 		else{
-			return 42;
+			return SEMANTICAL_UNDEF;
 		}
 
 		parserData->currentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
@@ -94,7 +95,7 @@ static int mainFun(parseData* parserData){
 		addToOutput(codeGenFuncBegin, parserData->currentID->identifier);
 		
 
-		Print_tree(parserData->globalTable);
+		//Print_tree(parserData->globalTable);
 		getToken();
 		checkTokenType(tokenLeftBracket);
 		
@@ -112,7 +113,7 @@ static int mainFun(parseData* parserData){
 		
 		getToken();
 		checkRule(body);
-		
+		fprintf(stderr, "CurrTkn:"CGRN" %d"CWHT".. PrevTkn:"CGRN"%s\n"CWHT, parserData->token.Data.keyword, parserData->prevToken.Data.string->value );
 		checkKeyword(KW_END);
 		addToOutput(codeGenFuncEnd, parserData->currentID->identifier);
 		BSTdispose(&parserData->localTable);
@@ -151,14 +152,14 @@ static int params(parseData* parserData){
 		
 		if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value))
 		{
-			return 43;
+			return 43; // TODO aky err?
 		}
 		else {
 			parserData->currentID->argCounter = 0;
 			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
 			parserData->currentID->argCounter+=1;
 			fprintf(stderr, CGRN"L O C A L\n" CWHT);
-			Print_tree(parserData->localTable);
+			//Print_tree(parserData->localTable);
 		}
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
@@ -184,7 +185,7 @@ static int params_n(parseData* parserData){
 		else {
 			BSTinsertSymbol(&parserData->localTable, parserData->token.Data.string->value);
 			fprintf(stderr, CGRN"L O C A L\n" CWHT);
-			Print_tree(parserData->localTable);
+			//Print_tree(parserData->localTable); 	
 		}
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
@@ -471,6 +472,7 @@ static int def_value(parseData* parserData){
 
 static int args (parseData* parserData){
 	int res;
+
 	if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger || 
 		parserData -> token.Type == tokenFloat || parserData -> token.Type == tokenString) {
 		parserData->currentID->callArgCounter += 1;
@@ -478,6 +480,8 @@ static int args (parseData* parserData){
 		checkRule(args_n);
 		return SUCCESS;
 	}
+	else if (parserData->currentID->argCounter == 0)
+		return SUCCESS;
 	return 42;
 }
 
@@ -497,8 +501,7 @@ static int args_n (parseData* parserData){
 
 static int func (parseData* parserData){
 	int res;
-	if (parserData -> token.Type == tokenLeftBracket)
-			{
+	if (parserData -> token.Type == tokenLeftBracket){
 				getToken();
 				checkRule(args);
 				//getToken();
@@ -511,15 +514,19 @@ static int func (parseData* parserData){
 				//getToken();
 				return SUCCESS;
 			}
-			else{
-				checkRule(args);
-				//getToken();
-				if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
-					return SEMANTICAL_ARGCOUNT;
-				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
-				//getToken();
-				return SUCCESS;
-			}
+	else{
+		//fprintf(stderr, "%d\n", parserData->currentID->argCounter);
+
+		checkRule(args);
+		//getToken();
+		if (parserData->currentID->argCounter != parserData->currentID->callArgCounter)
+			return SEMANTICAL_ARGCOUNT;
+
+		fprintf(stderr, "FN ARGS:%d - FN CALL ARGS:%d\n",parserData->currentID->argCounter, parserData->currentID->callArgCounter );
+		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
+		//getToken();
+		return SUCCESS;
+	}
 }
 
 

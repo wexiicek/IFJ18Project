@@ -15,9 +15,10 @@
 #define CGRN  "\x1B[32m"
 #define CWHT  "\x1B[37m"
 
+//Macro definition
 
+//return next character in file
 #define nextChar(character) character = (char)getc(code)
-#define returnChar(character, source) ungetc(character, source)
 
 FILE *code;
 
@@ -31,7 +32,6 @@ static int scanRet(dynString *string, int error){
 unsigned int keywordCompare (dynString *str, Token *token){
 
 	bool kw = false;
-
 
 	if(stringCompare(str, "chr"))
 		{token -> Data.keyword = KW_CHR; kw = true;}
@@ -76,7 +76,6 @@ unsigned int keywordCompare (dynString *str, Token *token){
 	return false;
 }
 
-
 int setSourceFile(FILE *sourceFile) {
 	if((code = sourceFile) == NULL)
 		return SUCCESS;
@@ -86,8 +85,6 @@ int setSourceFile(FILE *sourceFile) {
 void setDynString(dynString *string){
 	kwstring = string;
 }
-
-
 
 bool strToIntToken(dynString *from, Token *to){
     int value = atoi(from->value);
@@ -459,18 +456,35 @@ int getTokens (Token *token) {
 				}
 
 				else if (c == 'x'){
+					/*
+					 if we have \xNM, where NN is a hexadecimal number,
+					 we save it into a temporary string which will consist of
+					 [0][1]            [2][3]				[4] 
+					  0  x 				N  M   				\0
+					 hex num start 		our hex number 		string closing symbol
+					 Then we convert it to decimal value and concatenate to 
+					 the string, if it has correct values (between 32 and 127 ASCII)
+					*/
 					char temp[5];
 					temp[0] = '0'; temp[1] = 'x'; temp[4] = '\0';
 					nextChar(c);
-					if (isdigit(c))
-						temp[2] = c;
+					if (isalnum(c))	temp[2] = c;
+					else return LEXICAL;
 					nextChar(c);
-					if (isdigit(c))
-						temp[3] = c;
+					
+					if (c == ' '){
+						state = stateStringStart;
+						break;
+					}
+					
+					else if (isalnum(c))	temp[3] = c;
+					else return LEXICAL;
+					
 					long decval = strtol(temp, NULL, 16);
 
-					if (decval < 32 || decval > 126)
+					if (decval < 0 || decval > 255)
 						return LEXICAL;
+
 					else {
 						if (stringAddChar(str, (char) decval))
 							return scanRet(str, INTERNAL);
@@ -479,7 +493,9 @@ int getTokens (Token *token) {
 				}
 
 				else{
-					return scanRet(str, LEXICAL);
+					if (stringAddChar(str, c))
+						return scanRet(str, INTERNAL);
+					state = stateStringStart;
 				}
 
 			break;

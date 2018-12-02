@@ -79,7 +79,6 @@ typedef enum {
 	stateIdentifierOrKeyword,
 	stateZero,
 	stateEnd,
-	stateEOL,
 	stateStringEnd,
 	stateIdentifierEnd,
 	stateNumberEnd,
