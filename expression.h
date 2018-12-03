@@ -12,7 +12,6 @@ typedef enum
 {
 	PLUS_RULE,		    	// E -> E + E
 	MINUS_RULE,	        	// E -> E - E
-	//IDIV_RULE,			// E -> E \ E
 	MUL_RULE,				// E -> E * E
 	DIV_RULE,				// E -> E / E
 	EQUAL_RULE,				// E -> E = E
@@ -35,7 +34,6 @@ typedef enum
 	MINUS,				// - 1 
 	MUL,				// * 2
 	DIV,				// / 3
-	//IDIV,				// \ /    //TODO Nevim, ci to tam mame
 	ASSIGN,          	// = 4
     EQUAL,	        	// == 5
 	NOT_EQUAL,			// != 6

@@ -2,7 +2,7 @@
 #include "expression.h"
 #include "stack.h"     
 #include "err.h"
-//#include "generator.h"
+#include "generator.h"
 #include "symtable.h"
 
 
@@ -163,9 +163,9 @@ static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
  * Function tests if symbols in parameters are valid according to rules.
  *
  * @param num Number of valid symbols in parameter.
- * @param op1 Symbol 1.
- * @param op2 Symbol 2.
- * @param op3 Symbol 3.
+ * @param operand1 Symbol 1.
+ * @param operand2 Symbol 2.
+ * @param operand3 Symbol 3.
  * @return NOT_A_RULE if no rule is found or returns rule which is valid.
  */
 static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *operand1, StackItem *operand2, StackItem *operand3){
@@ -189,8 +189,6 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
                 return MUL_RULE;
             else if(operand2->symbol == DIV)            // rule E -> E / E
                 return DIV_RULE;
-            //else if(operand2->symbol == IDIV)         // rule E -> E \ E
-            //    return IDIV_RULE;
             else if(operand2->symbol == EQUAL)          // rule E -> E = E
                 return EQUAL_RULE;
             else if(operand2->symbol == NOT_EQUAL)      // rule E -> E != E
@@ -217,14 +215,10 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
 }
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
-static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type)
-{
+static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type){
+    bool op1ToFloat = false;
+	bool op3ToFloat = false;
     
-    /*bool retype_op1_to_double = false;
-    bool retype_op3_to_double = false;
-    bool retype_op1_to_integer = false;
-    bool retype_op3_to_integer = false;
-*/
     if (rule == OPERAND_RULE)
     {
         if (op1->dataType == TYPE_UNDEFINED)
@@ -254,108 +248,102 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         break;
 
     case PLUS_RULE:
-    case MINUS_RULE:
-    case MUL_RULE:
-        if (op1->dataType == TYPE_STRING && op3->dataType == TYPE_STRING && rule == PLUS_RULE)
-        {
-            *final_type = TYPE_STRING;
-            break;
-        }
-
-        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER)
-        {
+        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
             *final_type = TYPE_INTEGER;
             break;
         }
-
-        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
-            return SEMANTICAL_OTHER;
-
-        *final_type = TYPE_FLOAT;
-/*
-        if (op1->dataType == TYPE_INTEGER)
-            retype_op1_to_double = true;
-
-        if (op3->dataType == TYPE_INTEGER)
-            retype_op3_to_double = true;
-*/
+        else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
+            *final_type = TYPE_FLOAT;
+            break;
+        }
+        else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
+            op3->dataType = TYPE_FLOAT;
+            op3ToFloat = true;
+            *final_type = TYPE_FLOAT;
+            break;
+        }
+        else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
+            op1->dataType = TYPE_FLOAT;
+            op1ToFloat = true;
+            *final_type = TYPE_FLOAT;
+            break;
+        }
+        else if (op1->dataType == TYPE_STRING && op3->dataType == TYPE_STRING && rule == PLUS_RULE){
+            *final_type = TYPE_STRING;
+            break;
+        }
+        else return SEMANTICAL_OTHER;
         break;
-
+    case MINUS_RULE:
+    case MUL_RULE:
     case DIV_RULE:
-        *final_type = TYPE_FLOAT;
-
-        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
+        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
+            *final_type = TYPE_INTEGER;
+            break;
+        }
+        else if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
             return SEMANTICAL_OTHER;
-        //fprintf(stderr, "tok val: %s\n",op3->currentToken.Data.string->value);
-/*
-        if (op1->dataType == TYPE_INTEGER)
-            retype_op1_to_double = true;
-
-        if (op3->dataType == TYPE_INTEGER)
-            retype_op3_to_double = true;
-  */      //fprintf(stderr, "%s\n", op1->currentToken.Data.string->value);
+            break;
+        }
+        else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
+            *final_type = TYPE_FLOAT;
+            break;
+        }
+        else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
+            op3->dataType = TYPE_FLOAT;
+            op3ToFloat = true;
+            *final_type = TYPE_FLOAT;
+            break;
+        }
+        else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
+            op1->dataType = TYPE_FLOAT;
+            op1ToFloat = true;
+            *final_type = TYPE_FLOAT;
+            break;
+        }
+        else return SEMANTICAL_OTHER;
         break;
-
-    /*case NT_IDIV_NT:
-        *final_type = TYPE_INTEGER;
-
-        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING)
-            return SEMANTICAL_OTHER;
-
-        if (op1->dataType == TYPE_FLOAT)
-            retype_op1_to_integer = true;
-
-        if (op3->dataType == TYPE_FLOAT)
-            retype_op3_to_integer = true;
-
-        break;*/
-
     case EQUAL_RULE:
     case NOT_EQUAL_RULE:
+        if(op1->dataType == op3->dataType){
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
+        else return SEMANTICAL_OTHER;
+        break;
     case LESS_OR_EQUAL_RULE:
     case LESS_RULE:
     case GREATER_OR_EQUAL_RULE:
     case GREATER_RULE:
-/*
-        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT)
-            retype_op1_to_double = true;
-
-        else if (op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER)
-            retype_op3_to_double = true;
-*/
-        if (op1->dataType != op3->dataType)
-            return SEMANTICAL_OTHER;
-
+        if(op1->dataType == op3->dataType){
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
+        else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
+            op3->dataType = TYPE_FLOAT;
+            op3ToFloat = true;
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
+        else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
+            op1->dataType = TYPE_FLOAT;
+            op1ToFloat = true;
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
+        else return SEMANTICAL_OTHER;
         break;
 
     default:
         break;
     }
-/*
-    if (retype_op1_to_double)
-    {
-        //GENERATE_CODE(generate_stack_op2_to_double);
-        codeGenOperand2toFloat(dest);
-    }
 
-    if (retype_op3_to_double)
-    {
-        //GENERATE_CODE(generate_stack_op1_to_double);
-        codeGenOperand1toFloat(dest);
+    if(op1ToFloat){
+        addToOutput(codeGenOperand1toFloat,);
     }
-
-    if (retype_op1_to_integer)
-    {
-        //GENERATE_CODE(generate_stack_op2_to_integer);
-        codeGenOperand2toInteger(dest);
+    if(op3ToFloat){
+        addToOutput(codeGenOperand3toFloat,);
     }
-
-    if (retype_op3_to_integer)
-    {
-        //GENERATE_CODE(generate_stack_op1_to_integer);
-        codeGenOperand1toInteger(dest);
-    }
-*/
     return SUCCESS;
 }
 /////////////////////////////////////////////////////////////////////////
@@ -406,11 +394,11 @@ static int reduceByRule(parseData* parserData)
             return result;
             
 
-		/*if (rule == PLUS_RULE && finalType == TYPE_STRING)
+		if (rule == PLUS_RULE && finalType == TYPE_STRING)
 		{
-			//GENERATE_CODE(generate_concat_stack_strings);
+			addToOutput(codeGenConcatStackStrings,);
 		}
-		else //GENERATE_CODE(generate_stack_operation, rule_for_code_gen);*/
+		else addToOutput(codeGenStackOperation,rule);
         //printStack(&stack);
 		stackPopCount(&stack, count + 1);
         //printStack(&stack);
@@ -458,6 +446,11 @@ int expression(parseData *parserData){
                 return INTERNAL;
             }
 
+            if(actualSymbol == IDENTIFIER || actualSymbol == INT_NUMBER || actualSymbol == FLOAT_NUMBER || actualSymbol == STRING){
+                fprintf(stderr, "%s\n", "JEBEK\n");
+                addToOutput(codeGenPush, (*parserData));
+            }
+
             result = getTokens(&parserData->token);
             if (result){
                 stackFree(&stack);
@@ -501,6 +494,42 @@ int expression(parseData *parserData){
     if(finalNT -> symbol != NON_TERMINAL) {stackFree(&stack);
      return SYNTACTICAL;}
 
+    if(parserData->lID != NULL){
+        char *frame = "LF";
+        if(parserData->lID->global){
+            frame = "GF";
+        }
+
+        switch(parserData->lID->dataType){
+            case TYPE_INTEGER:
+                if(finalNT->dataType == TYPE_STRING){
+                    stackFree(&stack);
+                    return SEMANTICAL_OTHER;
+                }
+                fprintf(stderr, "%s\n", "KOKOT\n");
+                addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_INTEGER,finalNT->dataType);
+                break;
+            case TYPE_FLOAT:
+                if(finalNT->dataType == TYPE_STRING){
+                    stackFree(&stack);
+                    return SEMANTICAL_OTHER;
+                }
+                addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_FLOAT,finalNT->dataType);
+                break;
+            case TYPE_STRING:
+                if(finalNT->dataType != TYPE_STRING){
+                    stackFree(&stack);
+                    return SEMANTICAL_OTHER;
+                }
+                addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_STRING,TYPE_STRING);
+                break;
+            case TYPE_UNDEFINED:
+                addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_UNDEFINED,finalNT->dataType);
+                break;
+            default:
+			break;
+        }
+    }
     stackFree(&stack);
     return SUCCESS;
 }
