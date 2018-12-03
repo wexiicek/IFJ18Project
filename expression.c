@@ -94,10 +94,18 @@ static dataTypeEnum getDataType(Token* token, parseData* parserData){
 	tData* symbol;
 
 	if(token->Type == tokenIdentifier){
-		symbol = BSTsearchSymbol(parserData->localTable, token->Data.string->value);
-		if (symbol == NULL)
-			return TYPE_UNDEFINED;
-		return symbol->dataType;
+        if (parserData->lID->global){
+            symbol = BSTsearchSymbol(parserData->globalTable, token->Data.string->value);
+            if (symbol == NULL)
+                    return TYPE_UNDEFINED;
+            return symbol->dataType;
+        }
+        else{
+        symbol = BSTsearchSymbol(parserData->localTable, token->Data.string->value);
+        if (symbol == NULL)
+            return TYPE_UNDEFINED;
+        return symbol->dataType;
+        }
 	}
 	else if(token->Type == tokenInteger)
 		return TYPE_INTEGER;
@@ -115,18 +123,11 @@ static int numberOfSymbolsAfterStop(bool* stopFound)
 {
     fprintf(stderr,CGRN"    [EXPR]" CRED" FUN "CWHT" numberOfSymbolsAfterStop \n");
 	StackItem* tmp = stackTop(&stack);
-    //printStack(&stack);
 	int count = 0;
-//for debugging purposes
-    //return count;
-//debug TODO
 	while (tmp != NULL){
 		if (tmp->symbol != STOP){
 			*stopFound = false;
 			count++;
-
-            //if (count == 20) return;
-            //debug
 		}
 		else{
 			*stopFound = true;
@@ -215,93 +216,104 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
 }
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
-static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type){
+static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type, parseData *parserData){
     bool op1ToFloat = false;
 	bool op3ToFloat = false;
     
     if (rule == OPERAND_RULE)
     {
         if (op1->dataType == TYPE_UNDEFINED)
-            return SEMANTICAL_OTHER;
+            return SEMANTICAL_UNDEF;
     }
 
     if (rule == BRACKETS_RULE)
     {
         if (op2->dataType == TYPE_UNDEFINED)
-            return SEMANTICAL_OTHER;
+            return SEMANTICAL_UNDEF;
     }
 
     if (rule != OPERAND_RULE && rule != BRACKETS_RULE)
     {
         if (op1->dataType == TYPE_UNDEFINED || op3->dataType == TYPE_UNDEFINED)
-            return SEMANTICAL_OTHER;
+            return SEMANTICAL_UNDEF;
     }
 
     switch (rule)
     {
     case OPERAND_RULE:
         *final_type = op1->dataType;
+        parserData->lID->dataType = *final_type;
         break;
 
     case BRACKETS_RULE:
         *final_type = op2->dataType;
+        parserData->lID->dataType = *final_type;
         break;
 
     case PLUS_RULE:
         if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
             *final_type = TYPE_INTEGER;
+            parserData->lID->dataType = TYPE_INTEGER;
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
             *final_type = TYPE_FLOAT;
+            parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
             op3->dataType = TYPE_FLOAT;
             op3ToFloat = true;
             *final_type = TYPE_FLOAT;
+            parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
         else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
             op1->dataType = TYPE_FLOAT;
             op1ToFloat = true;
             *final_type = TYPE_FLOAT;
+            parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
         else if (op1->dataType == TYPE_STRING && op3->dataType == TYPE_STRING && rule == PLUS_RULE){
             *final_type = TYPE_STRING;
+            parserData->lID->dataType = TYPE_STRING;
             break;
         }
-        else return SEMANTICAL_OTHER;
+        else return SEMANTICAL_TYPES;
         break;
     case MINUS_RULE:
     case MUL_RULE:
     case DIV_RULE:
         if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
             *final_type = TYPE_INTEGER;
+            parserData->lID->dataType = TYPE_INTEGER;
             break;
         }
         else if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
-            return SEMANTICAL_OTHER;
+            return SEMANTICAL_TYPES;
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
             *final_type = TYPE_FLOAT;
+            parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
             op3->dataType = TYPE_FLOAT;
             op3ToFloat = true;
             *final_type = TYPE_FLOAT;
+            parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
         else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
             op1->dataType = TYPE_FLOAT;
             op1ToFloat = true;
             *final_type = TYPE_FLOAT;
+            parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
-        else return SEMANTICAL_OTHER;
+        else return SEMANTICAL_TYPES;
         break;
     case EQUAL_RULE:
     case NOT_EQUAL_RULE:
@@ -309,7 +321,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             *final_type = TYPE_UNDEFINED;
             break;
         }
-        else return SEMANTICAL_OTHER;
+        else return SEMANTICAL_TYPES;
         break;
     case LESS_OR_EQUAL_RULE:
     case LESS_RULE:
@@ -331,7 +343,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             *final_type = TYPE_UNDEFINED;
             break;
         }
-        else return SEMANTICAL_OTHER;
+        else return SEMANTICAL_TYPES;
         break;
 
     default:
@@ -390,7 +402,7 @@ static int reduceByRule(parseData* parserData)
 		return SYNTACTICAL;}
 
 	else{
-		if ((result = checkSemantics(rule, op1, op2, op3, &finalType)))
+		if ((result = checkSemantics(rule, op1, op2, op3, &finalType, parserData)))
             return result;
             
 
@@ -504,7 +516,7 @@ int expression(parseData *parserData){
             case TYPE_INTEGER:
                 if(finalNT->dataType == TYPE_STRING){
                     stackFree(&stack);
-                    return SEMANTICAL_OTHER;
+                    return SEMANTICAL_TYPES;
                 }
                 fprintf(stderr, "%s\n", "KOKOT\n");
                 addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_INTEGER,finalNT->dataType);
@@ -512,14 +524,14 @@ int expression(parseData *parserData){
             case TYPE_FLOAT:
                 if(finalNT->dataType == TYPE_STRING){
                     stackFree(&stack);
-                    return SEMANTICAL_OTHER;
+                    return SEMANTICAL_TYPES;
                 }
                 addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_FLOAT,finalNT->dataType);
                 break;
             case TYPE_STRING:
                 if(finalNT->dataType != TYPE_STRING){
                     stackFree(&stack);
-                    return SEMANTICAL_OTHER;
+                    return SEMANTICAL_TYPES;
                 }
                 addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_STRING,TYPE_STRING);
                 break;

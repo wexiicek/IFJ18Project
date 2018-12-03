@@ -33,6 +33,7 @@ tData *BSTinsertSymbol(tBSTNodePtr* RootPtr, char *k){
 		(*RootPtr) -> Data . identifier = (*RootPtr) -> Key;
 		(*RootPtr) -> Data . defined = false;
 		(*RootPtr) -> Data . global = false;
+		(*RootPtr) -> Data . dataType = TYPE_UNDEFINED;
 		(*RootPtr) -> Data . argCounter = 0;
 		(*RootPtr) -> Data . callArgCounter = 0;
 	}

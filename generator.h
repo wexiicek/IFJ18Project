@@ -15,16 +15,17 @@ void codeGenTypeOfTermValue(parseData parserData);
 void codeGenDeclarationOfVar(char *var);
 void codeGenValueOfVar(char *var, dataTypeEnum type);
 void codeGenInput(char *var, dataTypeEnum type);
-void codeGenPrint(char *var);
+void codeGenPrint();
+void codeGenPrintBracket();
 /*-------------------------------------------Functions for operations with stack---------------------------------------------------*/
 void codeGenPush(parseData parserData);
 void codeGenStackOperation(precAnalysisRules rule);
 void codeGenConcatStackStrings();
 void codeGenSaveExpressionResult(char *var, char *frame, dataTypeEnum left, dataTypeEnum right);
 void codeGenOperand1toFloat();
-void codeGenOperand1toInteger();
-void codeGenOperand2toFloat();
-void codeGenOperand2toInteger();
+//void codeGenOperand1toInteger();
+void codeGenOperand3toFloat();
+//void codeGenOperand3toInteger();
 /*------------------------------------------Functions for conditional statements------------------------------------------------------*/
 void codeGenLabel(char *func, int numOfLabel, int deep);
 void codeGenIfBegin(char *func, int numOfLabel, int deep);

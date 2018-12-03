@@ -9,6 +9,7 @@ typedef enum{
     TYPE_INTEGER,
     TYPE_FLOAT,
     TYPE_STRING,
+    TYPE_BOOL,
     TYPE_UNDEFINED,
 } dataTypeEnum;
 

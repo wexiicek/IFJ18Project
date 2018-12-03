@@ -82,6 +82,7 @@ typedef enum {
 	stateStringEnd,
 	stateIdentifierEnd,
 	stateNumberEnd,
+	stateNumberHex,
 	stateEscapeSequence,
 	stateBlockComment,
 	stateError,

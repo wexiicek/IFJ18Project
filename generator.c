@@ -181,6 +181,7 @@ DEFVAR GF@%%result\n\
 DEFVAR GF@%%operand1\n\
 DEFVAR GF@%%operand2\n\
 DEFVAR GF@%%operand3\n\
+DEFVAR GF@%%temp\n\
 JUMP $$main\n");
 
 	for (int i = 1; i <= 8; i++)
@@ -189,14 +190,13 @@ JUMP $$main\n");
 
 void codeGenMainFrameBegin() {
 	stringAddString(&outcode, "LABEL $$main\n\
-JEBEK\n\
 CREATEFRAME\n\
 PUSHFRAME\n");
 
 }
 
 void codeGenMainFrameEnd() {
-	stringAddString(&outcode, "POPFRAME\n\
+	stringAddString(&outcode, "LABEL $error\nEXIT int@9\nPOPFRAME\n\
 CLEARS\n");
 }
 
@@ -222,7 +222,7 @@ void codeGenTypeOfTermValue(parseData parserData) {
 	int i = 0;
 	dynString tmp;
 	stringInit(&tmp);
-
+	//TODO stringDispose kde?!
 	switch (parserData.token.Type) {
 		case tokenInteger:
 			sprintf(val, "%d", parserData.token.Data.integer);
@@ -242,9 +242,10 @@ void codeGenTypeOfTermValue(parseData parserData) {
 				}
 				i++;
 			}
+			INS(tmp.value);
 			break;
 		case tokenIdentifier:
-			INS("LF@%");INS(parserData.token.Data.string->value);
+			INS("LF@");INS(parserData.token.Data.string->value);
 			break;
 		default:
 			return;
@@ -282,9 +283,15 @@ void codeGenInput(char *var, dataTypeEnum type) {
 	stringAddString(&outcode, "\n");
 }
 
-void codeGenPrint(char *var) {
+void codeGenPrint() {
     //stringAddString(&outcode, "WRITE LF@%s\n", var);
-    INS("WRITE LF@"); INS(var); INS("\n");
+    INS("WRITE GF@%%result"); INS("\n");
+}
+
+void codeGenPrintBracket() {
+    //stringAddString(&outcode, "WRITE LF@%s\n", var);
+    INS("POPS GF@%%result"); INS("\n");
+    INS("WRITE GF@%%result"); INS("\n");
 }
 
 /*----------------------------------------Functions for operations with stack------------------------------------------------------------------*/
@@ -307,7 +314,13 @@ void codeGenStackOperation(precAnalysisRules rule) {
 			stringAddString(&outcode, "MULS\n");
 			break;
 		case DIV_RULE:
-			stringAddString(&outcode, "DIVS\n");
+			stringAddString(&outcode, "POPS GF@%%operand1\n");
+			stringAddString(&outcode, "MOVE GF@%%temp GF@%%operand1\n");
+			stringAddString(&outcode, "PUSHS GF@%%operand1\n");
+			stringAddString(&outcode, "PUSHS int@0\n");
+			stringAddString(&outcode, "JUMPIFEQS $error\n");
+			stringAddString(&outcode, "PUSHS GF@%%temp\n");
+			stringAddString(&outcode, "IDIVS\n");
 			break;
 		/*case IDIV_RULE:
 			stringAddString(&outcode, "POPS GF@%%operand1\n\
@@ -377,22 +390,23 @@ void codeGenSaveExpressionResult(char *var, char *frame, dataTypeEnum left, data
 void codeGenOperand1toFloat() {
 	stringAddString(&outcode, "INT2FLOATS\n");
 }
-
+/*
 void codeGenOperand1toInteger() {
 	stringAddString(&outcode, "FLOAT2INTS\n");
 }
-
-void codeGenOperand2toFloat() {
+*/
+void codeGenOperand3toFloat() {
 	stringAddString(&outcode, "POPS GF@%%operand1\n\
 INT2FLOATS\n\
 PUSHS GF@%%operand1\n");
 }
-
-void codeGenOperand2toInteger() {
+/*
+void codeGenOperand3toInteger() {
 	stringAddString(&outcode, "POPS GF@%%operand1\n\
 FLOAT2INTS\n\
 PUSHS GF@%%operand1\n");
 }
+*/
 
 /*---------------------------------------Functions for conditional statements------------------------------------*/
 
@@ -403,7 +417,7 @@ void codeGenLabel(char *func, int numOfLabel, int deep) {
 
 void codeGenIfBegin(char *func, int numOfLabel, int deep) {
 	//stringAddString(&outcode, "JUMPIFEQ $%s%%%d%%%d GF@%%result bool@false\n", func, deep, numOfLabel);
-	INS("JUMPIFEQ $"); INS(func); INS("$"); INSINT(deep); INS("$"); INSINT(numOfLabel); INS("GF@%result bool@dalse\n");
+	INS("JUMPIFEQ $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel); INS(" GF@%%result bool@false\n");
 }
 
 void codeGenIfElse(char *func, int numOfLabel, int deep) {
@@ -417,9 +431,9 @@ void codeGenIfEnd(char *func, int numOfLabel, int deep) {
 }
 
 void codeGenWhileBegin(char *func, int numOfLabel, int deep) {
-	codeGenLabel(func, numOfLabel, deep);
+	//codeGenLabel(func, numOfLabel, deep);
 	//stringAddString(&outcode, "JUMPIFEQ $%s%%%d%%%d GF@%%result bool@false\n", func, deep, numOfLabel);
-	INS("JUMPIFEQ $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel); INS("GF%result bool@false\n");
+	INS("JUMPIFEQ $"); INS(func); INS("%"); INSINT(deep); INS("%"); INSINT(numOfLabel); INS(" GF@%%result bool@false\n");
 }
 
 void codeGenWhileEnd(char *func, int numOfLabel, int deep) {

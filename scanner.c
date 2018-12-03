@@ -25,12 +25,12 @@ FILE *code;
 dynString *kwstring;
 
 //Free the allocated dynamic string and return correct Error Value
-static int scanRet(dynString *string, int error){
+static int scanRet(dynString *string, int error) {
 	stringDispose(string);
 	return error;
 }
 
-unsigned int keywordCompare (dynString *str, Token *token){
+unsigned int keywordCompare (dynString *str, Token *token) {
 
 	bool kw = false;
 
@@ -39,44 +39,44 @@ unsigned int keywordCompare (dynString *str, Token *token){
 		We check it against all possible keywords using stringCompare function.
 	*/
 
-	if(stringCompare(str, "chr"))
-		{token -> Data.keyword = KW_CHR; kw = true;}
+	if (stringCompare(str, "chr"))
+	{token -> Data.keyword = KW_CHR; kw = true;}
 	else if (stringCompare(str, "def"))
-		{token->Data.keyword = KW_DEF; kw = true;}
+	{token->Data.keyword = KW_DEF; kw = true;}
 	else if (stringCompare(str, "do"))
-		{token->Data.keyword = KW_DO; kw = true;}
+	{token->Data.keyword = KW_DO; kw = true;}
 	else if (stringCompare(str, "else"))
-		{token->Data.keyword = KW_ELSE; kw = true;}
-	else if (stringCompare(str, "end"))  
-		{token->Data.keyword = KW_END; kw = true;}
+	{token->Data.keyword = KW_ELSE; kw = true;}
+	else if (stringCompare(str, "end"))
+	{token->Data.keyword = KW_END; kw = true;}
 	else if (stringCompare(str, "if"))
-		{token->Data.keyword = KW_IF; kw = true;}
+	{token->Data.keyword = KW_IF; kw = true;}
 	else if (stringCompare(str, "inputf"))
-		{token->Data.keyword = KW_INPUTF; kw = true;}
+	{token->Data.keyword = KW_INPUTF; kw = true;}
 	else if (stringCompare(str, "inputi"))
-		{token->Data.keyword = KW_INPUTI; kw = true;}
+	{token->Data.keyword = KW_INPUTI; kw = true;}
 	else if (stringCompare(str, "inputs"))
-		{token->Data.keyword = KW_INPUTS; kw = true;}
+	{token->Data.keyword = KW_INPUTS; kw = true;}
 	else if (stringCompare(str, "length"))
-		{token -> Data.keyword = KW_LENGTH; kw = true;}
+	{token -> Data.keyword = KW_LENGTH; kw = true;}
 	else if (stringCompare(str, "not"))
-		{token->Data.keyword = KW_NOT; kw = true;}
+	{token->Data.keyword = KW_NOT; kw = true;}
 	else if (stringCompare(str, "nil"))
-		{token->Data.keyword = KW_NIL; kw = true;}
+	{token->Data.keyword = KW_NIL; kw = true;}
 	else if (stringCompare(str, "ord"))
-		{token->Data.keyword = KW_ORD; kw = true;}
+	{token->Data.keyword = KW_ORD; kw = true;}
 	else if (stringCompare(str, "then"))
-		{token->Data.keyword = KW_THEN; kw = true;}
+	{token->Data.keyword = KW_THEN; kw = true;}
 	else if (stringCompare(str, "while"))
-		{token->Data.keyword = KW_WHILE; kw = true;}
+	{token->Data.keyword = KW_WHILE; kw = true;}
 	else if (stringCompare(str, "print"))
-		{token->Data.keyword = KW_PRINT; kw = true;}
+	{token->Data.keyword = KW_PRINT; kw = true;}
 	else if (stringCompare(str, "substr"))
-		{token->Data.keyword = KW_SUBSTR; kw = true;}
-	
-	if(kw){
-		fprintf(stderr,"    KEYWORD: %d, ", token->Data.keyword); 
-		token->Type = tokenKeyword; 
+	{token->Data.keyword = KW_SUBSTR; kw = true;}
+
+	if (kw) {
+		fprintf(stderr, "    KEYWORD: %d, ", token->Data.keyword);
+		token->Type = tokenKeyword;
 		return true;	//Return true if the identifier is keyword
 	}
 	return false;		//Return false otherwise
@@ -84,568 +84,670 @@ unsigned int keywordCompare (dynString *str, Token *token){
 
 int setSourceFile(FILE *sourceFile) {
 	/*Set the source code file as a file for scanner.*/
-	if((code = sourceFile) == NULL)
+	if ((code = sourceFile) == NULL)
 		return SUCCESS;
 	return INTERNAL;
 }
 
-void setDynString(dynString *string){
+void setDynString(dynString *string) {
 	kwstring = string;
 }
 
-bool strToIntToken(dynString *from, Token *to){
+bool strToIntToken(dynString *from, Token *to) {
 	/*Convert the string value to an integer value and push it to token.*/
-    int value = atoi(from->value);
-    to->Data.integer = value;
-    return SUCCESS;
+	int value = atoi(from->value);
+	to->Data.integer = value;
+	return SUCCESS;
 }
 
-bool strToFltToken(dynString *from, Token *to){
+bool strToFltToken(dynString *from, Token *to) {
 	/*Convert the string value to a float value and push it to token.*/
 	float value = strtof(from->value, NULL);
 	to->Data.flt = value;
 	return SUCCESS;
 }
 
-int getTokens (Token *token) {	
+bool strToExpToken(dynString *from, Token *to) {
+	/*Convert the string value to a float value and push it to token.*/
+	float value = atof(from->value);
+	to->Data.flt = value;
+	return SUCCESS;
+}
+
+int getTokens (Token *token) {
 	/*
 		Main scanner function.
 		Reads characters from input file - code -.
 		Matches them with predefined rules and sets token values and types.
 	*/
 
-	//Scanner begins with initialising required variables and checking if 
+	//Scanner begins with initialising required variables and checking if
 	//there have been no errors with initialising
-	if(code == NULL || kwstring == NULL)
+	if (code == NULL || kwstring == NULL)
 		return INTERNAL;
 
 	token->Data.string = kwstring;
 
 	dynString string;
-	dynString *str = &string; 
+	dynString *str = &string;
 
-	if(stringInit(str))
+	if (stringInit(str))
 		return INTERNAL;
 
 	bool zeroSwitch = false;
 	int state = stateStart; token -> Type = tokenEmpty;
 	char c;
 	char *prt = "    TOKEN TYPE:";
-	
 
-	//Checking for block comment at the beginning, when there is no EOL before.. 
+
+	//Checking for block comment at the beginning, when there is no EOL before..
 	// .. dont ask
 	nextChar(c);
 	ungetc(c, code);
-		if ((c == '=')){
-			state = stateError;
-			nextChar(c);                										
-			if (c == 'b'){
+	if ((c == '=')) {
+		state = stateError;
+		nextChar(c);
+		if (c == 'b') {
+			nextChar(c);
+			if (c == 'e') {
 				nextChar(c);
-				if(c == 'e'){
-					nextChar(c);                										
-					if(c == 'g'){
-						nextChar(c);                										
-						if(c == 'i'){
-							nextChar(c);                								
-							if(c == 'n'){
-								nextChar(c);  
-								//fprintf(stderr, "%c\n",c );              					
-    							if (c ==  '\n') {
-    								while (c != EOF){
-    									nextChar(c);
-    									if(c == '\n' || c == '='){
-    										nextChar(c);
-    										if(c == '=' || c == 'e'){
-    											nextChar(c);
-    											if( c == 'e' || c == 'n'){
-        											nextChar(c);
-        											if(c == 'n' || c == 'd'){
-        												nextChar(c);
-        												if(c == 'd' || c == '\n' || c == EOF){
-        													//fprintf(stderr, "%c\n",c );
-        													if(c == EOF){
-        														state=stateEnd;	                													
-        														token->Type = tokenEndOfFile;
-        														break;
-        													}
-        													else if (c == 'd'){
-        														nextChar(c);	                													
-        														ungetc(c, code);
-        														state = stateStart;
-        														token -> Type = tokenEmpty; 
-        														break;}
-        													
-        													else if (c == '\n'){
-        														state = stateStart;
-        														token -> Type = tokenEmpty; 
-        														break;}}
-        												else return LEXICAL;
-        							return LEXICAL;
-   								}}}}}}
-    							else if (c == EOF) return LEXICAL;
-    }}}}}                										
-			
-		//If there was no "=", we return the character and start over						
-		else{
+				if (c == 'g') {
+					nextChar(c);
+					if (c == 'i') {
+						nextChar(c);
+						if (c == 'n') {
+							nextChar(c);
+							//fprintf(stderr, "%c\n",c );
+							if (c ==  '\n') {
+								while (c != EOF) {
+									nextChar(c);
+									if (c == '\n' || c == '=') {
+										nextChar(c);
+										if (c == '=' || c == 'e') {
+											nextChar(c);
+											if ( c == 'e' || c == 'n') {
+												nextChar(c);
+												if (c == 'n' || c == 'd') {
+													nextChar(c);
+													if (c == 'd' || c == '\n' || c == EOF) {
+														//fprintf(stderr, "%c\n",c );
+														if (c == EOF) {
+															state = stateEnd;
+															token->Type = tokenEndOfFile;
+															break;
+														}
+														else if (c == 'd') {
+															nextChar(c);
+															ungetc(c, code);
+															state = stateStart;
+															token -> Type = tokenEmpty;
+															break;
+														}
+
+														else if (c == '\n') {
+															state = stateStart;
+															token -> Type = tokenEmpty;
+															break;
+														}
+													}
+													else return LEXICAL;
+													return LEXICAL;
+												}
+											}
+										}
+									}
+								}
+							}
+							else if (c == EOF) return LEXICAL;
+						}
+					}
+				}
+			}
+		}
+
+		//If there was no "=", we return the character and start over
+		else {
 			ungetc(c, code);
 			state = stateEnd;
 		}
 	}
 
 	//Go through every character of a file
-	while (1){
+	while (1) {
 		nextChar(c);
-		switch (state){
-			case (stateStart):
-				//Checking for END OF LINE
-				//Or a block comment
-				if (c == '\n'){
+		switch (state) {
+		case (stateStart):
+			//Checking for END OF LINE
+			//Or a block comment
+			if (c == '\n') {
+				nextChar(c);
+				if ((c == '=')) {
+					state = stateError;
 					nextChar(c);
-					if ((c == '=')){
-						state = stateError;
-						nextChar(c);                										
-						if (c == 'b'){
+					if (c == 'b') {
+						nextChar(c);
+						if (c == 'e') {
 							nextChar(c);
-							if(c == 'e'){
-								nextChar(c);                										
-								if(c == 'g'){
-									nextChar(c);                										
-									if(c == 'i'){
-										nextChar(c);                								
-										if(c == 'n'){
-											nextChar(c);  
-											//fprintf(stderr, "%c\n",c );              					
-                							if (c ==  '\n') {
-                								while (c != EOF){
-                									//Reading characters, while we dont have a sequence
-                									//of =end OR
-                									//End of file
-                									nextChar(c);
-                									if(c == '\n' || c == '='){
-                										nextChar(c);
-                										if(c == '=' || c == 'e'){
-                											nextChar(c);
-                											if( c == 'e' || c == 'n'){
-	                											nextChar(c);
-	                											if(c == 'n' || c == 'd'){
-	                												nextChar(c);
-	                												if(c == 'd' || c == '\n' || c == EOF){
-	                													//fprintf(stderr, "%c\n",c );
-	                													if(c == EOF){
-	                														state=stateEnd;	                													
-	                														token->Type = tokenEndOfFile;
-	                														break;
-	                													}
-	                													else if (c == 'd'){
-	                														nextChar(c);	                													
-	                														ungetc(c, code);
-	                														state = stateStart;
-	                														token -> Type = tokenEmpty; 
-	                														break;}
-	                													
-	                													else if (c == '\n'){
-	                														state = stateStart;
-	                														token -> Type = tokenEmpty; 
-	                														break;}}
-	                												else return LEXICAL;
-	                							return LEXICAL;
-	           								}}}}}}
-	            							else if (c == EOF) return LEXICAL;
-	            }}}}}}                										
-					//If there was no "=", we return the character and start over							
-					else{
-						ungetc(c, code);
-						token -> Type = tokenEndOfLine;
-						state = stateEnd;
+							if (c == 'g') {
+								nextChar(c);
+								if (c == 'i') {
+									nextChar(c);
+									if (c == 'n') {
+										nextChar(c);
+										//fprintf(stderr, "%c\n",c );
+										if (c ==  '\n') {
+											while (c != EOF) {
+												//Reading characters, while we dont have a sequence
+												//of =end OR
+												//End of file
+												nextChar(c);
+												if (c == '\n' || c == '=') {
+													nextChar(c);
+													if (c == '=' || c == 'e') {
+														nextChar(c);
+														if ( c == 'e' || c == 'n') {
+															nextChar(c);
+															if (c == 'n' || c == 'd') {
+																nextChar(c);
+																if (c == 'd' || c == '\n' || c == EOF) {
+																	//fprintf(stderr, "%c\n",c );
+																	if (c == EOF) {
+																		state = stateEnd;
+																		token->Type = tokenEndOfFile;
+																		break;
+																	}
+																	else if (c == 'd') {
+																		nextChar(c);
+																		ungetc(c, code);
+																		state = stateStart;
+																		token -> Type = tokenEmpty;
+																		break;
+																	}
+
+																	else if (c == '\n') {
+																		state = stateStart;
+																		token -> Type = tokenEmpty;
+																		break;
+																	}
+																}
+																else return LEXICAL;
+																return LEXICAL;
+															}
+														}
+													}
+												}
+											}
+										}
+										else if (c == EOF) return LEXICAL;
+									}
+								}
+							}
+						}
 					}
 				}
+				//If there was no "=", we return the character and start over
+				else {
+					ungetc(c, code);
+					token -> Type = tokenEndOfLine;
+					state = stateEnd;
+				}
+			}
 
-				else if (isspace(c))
-					{state = stateStart; token->Type = tokenEmpty;}
+			else if (isspace(c))
+			{state = stateStart; token->Type = tokenEmpty;}
 
-				else if (c == '+')
-					{token->Type = tokenAdd; fprintf(stderr,"%s ADD\n", prt); return scanRet(str, SUCCESS);}
+			else if (c == '+')
+			{token->Type = tokenAdd; fprintf(stderr, "%s ADD\n", prt); return scanRet(str, SUCCESS);}
 
-				else if (c == '-')
-					{token->Type = tokenSub; fprintf(stderr,"%s SUB\n", prt); return scanRet(str, SUCCESS);}
-				
-				else if (c == '*')
-					{token->Type = tokenMul; fprintf(stderr,"%s MUL\n", prt); return scanRet(str, SUCCESS);}
-				
-				else if (c == '/') 
-					{token->Type = tokenDiv; fprintf(stderr,"%s DIV\n", prt); return scanRet(str, SUCCESS);}
-				
-				else if (c == '(')
-					{token->Type = tokenLeftBracket; fprintf(stderr,"%s LBRACK\n", prt); return scanRet(str, SUCCESS);}
-				
-				else if (c == ')')
-					{token->Type = tokenRightBracket; fprintf(stderr,"%s RBRACK\n", prt); return scanRet(str, SUCCESS);}
+			else if (c == '-')
+			{token->Type = tokenSub; fprintf(stderr, "%s SUB\n", prt); return scanRet(str, SUCCESS);}
 
-				else if (c == '{')
-					{token->Type = tokenLeftBrace; fprintf(stderr,"%s LBRACE\n", prt); return scanRet(str, SUCCESS);}
+			else if (c == '*')
+			{token->Type = tokenMul; fprintf(stderr, "%s MUL\n", prt); return scanRet(str, SUCCESS);}
 
-				else if (c == '}')
-					{token->Type = tokenRightBrace; fprintf(stderr,"%s RBRACE\n", prt); return scanRet(str, SUCCESS);}
+			else if (c == '/')
+			{token->Type = tokenDiv; fprintf(stderr, "%s DIV\n", prt); return scanRet(str, SUCCESS);}
 
-				else if (c == ',')
-					{token->Type = tokenComma; fprintf(stderr,"%s COMMA\n", prt); return scanRet(str, SUCCESS);}
+			else if (c == '(')
+			{token->Type = tokenLeftBracket; fprintf(stderr, "%s LBRACK\n", prt); return scanRet(str, SUCCESS);}
+
+			else if (c == ')')
+			{token->Type = tokenRightBracket; fprintf(stderr, "%s RBRACK\n", prt); return scanRet(str, SUCCESS);}
+
+			else if (c == '{')
+			{token->Type = tokenLeftBrace; fprintf(stderr, "%s LBRACE\n", prt); return scanRet(str, SUCCESS);}
+
+			else if (c == '}')
+			{token->Type = tokenRightBrace; fprintf(stderr, "%s RBRACE\n", prt); return scanRet(str, SUCCESS);}
+
+			else if (c == ',')
+			{token->Type = tokenComma; fprintf(stderr, "%s COMMA\n", prt); return scanRet(str, SUCCESS);}
 
 
 			/*	Cases, where we CAN'T determine the type definitely	*/
 
-				else if (c == '"')
-					{state = stateStringStart; token->Type = tokenString;}
-				
-				else if (c == '<')
-					state = stateLess;
-				
-				else if (c == '>')
-					state = stateGreater;
-				
-				else if (c == '=')
-					state = stateEqual;
+			else if (c == '"')
+			{state = stateStringStart; token->Type = tokenString;}
 
-				else if (isdigit(c)){
-					ungetc(c, code); state = stateNumber; token->Type = tokenInteger;
+			else if (c == '<')
+				state = stateLess;
 
-				}
-				
-				else if (c == '#')
-					{state = stateComment; token->Type = tokenEmpty;}
-				//Question: do we need EOL token on the end of single line
-				//			comment?
+			else if (c == '>')
+				state = stateGreater;
 
-				else if (c == '!')
-					state = stateExclamation;
-			
-				else if (c == EOF)
-					{token->Type = tokenEndOfFile; state = stateEnd;}
-			
-				//This is the beginning of an identifier, it can be either "_" or a lowercase character
-				else if ( (c == '_') || (charIsLowercase(c)) )
-					{ungetc(c, code); state = stateIdentifierOrKeyword; token->Type = tokenIdentifier;}
-				
-				//Otherwise it is an error
-				else 
-					{token->Type = tokenEmpty; return scanRet(str, LEXICAL);}
+			else if (c == '=')
+				state = stateEqual;
+
+			else if (c == '\\')
+				state = stateNumberHex;
+
+			else if (isdigit(c)) {
+				if (c == '0')
+					zeroSwitch = true;
+				state = stateNumber; token->Type = tokenInteger;
+				ungetc(c, code);
+				//if(stringAddChar(str, c)) return scanRet(str, INTERNAL);
+			}
+
+			else if (c == '#')
+			{state = stateComment; token->Type = tokenEmpty;}
+			//Question: do we need EOL token on the end of single line
+			//			comment?
+
+			else if (c == '!')
+				state = stateExclamation;
+
+			else if (c == EOF)
+			{token->Type = tokenEndOfFile; state = stateEnd;}
+
+			//This is the beginning of an identifier, it can be either "_" or a lowercase character
+			else if ( (c == '_') || (charIsLowercase(c)) )
+			{ungetc(c, code); state = stateIdentifierOrKeyword; token->Type = tokenIdentifier;}
+
+			//Otherwise it is an error
+			else
+			{token->Type = tokenEmpty; return scanRet(str, LEXICAL);}
 			break;
 
-			case (stateNumber):
-				if ((zeroSwitch) && (token->Type == tokenInteger) && (isdigit(c)))
-					{zeroSwitch = false;return LEXICAL; }
-
-				if (isdigit(c)){
-					if (c == '0')
-						zeroSwitch = true;
-					if(stringAddChar(str, c)) return scanRet(str, INTERNAL);
-				}
-
-				else if (c == '.')
-					{token->Type = tokenFloat; if(stringAddChar(str, c)) return scanRet(str, INTERNAL);}
-
-				else if ((c == 'e')||(c == 'E'))
-					{token->Type = tokenExponential; if(stringAddChar(str, c)) return scanRet(str, INTERNAL);}
-
-				else
-					{state = stateNumberEnd; zeroSwitch = false; ungetc(c, code); }
-			break;
-
-			case (stateIdentifierOrKeyword):
-
-				if ( (c == '_') || isalnum(c))
-					{if(stringAddChar(str, c)) return scanRet(str, INTERNAL);}
-			
-				//If we get an ? or !, we add it into identifier and jump to end of identifier..
-				//If there are more ? or !, we return LEXICAL error
-				else if ( (c == '?') || (c == '!')){
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					else
-						 state = stateIdentifierEnd;
-				}
-			
-				else if (  (c == ',')  || (c == '=') || isspace(c) || (c == EOF) )
-					{ungetc(c, code); state = stateIdentifierEnd;}
-			
-				else
-					{ungetc(c, code); state = stateIdentifierEnd;}
-			break;
-
-
-			case (stateIdentifierCheck):
-				if (isspace(c))
-					{ungetc(c, code); state = stateStart;}
-			break;
-
-			case (stateEqual):
-				//If "=="
-				if (c == '=')
-					{token->Type = tokenEqual; state = stateStart;  fprintf(stderr,"%s EQUAL", prt); return scanRet(str, SUCCESS);}
-				//If "="
-				else 
-					{ungetc(c, code); token->Type = tokenAssign; state = stateStart;}
-			break;
-
-			case (stateLess):
-				//If "<="
-				if (c == '=')
-					{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr,"%s LESS EQUAL", prt); return scanRet(str, SUCCESS);}
-				//If "<"
-				else
-					{ungetc(c, code); token->Type = tokenLess; state = stateStart;}
-			break;
-
-			case (stateGreater):
-				//If ">="
-				if (c == '=')
-					{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr,"%s GREATER EQUAL", prt); return scanRet(str, SUCCESS);}
-				//If ">"
-				else
-					{ungetc(c, code); token->Type = tokenGreater; state = stateStart;}
-			break;
-
-			case (stateExclamation):
-				//If "!="
-				if (c == '=')
-					{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr,"%s NOT EQUAL", prt); return scanRet(str, SUCCESS);}
-				//Error otherwise
-				else
-					return scanRet(str, LEXICAL);
-			break;
-
-			case (stateComment):
-			//Single line comment
-
-				//Read characters from file, until there is an EOL or EOF
-				if (c == '\n')
-					{state = stateStart; token->Type = tokenEndOfLine;}
-				if (c == EOF)
-					{token->Type = tokenEndOfFile; state = stateEnd;}
-			break;
-
-			case (stateStringStart):
-				token->Type = tokenString;
-
-				if (c < 32)
-					{scanRet(str, LEXICAL);}
-
-				//If there is a backslash, means we have to check for escape sequences
-				else if (c == '\\')
-					{state = stateEscapeSequence;}
-
-				//End string when a second " comes
-				else if (c != '\"'){
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-				}
-				else 
-					{state = stateStringEnd;}
-			break;
-
-			case (stateEscapeSequence):
-
-				if (token->Type == 24)
-					fprintf(stderr,"    TOKEN TYPE: ESCAPE\n");
-				
-				// \n escape sequence
-				if (c == 'n'){
-					c = '\n';
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					state = stateStringStart;
-				}
-
-				// \t escape sequence
-				else if (c == 't'){
-					c = '\t';
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					state = stateStringStart;
-				}
-
-				// \s escape sequence
-				else if (c == 's'){
-					c = ' ';
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					state = stateStringStart;
-				}
-
-				// \" escape sequence
-				else if (c == '"'){
-					c = '"';
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					state = stateStringStart;
-				}
-				
-				// \\ escape sequence
-				else if (c == '\\'){
-					c = '\\';
-					if(stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					state = stateStringStart;
-				}
-
-				// hexadecimal escape sequence
-				else if (c == 'x'){
-					/*
-					 if we have \xNM, where NM is a hexadecimal number,
-					 we save it into a temporary string which will consist of
-					 [0][1]            [2][3]				[4] 
-					  0  x 				N  M   				\0
-					 hex num start 		our hex number 		string closing symbol
-					 Then we convert it to decimal value and concatenate to 
-					 the string, if it has correct values (between 0 and FF (255) ASCII)
-					*/
-					char temp[5];
-					temp[0] = '0'; temp[1] = 'x'; temp[4] = '\0';
-					nextChar(c);
-					if (isalnum(c))	temp[2] = c;
-					else return LEXICAL;
-					nextChar(c);
-					
-					if (c == ' '){
-						state = stateStringStart;
-						break;
+		case (stateNumber):
+			if ((zeroSwitch) && (token->Type == tokenInteger)) {
+				nextChar(c);
+				if (isdigit(c)) {
+					if (c == '0') {
+						zeroSwitch = false;
+						return scanRet(str, LEXICAL);
 					}
-					
-					else if (isalnum(c))	temp[3] = c;
-					else return LEXICAL;
-					
-					long decval = strtol(temp, NULL, 16);
-
-					if (decval < 0 || decval > 255)
-						return LEXICAL;
 
 					else {
-						if (stringAddChar(str, (char) decval))
-							return scanRet(str, INTERNAL);
+						while (isdigit(c)) {
+							if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+
+							nextChar(c);
+						}
+						int tmpval1 = strtol(str->value, NULL, 8);
+						token->Data.integer = tmpval1;
+						token->Type = tokenInteger;
+						state = stateNumberEnd;
+						ungetc(c, code);
+						break;
 					}
-					state=stateStringStart;
 				}
-
-				else{
-					if (stringAddChar(str, c))
-						return scanRet(str, INTERNAL);
-					state = stateStringStart;
-				}
-
-			break;
-
-			case (stateStringEnd):
-				if(!stringCompare(str,"\n") == 0)
-					fprintf(stderr,"    TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
-				else
-					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
-				state = stateStart;
-				if(!pushToToken(str, kwstring)) return scanRet(str, INTERNAL);
-				ungetc(c, code);
-				return scanRet(str, SUCCESS);//TODO CHeck if its SUCCESS
-			break;
-
-			case (stateIdentifierEnd):
-
-				//Check if the current identifier is keyword
-				if(keywordCompare(str, token)){
-					state = stateStart; 
-					fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
+				//
+				else if (c == 'b') {
+					nextChar(c);
+					while (isdigit(c)) {
+						if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+						nextChar(c);
+					}
+					token->Data.integer = strtol(str->value, NULL, 2);
+					token->Type = tokenInteger;
 					ungetc(c, code);
-					return scanRet(str, SUCCESS);} 
-
-				//If it is not keyword, we push the identifier value into token
-				else {					
-					if(!stringCompare(str,"\n") == 0)
-						fprintf(stderr,"    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
-					else
-						fprintf(stderr,"    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n",token->Type ,str->value);
-					state = stateStart;
-					if(!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
-					ungetc(c, code);
-					return scanRet(str, SUCCESS);
+					state = stateNumberEnd;
+					break;
 				}
-			break;
-
-			case (stateNumberEnd):
-				//FLOAT
-				if (token->Type == 11){
-					strToFltToken(str, token);
-					fprintf(stderr, "    TOKEN TYPE: FLOAT | TOKEN VAL: %f\n", token->Data.flt);
-				}
-				//EXPONENTIAL
-				else if (token->Type == 12)
-					fprintf(stderr,"    TOKEN TYPE: EXP | TOKEN VAL: ");
-
-				//INTEGER
-				else if (token->Type == 22){
+			}
+			//Decimal and float numbers
+			else if (!(zeroSwitch) && (token->Type = tokenInteger)) {
+				int fltCnt = 0;
+				do {
+					if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+					nextChar(c);
+					if (c == '.') {
+						if (fltCnt == 0) {
+							fltCnt = 1;
+							//if (!isdigit(c) && fltCnt) return scanRet(str, LEXICAL);
+							token->Type = tokenFloat;
+							if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+							nextChar(c);
+						}
+						else return scanRet(str, LEXICAL);
+					}
+					else if (c == 'e' || c == 'E') {
+						token->Type = tokenExponential;
+						if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+						nextChar(c);
+					}
+				} while (isdigit(c));
+				state = stateNumberEnd;
+				if (token->Type == tokenInteger)
 					strToIntToken(str, token);
-					fprintf(stderr, "    TOKEN TYPE: INT | TOKEN VAL:  %d\n", token->Data.integer);
-				}
-				state = stateStart;
+				else if (token->Type == tokenFloat)
+					strToFltToken(str, token);
+				else if (token->Type == tokenExponential)
+					strToExpToken(str, token);
 				ungetc(c, code);
-				return scanRet(str, SUCCESS);
+
+			}
+			break;
+
+		//BASE.. Hexadecimal number, starting with "\x"
+		case (stateNumberHex):
+			if (c == 'x') {
+				nextChar(c);
+				while (isdigit(c) || ((c > 64) && (c < 91)) || ((c > 96) && (c < 123))) {
+					if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+					nextChar(c);
+				}
+				token->Data.integer = (int)strtol(str->value, NULL, 16);
+				ungetc(c, code);
+				token->Type = tokenInteger;
+				state = stateNumberEnd;
+			}
+			else return scanRet(str, LEXICAL);
+			break;
+
+		case (stateIdentifierOrKeyword):
+
+			if ( (c == '_') || isalnum(c))
+			{if (stringAddChar(str, c)) return scanRet(str, INTERNAL);}
+
+			//If we get an ? or !, we add it into identifier and jump to end of identifier..
+			//If there are more ? or !, we return LEXICAL error
+			else if ( (c == '?') || (c == '!')) {
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				else
+					state = stateIdentifierEnd;
+			}
+
+			else if (  (c == ',')  || (c == '=') || isspace(c) || (c == EOF) )
+			{ungetc(c, code); state = stateIdentifierEnd;}
+
+			else
+			{ungetc(c, code); state = stateIdentifierEnd;}
+			break;
+
+
+		case (stateIdentifierCheck):
+			if (isspace(c))
+			{ungetc(c, code); state = stateStart;}
+			break;
+
+		case (stateEqual):
+			//If "=="
+			if (c == '=')
+			{token->Type = tokenEqual; state = stateStart;  fprintf(stderr, "%s EQUAL", prt); return scanRet(str, SUCCESS);}
+			//If "="
+			else
+			{ungetc(c, code); token->Type = tokenAssign; state = stateStart;}
+			break;
+
+		case (stateLess):
+			//If "<="
+			if (c == '=')
+			{token->Type = tokenLessEqual; state = stateStart;  fprintf(stderr, "%s LESS EQUAL", prt); return scanRet(str, SUCCESS);}
+			//If "<"
+			else
+			{ungetc(c, code); token->Type = tokenLess; state = stateStart;}
+			break;
+
+		case (stateGreater):
+			//If ">="
+			if (c == '=')
+			{token->Type = tokenGreaterEqual; state = stateStart;  fprintf(stderr, "%s GREATER EQUAL", prt); return scanRet(str, SUCCESS);}
+			//If ">"
+			else
+			{ungetc(c, code); token->Type = tokenGreater; state = stateStart;}
+			break;
+
+		case (stateExclamation):
+			//If "!="
+			if (c == '=')
+			{token->Type = tokenNotEqual; state = stateStart;  fprintf(stderr, "%s NOT EQUAL", prt); return scanRet(str, SUCCESS);}
+			//Error otherwise
+			else
+				return scanRet(str, LEXICAL);
+			break;
+
+		case (stateComment):
+			//Single line comment
+
+			//Read characters from file, until there is an EOL or EOF
+			if (c == '\n')
+			{state = stateStart; token->Type = tokenEndOfLine;}
+			if (c == EOF)
+			{token->Type = tokenEndOfFile; state = stateEnd;}
+			break;
+
+		case (stateStringStart):
+			token->Type = tokenString;
+
+			if (c < 32)
+			{scanRet(str, LEXICAL);}
+
+			//If there is a backslash, means we have to check for escape sequences
+			else if (c == '\\')
+			{state = stateEscapeSequence;}
+
+			//End string when a second " comes
+			else if (c != '\"') {
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+			}
+			else
+			{state = stateStringEnd;}
+			break;
+
+		case (stateEscapeSequence):
+
+			if (token->Type == 24)
+				fprintf(stderr, "    TOKEN TYPE: ESCAPE\n");
+
+			// \n escape sequence
+			if (c == 'n') {
+				c = '\n';
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				state = stateStringStart;
+			}
+
+			// \t escape sequence
+			else if (c == 't') {
+				c = '\t';
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				state = stateStringStart;
+			}
+
+			// \s escape sequence
+			else if (c == 's') {
+				c = ' ';
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				state = stateStringStart;
+			}
+
+			// \" escape sequence
+			else if (c == '"') {
+				c = '"';
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				state = stateStringStart;
+			}
+
+			// \\ escape sequence
+			else if (c == '\\') {
+				c = '\\';
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				state = stateStringStart;
+			}
+
+			// hexadecimal escape sequence
+			else if (c == 'x') {
+				/*
+				 if we have \xNM, where NM is a hexadecimal number,
+				 we save it into a temporary string which will consist of
+				 [0][1]            [2][3]				[4]
+				  0  x 				N  M   				\0
+				 hex num start 		our hex number 		string closing symbol
+				 Then we convert it to decimal value and concatenate to
+				 the string, if it has correct values (between 0 and FF (255) ASCII)
+				*/
+				char temp[5];
+				temp[0] = '0'; temp[1] = 'x'; temp[4] = '\0';
+				nextChar(c);
+				if (isalnum(c))	temp[2] = c;
+				else return LEXICAL;
+				nextChar(c);
+
+				if (c == ' ') {
+					state = stateStringStart;
+					break;
+				}
+
+				else if (isalnum(c))	temp[3] = c;
+				else return LEXICAL;
+
+				long decval = strtol(temp, NULL, 16);
+
+				if (decval < 0 || decval > 255)
+					return LEXICAL;
+
+				else {
+					if (stringAddChar(str, (char) decval))
+						return scanRet(str, INTERNAL);
+				}
+				state = stateStringStart;
+			}
+
+			else {
+				if (stringAddChar(str, c))
+					return scanRet(str, INTERNAL);
+				state = stateStringStart;
+			}
 
 			break;
 
-			case (stateError):
-				return scanRet(str, LEXICAL);
-				break;
+		case (stateStringEnd):
+			if (!stringCompare(str, "\n") == 0)
+				fprintf(stderr, "    TOKEN TYPE: STRING | TOKEN VAL: EOL\n");
+			else
+				fprintf(stderr, "    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n", token->Type , str->value);
+			state = stateStart;
+			if (!pushToToken(str, kwstring)) return scanRet(str, INTERNAL);
+			ungetc(c, code);
+			return scanRet(str, SUCCESS);//TODO CHeck if its SUCCESS
+			break;
 
-			case (stateEnd):
+		case (stateIdentifierEnd):
+
+			//Check if the current identifier is keyword
+			if (keywordCompare(str, token)) {
+				state = stateStart;
+				fprintf(stderr, "    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n", token->Type , str->value);
+				ungetc(c, code);
 				return scanRet(str, SUCCESS);
-			break;	
-	}
-	
-	/*
-		Prints for debugging purposes.
-	*/
-	char * tType = "    TOKEN TYPE:";
-	switch(token->Type){
-		
-		case 10:
-			fprintf(stderr,"%s EOF\n", tType);
+			}
+
+			//If it is not keyword, we push the identifier value into token
+			else {
+				if (!stringCompare(str, "\n") == 0)
+					fprintf(stderr, "    TOKEN TYPE: ID | TOKEN VAL: EOL\n");
+				else
+					fprintf(stderr, "    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n", token->Type , str->value);
+				state = stateStart;
+				if (!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
+				ungetc(c, code);
+				return scanRet(str, SUCCESS);
+			}
+			break;
+
+		case (stateNumberEnd):
+			//FLOAT
+			if (token->Type == 11) {
+				strToFltToken(str, token);
+				fprintf(stderr, "    TOKEN TYPE: FLOAT | TOKEN VAL: %f\n", token->Data.flt);
+			}
+			//EXPONENTIAL
+			else if (token->Type == 12) {
+
+				fprintf(stderr, "    TOKEN TYPE: EXP | TOKEN VAL: %s\n", token->Data.string->value);
+			}
+			//INTEGER
+			else if (token->Type == 22) {
+				fprintf(stderr, "    TOKEN TYPE: INT | TOKEN VAL:  %d\n", token->Data.integer);
+			}
+			state = stateStart;
+			ungetc(c, code);
+			return scanRet(str, SUCCESS);
+
+			break;
+
+		case (stateError):
+			return scanRet(str, LEXICAL);
+			break;
+
+		case (stateEnd):
 			return scanRet(str, SUCCESS);
 			break;
-		case 12:
-			fprintf(stderr,"%s EXPONENTIAL\n", tType);
+		}
+
+		/*
+			Prints for debugging purposes.
+		*/
+		char * tType = "    TOKEN TYPE:";
+		switch (token->Type) {
+
+		case 10:
+			fprintf(stderr, "%s EOF\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 13:
-			fprintf(stderr,"%s EQUAL\n", tType);
+			fprintf(stderr, "%s EQUAL\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 14:
-			fprintf(stderr,"%s NOT EQUAL\n", tType);
+			fprintf(stderr, "%s NOT EQUAL\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 15:
-			fprintf(stderr,"%s LESS\n", tType);
+			fprintf(stderr, "%s LESS\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 16:
-			fprintf(stderr,"%s GREATER\n", tType);
+			fprintf(stderr, "%s GREATER\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 17:
-			fprintf(stderr,"%s LESS EQUAL\n", tType);
+			fprintf(stderr, "%s LESS EQUAL\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 18:
-			fprintf(stderr,"%s GREATER EQUAL\n", tType);
+			fprintf(stderr, "%s GREATER EQUAL\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 19:
-			fprintf(stderr,"%s EOL\n", tType);
+			fprintf(stderr, "%s EOL\n", tType);
 			return scanRet(str, SUCCESS);
 			//return SUCCESS;
 			break;
 		case 20:
-			fprintf(stderr,"%s NUMBER\n", tType);
+			fprintf(stderr, "%s NUMBER\n", tType);
 			return scanRet(str, SUCCESS);
 			break;
 		case 21:
-			fprintf(stderr,"%s ASSIGN\n", tType);
+			fprintf(stderr, "%s ASSIGN\n", tType);
 			return scanRet(str, SUCCESS);
 			//return SUCCESS;
 			break;

@@ -44,8 +44,14 @@ FILE* output;
 #define checkRule(rule)\
 	if((res = rule(parserData))) return res
 
+#define checkRulePrint(rule)\
+	rule(parserData)
+
 #define checkTokenType(_type)\
 	if(!(parserData -> token.Type == (_type))) return SYNTACTICAL
+
+#define checkPrevTokenType(_type)\
+	if (!(parserData -> prevToken.Type == (_type))) return SYNTACTICAL
 
 #define checkTokenType2(_type, _type2)\
 	if (parserData -> token.Type == (_type2)) return 0;\
@@ -70,7 +76,8 @@ static int mainFun(parseData* parserData){
 	
 	//<main> -> DEF ID ( <params> ) EOL <body> END EOL <main>
 	if((parserData -> token.Type == tokenKeyword) && (parserData->token.Data.keyword == KW_DEF)){
-
+		parserData -> inFunction = true;
+		parserData -> labelIndex = 0;
 		getToken();
 		//fprintf(stderr, "print %d\n", Print_tree(parserData->globalTable));
 		//fprintf(stderr, "	we have		%s %d %d\n", parserData->token.Data.string->value, parserData->token.Type, parserData->token.Data.string->length);
@@ -116,7 +123,7 @@ static int mainFun(parseData* parserData){
 		getToken();
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		getToken();
-
+		parserData -> inFunction = false;
 		return (mainFun(parserData));
 	}
 
@@ -134,11 +141,12 @@ static int mainFun(parseData* parserData){
 
 	//<main> -> <body> <main>
 	else if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenEndOfLine || parserData -> token.Data.keyword == KW_IF || parserData -> token.Data.keyword == KW_WHILE || parserData -> token.Data.keyword == KW_PRINT){
+		parserData -> labelIndex = 0;
 		checkRule(body);
 		return mainFun(parserData);
 	}
 	
-	return 42;
+	return SYNTACTICAL;
 }
 
 static int params(parseData* parserData){
@@ -219,9 +227,27 @@ static int body(parseData* parserData){
 
 			//<id> -> = <def_value>
 			if (parserData -> token.Type == tokenAssign){
+				if (parserData -> inFunction == true) {
+					if ((BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value)) == NULL) {
+							BSTinsertSymbol(&parserData -> localTable, parserData -> prevToken.Data.string->value);
+							parserData -> lID = BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value);
+							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier);
+						}
+				}
+				else {
+					if ((BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value)) == NULL) {
+							BSTinsertSymbol(&parserData -> globalTable, parserData -> prevToken.Data.string->value);
+							parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
+							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier);
+					}
+				}
+				fprintf(stderr, "%s\n", "GLOBALNI TABULKA:");
+				Print_tree(parserData -> globalTable);
+				fprintf(stderr, "%s\n", "LOKALNI TABULKA:");
+				Print_tree(parserData -> localTable);
+				
 				getToken();
 				checkRule(def_value);
-				//getToken();
 				checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 				getToken();
 				return body(parserData);
@@ -247,8 +273,14 @@ static int body(parseData* parserData){
 
 	//<body> -> IF <expession> THEN EOL <body> ELSE EOL <body> END EOL <body>
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_IF){
-		
+		parserData->labelDeep++;
+		parserData->inWhileOrIf = true;
 
+		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%%result");
+
+		int currentLabelIndex = parserData -> labelIndex;
+		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";
+		parserData -> labelIndex += 2;
 		//TODO expression in IF statement
 		getToken();
 		checkRule(expression);
@@ -256,16 +288,27 @@ static int body(parseData* parserData){
 		checkKeyword(KW_THEN);
 		getToken();
 		checkTokenType(tokenEndOfLine);
+
+		addToOutput(codeGenIfBegin, functionID, currentLabelIndex, parserData->labelDeep);
+
 		getToken();
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_ELSE);
 		getToken();
 		checkTokenType(tokenEndOfLine);
+
+		addToOutput(codeGenIfElse, functionID, currentLabelIndex, parserData->labelDeep);
+
 		getToken();
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_END);
+
+		addToOutput(codeGenIfEnd, functionID, currentLabelIndex+1, parserData->labelDeep);
+
+		parserData->labelDeep--;
+		parserData->inWhileOrIf = false;
 
 		getToken();
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
@@ -278,10 +321,19 @@ static int body(parseData* parserData){
 		
 
 		//TODO expression for do while statement
+		parserData->labelDeep++;
+		parserData->inWhileOrIf = true;
 
+		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%%result");
+
+		int currentLabelIndex = parserData -> labelIndex;
+		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";
+		parserData -> labelIndex += 2;
+		addToOutput(codeGenLabel, functionID, currentLabelIndex, parserData->labelDeep);
 
 		getToken();
 		checkRule(expression);
+		addToOutput(codeGenWhileBegin, functionID, currentLabelIndex+1, parserData->labelDeep);
 		checkKeyword(KW_DO);
 		getToken();
 		checkTokenType(tokenEndOfLine);
@@ -289,6 +341,13 @@ static int body(parseData* parserData){
 		checkRule(body);
 		//getToken();
 		checkKeyword(KW_END);
+
+		addToOutput(codeGenWhileEnd, functionID, currentLabelIndex+1, parserData->labelDeep);
+
+		parserData->labelDeep--;
+		parserData->inWhileOrIf = false;
+
+
 		getToken();
 		checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		getToken();
@@ -300,18 +359,21 @@ static int body(parseData* parserData){
 		getToken();
 
 
-		/*
+		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%%result");
+		parserData->lID->dataType = TYPE_UNDEFINED;
 		if (parserData -> token.Type == tokenLeftBracket){	
 			getToken();
-			checkRule(terms);
-			//checkTokenType(tokenRightBracket);
-			//getToken();
+			fprintf(stderr, "%s\n", "kkt");
+			res = checkRulePrint(terms);
+			fprintf(stderr, "%s %d\n","res ve funkci print",res);
+			checkTokenType(tokenRightBracket);
+			getToken();
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 			return body(parserData);
 		}
-		*/
-
+			
 			checkRule(terms);
+
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		return body(parserData);
 
@@ -341,9 +403,18 @@ static int terms(parseData* parserData){
 	int res;
 	
 		//getToken();
-		checkRule(expression);
+		res = checkRulePrint(expression);
+		fprintf(stderr, "%s %d\n","res ve funkci terms",res);
+		if (res == 2 && parserData->token.Type == tokenRightBracket)
+		{
+			res = 0;
+			addToOutput(codeGenPrintBracket,);
+			return res;
+		}
+		fprintf(stderr, "%s %d\n","res ve funkci terms",res);
+		addToOutput(codeGenPrint,);
 		checkRule(terms_n);
-	return SUCCESS;
+	return res;
 }
 
 static int terms_n(parseData* parserData){
@@ -352,12 +423,21 @@ static int terms_n(parseData* parserData){
 	//<terms_n> -> , <expression> <terms_n>
 	if (parserData -> token.Type == tokenComma){
 		getToken();
-		checkRule(expression); //docasne ID, nahradit za expression
+		res = checkRulePrint(expression);
+		fprintf(stderr, "%s %d\n","res ve funkci terms_n",res); //docasne ID, nahradit za expression
+		if (res == 2 && parserData->token.Type == tokenRightBracket)
+		{
+			res = 0;
+			addToOutput(codeGenPrintBracket,);
+			return res;
+		}
+		addToOutput(codeGenPrint,);
 		//getToken();
 		return(terms_n(parserData));
 	}
 
 	//<terms_n> -> E
+	fprintf(stderr, "%s %d\n","res ve funkci terms_n pred returnem",res);
 	return res;
 }
 
@@ -513,6 +593,7 @@ static int def_value(parseData* parserData){
 	}
 	//<def_value> -> <expression>
 	checkRule(expression);
+	Print_tree(parserData->globalTable);
 	return SUCCESS;
 }
 
@@ -580,6 +661,7 @@ static int func (parseData* parserData){
 
 
 void initTables(parseData* parserData){
+	tData *id;
 	BSTInit(&parserData->localTable);
 	BSTInit(&parserData->globalTable);
 
@@ -594,6 +676,12 @@ void initTables(parseData* parserData){
 
 	parserData->inFunction = false;
 	parserData->inWhileOrIf = false;
+
+	BSTinsertSymbol(&parserData->globalTable, "%%result");
+	id = BSTsearchSymbol(parserData->globalTable, "%%result");
+	id->defined = true;
+	id->dataType = TYPE_UNDEFINED;
+	id->global = true;
 }
 
 void freeTables(parseData* parserData){
@@ -677,10 +765,11 @@ int kowalskiAnalysis(){
 	res = getTokens(&parserData.token);
 	
 	if (!res){		
-		codeGenStart();
+		addToOutput(codeGenStart,);
+		addToOutput(codeGenMainFrameBegin,);
 		res = mainFun(&parserData);
 	}
-
+	addToOutput(codeGenMainFrameEnd,);
 	stringDispose(&string);
 	freeTables(&parserData);
 

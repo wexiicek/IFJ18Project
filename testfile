@@ -1,15 +1,5 @@
-def fun(par1, par2)
-	hello = 1 + 2
-	hey = 42
-	print "Whats \xFF \g up? \n" 
-=begin
-Zbyna je kar
-=end
-end
 
-fun 1,2
+delkaKokota = 1
+delkaKokota = "NULL"
+print "novak je gigapica\n", "a jeho kokot ma delku: ", delkaKokota, "\n"
 
-def fn()
-end
-
-fn()
