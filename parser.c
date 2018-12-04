@@ -39,7 +39,8 @@ FILE* output;
 */
 #define getToken()\
 	parserData->prevToken = parserData->token;\
-	getTokens(&parserData->token)
+	res =getTokens(&parserData->token);\
+	if(res) return res;
 
 #define checkRule(rule)\
 	if((res = rule(parserData))) return res
@@ -173,7 +174,7 @@ static int params(parseData* parserData){
 		//Print_tree(parserData->localTable);
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
 		parserData->rID->global = false;
-		Print_tree(parserData->localTable);
+		//Print_tree(parserData->localTable);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		checkRule(params_n);
@@ -206,7 +207,7 @@ static int params_n(parseData* parserData){
 		//Print_tree(parserData->localTable); 	
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
 		parserData->rID->global = false;
-		Print_tree(parserData->localTable);
+		//Print_tree(parserData->localTable);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		return(params_n(parserData));
@@ -235,20 +236,21 @@ static int body(parseData* parserData){
 					if ((BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value)) == NULL) {
 							BSTinsertSymbol(&parserData -> localTable, parserData -> prevToken.Data.string->value);
 							parserData -> lID = BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value);
-							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier);
+							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier, parserData -> lID -> global);
 						}
 				}
 				else {
 					if ((BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value)) == NULL) {
 							BSTinsertSymbol(&parserData -> globalTable, parserData -> prevToken.Data.string->value);
 							parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
-							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier);
+							parserData -> lID -> global = true;
+							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier, parserData -> lID -> global);
 					}
 				}
-				fprintf(stderr, "%s\n", "GLOBALNI TABULKA:");
-				Print_tree(parserData -> globalTable);
-				fprintf(stderr, "%s\n", "LOKALNI TABULKA:");
-				Print_tree(parserData -> localTable);
+				//fprintf(stderr, "%s\n", "GLOBALNI TABULKA:");
+				//Print_tree(parserData -> globalTable);
+				//fprintf(stderr, "%s\n", "LOKALNI TABULKA:");
+				//Print_tree(parserData -> localTable);
 				
 				getToken();
 				checkRule(def_value);
@@ -282,7 +284,13 @@ static int body(parseData* parserData){
 		parserData->inWhileOrIf = true;
 
 		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
-
+		if (parserData->inFunction == true)
+		{
+			parserData->lID->global = false;
+		}
+		else {
+			parserData->lID->global = true;
+		}
 		int currentLabelIndex = parserData -> labelIndex;
 		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";
 		parserData -> labelIndex += 2;
@@ -366,6 +374,12 @@ static int body(parseData* parserData){
 
 		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
 		parserData->lID->dataType = TYPE_UNDEFINED;
+		if (parserData->inFunction == true)
+		{
+			parserData->lID->global = false;
+		}
+		else
+			parserData->lID->global = true;
 		if (parserData -> token.Type == tokenLeftBracket){	
 			getToken();
 			fprintf(stderr, "%s\n", "kkt");
@@ -407,7 +421,24 @@ static int body(parseData* parserData){
 static int terms(parseData* parserData){
 	int res;
 	
-		//getToken();
+/*
+		if (parserData->token.Type == tokenIdentifier)
+		{
+			if (parserData->inFunction == true) {
+				parserData->lID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
+				if (parserData->lID == NULL)	
+					return SEMANTICAL_UNDEF;
+				else
+					parserData->lID->global = false;
+			}
+			else {
+				parserData->lID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
+				if (parserData->lID == NULL)
+					return SEMANTICAL_UNDEF;
+				else
+					parserData->lID->global = true;}
+		}
+*/
 		res = checkRulePrint(expression);
 		fprintf(stderr, "%s %d\n","res ve funkci terms",res);
 		if (res == 2 && parserData->token.Type == tokenRightBracket)
@@ -417,7 +448,7 @@ static int terms(parseData* parserData){
 			return res;
 		}
 		fprintf(stderr, "%s %d\n","res ve funkci terms",res);
-		addToOutput(codeGenPrint,);
+		addToOutput(codeGenPrint, *parserData);
 		checkRule(terms_n);
 	return res;
 }
@@ -428,6 +459,7 @@ static int terms_n(parseData* parserData){
 	//<terms_n> -> , <expression> <terms_n>
 	if (parserData -> token.Type == tokenComma){
 		getToken();
+
 		res = checkRulePrint(expression);
 		fprintf(stderr, "%s %d\n","res ve funkci terms_n",res); //docasne ID, nahradit za expression
 		if (res == 2 && parserData->token.Type == tokenRightBracket)
@@ -479,8 +511,12 @@ static int def_value(parseData* parserData){
 					getToken();
 					checkTokenType(tokenRightBracket);
 					getToken();
+					addToOutput(codeGenFuncCall, "inputs");
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 					return SUCCESS;
 				}
+				addToOutput(codeGenFuncCall, "inputs");
+				addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 				return SUCCESS;
 
 			//<def_value> -> INPUTI || INPUTI()
@@ -491,8 +527,12 @@ static int def_value(parseData* parserData){
 					getToken();
 					checkTokenType(tokenRightBracket);
 					getToken();
+					addToOutput(codeGenFuncCall, "inputi");
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 					return SUCCESS;
 				}
+				addToOutput(codeGenFuncCall, "inputi");
+				addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 				return SUCCESS;
 
 			//<def_value> -> INPUTF || INPUTF()
@@ -503,8 +543,12 @@ static int def_value(parseData* parserData){
 					getToken();
 					checkTokenType(tokenRightBracket);
 					getToken();
+					addToOutput(codeGenFuncCall, "inputf");
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 					return SUCCESS;
 				}
+				addToOutput(codeGenFuncCall, "inputf");
+				addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 				return SUCCESS;
 
 			//<def_value> -> LENGHT ( ID || STRING_VALUE )
@@ -518,7 +562,7 @@ static int def_value(parseData* parserData){
 				getToken();
 				checkTokenType(tokenRightBracket);
 				addToOutput(codeGenFuncCall, "length");
-				addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
+				addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 				getToken();
 				return SUCCESS;
 				}
@@ -555,7 +599,7 @@ static int def_value(parseData* parserData){
 					getToken();
 					checkTokenType(tokenRightBracket);
 					addToOutput(codeGenFuncCall, "substr");
-					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 					getToken();
 				}
 				else{
@@ -583,7 +627,7 @@ static int def_value(parseData* parserData){
 					getToken();
 					checkTokenType(tokenRightBracket);
 					addToOutput(codeGenFuncCall, "ord");
-					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 					getToken();
 				}
 				else{
@@ -602,7 +646,7 @@ static int def_value(parseData* parserData){
 					getToken();
 					checkTokenType(tokenRightBracket);
 					addToOutput(codeGenFuncCall, "chr");
-					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier, *parserData);
 					getToken();
 				}
 				else{
@@ -616,7 +660,7 @@ static int def_value(parseData* parserData){
 	}
 	//<def_value> -> <expression>
 	checkRule(expression);
-	Print_tree(parserData->localTable);
+	//Print_tree(parserData->localTable);
 	return SUCCESS;
 }
 

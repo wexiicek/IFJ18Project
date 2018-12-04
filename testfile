@@ -1,3 +1,5 @@
-a = 5
-b = a
-print b, a
+def kokot (k)
+print k
+end
+
+kokot (1)

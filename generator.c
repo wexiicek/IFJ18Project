@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
 #include "generator.h"
 #include "symtable.h"
 #include "string.h"
@@ -38,8 +39,10 @@ void codeGenBuiltIn(int builtInFun){
 		case(1):
 		stringAddString(&outcode,"\
 LABEL $inputs\n\
+CREATEFRAME\n\
 PUSHFRAME\n\
 DEFVAR LF@%retval\n\
+MOVE LF@%retval nil@nil\n\
 READ LF@%retval string\n\
 POPFRAME\n\
 RETURN\n");
@@ -49,8 +52,10 @@ RETURN\n");
 		case(2):
 		stringAddString(&outcode, "\
 LABEL $inputi\n\
+CREATEFRAME\n\
 PUSHFRAME\n\
 DEFVAR LF@%retval\n\
+MOVE LF@%retval int@0\n\
 READ LF@%retval int\n\
 POPFRAME\n\
 RETURN\n");
@@ -60,8 +65,10 @@ RETURN\n");
 		case(3):
 		stringAddString(&outcode, "\
 LABEL $inputf\n\
+CREATEFRAME\n\
 PUSHFRAME\n\
 DEFVAR LF@%retval\n\
+MOVE LF@%retval float@0x0p+0\n\
 READ LF@%retval float\n\
 POPFRAME\n\
 RETURN\n");
@@ -124,7 +131,6 @@ JUMP $end\n\
 LABEL $return$nil\n\
 MOVE LF@%retval nil@nil\n\
 LABEL $end\n\
-WRITE LF@%retval\n\
 POPFRAME\n\
 RETURN\n");
 		break;
@@ -182,7 +188,9 @@ DEFVAR GF@%operand1\n\
 DEFVAR GF@%operand2\n\
 DEFVAR GF@%operand3\n\
 DEFVAR GF@%temp\n\
-JUMP $$main\n");
+JUMP $$main\n\
+LABEL $error\n\
+EXIT int@9\n");
 
 	for (int i = 1; i <= 8; i++)
 		codeGenBuiltIn(i);
@@ -196,7 +204,7 @@ PUSHFRAME\n");
 }
 
 void codeGenMainFrameEnd() {
-	stringAddString(&outcode, "LABEL $error\nEXIT int@9\nPOPFRAME\n\
+	stringAddString(&outcode, "POPFRAME\n\
 CLEARS\n");
 }
 
@@ -245,7 +253,11 @@ void codeGenTypeOfTermValue(parseData parserData) {
 			INS(tmp.value);
 			break;
 		case tokenIdentifier:
-			INS("LF@");INS(parserData.token.Data.string->value);
+			if (parserData.lID->global)
+				INS("GF@");
+			else
+				INS("LF@");
+			INS(parserData.token.Data.string->value);
 			break;
 		default:
 			stringDispose(&tmp);
@@ -254,9 +266,16 @@ void codeGenTypeOfTermValue(parseData parserData) {
 	stringDispose(&tmp);
 }
 
-void codeGenDeclarationOfVar(char *var) {
+void codeGenDeclarationOfVar(char *var, bool globalFrame) {
 	//stringAddString(&outcode, "DEFVAR LF@%s\n", var);
-	INS("DEFVAR LF@");INS(var);INS("\n");
+	INS("DEFVAR ");
+	if (globalFrame)
+	{
+		INS("GF@");
+	}
+	else
+		INS("LF@");
+	INS(var);INS("\n");
 }
 
 void codeGenValueOfVar(char *var, dataTypeEnum type) {
@@ -387,7 +406,12 @@ void codeGenSaveExpressionResult(char *var, char *frame, dataTypeEnum left, data
 		stringAddString(&outcode, "INT2FLOATS\n");
 	}
 	//stringAddString(&outcode, "POPS %s@%s\n", frame, var);
-	INS("POPS "); INS(frame); INS("@"); INS(var); INS("\n");
+	if (strcmp(var, "%result") == 0)
+	{
+		INS("POPS "); INS("GF"); INS("@"); INS(var); INS("\n");
+	}
+	else{
+		INS("POPS "); INS(frame); INS("@"); INS(var); INS("\n");}
 }
 
 void codeGenOperand3toFloat() {
@@ -476,7 +500,7 @@ void codeGenFuncCall(char *func) {
 	INS("CALL $"); INS(func); INS("\n");
 }
 
-void codeGenFuncReturnValueAssign(char *leftValue) {
+void codeGenFuncReturnValueAssign(char *leftValue, parseData parserData) {
 	/*
 	if (left == TYPE_FLOAT && ret == TYPE_INTEGER) {
 		stringAddString(&outcode, "INT2FLOAT TF@%retval TF@%retval\n");
@@ -485,7 +509,13 @@ void codeGenFuncReturnValueAssign(char *leftValue) {
 	}
 	*/
 	//stringAddString(&outcode, "MOVE LF@%s TF@%retval\n", leftValue);
-	INS("MOVE LF@"); INS(leftValue); INS(" TF@%retval\n");
+	if (parserData.inFunction == true)
+	{
+		INS("MOVE LF@"); INS(leftValue); INS(" TF@%retval\n");
+	}
+	else {
+		INS("MOVE GF@"); INS(leftValue); INS(" TF@%retval\n");
+	}
 }
 
 //agruments instead of params?

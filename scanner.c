@@ -97,6 +97,7 @@ bool strToIntToken(dynString *from, Token *to) {
 	/*Convert the string value to an integer value and push it to token.*/
 	int value = atoi(from->value);
 	to->Data.integer = value;
+	fprintf(stderr, "%d\n",to->Data.integer );
 	return SUCCESS;
 }
 
@@ -147,6 +148,7 @@ int getTokens (Token *token) {
 	if ((c == '=')) {
 		state = stateError;
 		nextChar(c);
+		nextChar(c);
 		if (c == 'b') {
 			nextChar(c);
 			if (c == 'e') {
@@ -157,8 +159,7 @@ int getTokens (Token *token) {
 						nextChar(c);
 						if (c == 'n') {
 							nextChar(c);
-							//fprintf(stderr, "%c\n",c );
-							if (c ==  '\n') {
+							if (c ==  '\n' || c == 13) {
 								while (c != EOF) {
 									nextChar(c);
 									if (c == '\n' || c == '=') {
@@ -170,17 +171,15 @@ int getTokens (Token *token) {
 												if (c == 'n' || c == 'd') {
 													nextChar(c);
 													if (c == 'd' || c == '\n' || c == EOF) {
-														//fprintf(stderr, "%c\n",c );
+														//fprintf(stderr, "%d\n",c );
 														if (c == EOF) {
 															state = stateEnd;
 															token->Type = tokenEndOfFile;
 															break;
 														}
 														else if (c == 'd') {
-															nextChar(c);
-															ungetc(c, code);
 															state = stateStart;
-															token -> Type = tokenEmpty;
+															token -> Type = tokenEndOfLine;
 															break;
 														}
 
@@ -205,12 +204,14 @@ int getTokens (Token *token) {
 			}
 		}
 
-		//If there was no "=", we return the character and start over
-		else {
-			ungetc(c, code);
-			state = stateEnd;
-		}
-	}
+		
+	
+	//If there was no "=", we return the character and start over
+	else {
+		ungetc(c, code);
+		state = stateEnd;
+		token->Type = tokenEndOfLine;
+	}}
 
 	//Go through every character of a file
 	while (1) {
@@ -219,7 +220,7 @@ int getTokens (Token *token) {
 		case (stateStart):
 			//Checking for END OF LINE
 			//Or a block comment
-			if (c == '\n') {
+			if (c == '\n' || c == 13) {
 				nextChar(c);
 				if ((c == '=')) {
 					state = stateError;
@@ -235,13 +236,13 @@ int getTokens (Token *token) {
 									if (c == 'n') {
 										nextChar(c);
 										//fprintf(stderr, "%c\n",c );
-										if (c ==  '\n') {
+										if (c ==  '\n' || c == 13) {
 											while (c != EOF) {
 												//Reading characters, while we dont have a sequence
 												//of =end OR
 												//End of file
 												nextChar(c);
-												if (c == '\n' || c == '=') {
+												if (c == '\n' || c == '=' || c == 13) {
 													nextChar(c);
 													if (c == '=' || c == 'e') {
 														nextChar(c);
@@ -249,7 +250,7 @@ int getTokens (Token *token) {
 															nextChar(c);
 															if (c == 'n' || c == 'd') {
 																nextChar(c);
-																if (c == 'd' || c == '\n' || c == EOF) {
+																if (c == 'd' || c == '\n' || c == EOF || c == 13) {
 																	//fprintf(stderr, "%c\n",c );
 																	if (c == EOF) {
 																		state = stateEnd;
@@ -264,7 +265,7 @@ int getTokens (Token *token) {
 																		break;
 																	}
 
-																	else if (c == '\n') {
+																	else if (c == '\n' || c == 13) {
 																		state = stateStart;
 																		token -> Type = tokenEmpty;
 																		break;
@@ -342,8 +343,9 @@ int getTokens (Token *token) {
 				state = stateNumberHex;
 
 			else if (isdigit(c)) {
-				if (c == '0')
+				if (c == 48)
 					zeroSwitch = true;
+
 				state = stateNumber; token->Type = tokenInteger;
 				ungetc(c, code);
 				//if(stringAddChar(str, c)) return scanRet(str, INTERNAL);
@@ -370,15 +372,18 @@ int getTokens (Token *token) {
 			break;
 
 		case (stateNumber):
-			if ((zeroSwitch) && (token->Type == tokenInteger)) {
+			if ((zeroSwitch == true) && (token->Type == tokenInteger)) {
 				nextChar(c);
+				fprintf(stderr, "next chr je: %d\n",c );
 				if (isdigit(c)) {
-					if (c == '0') {
+					fprintf(stderr, "Mame char: %c\n", c);
+					if (c == 48) {
+						fprintf(stderr, "%s\n", "yap");
 						zeroSwitch = false;
 						return scanRet(str, LEXICAL);
 					}
 
-					else {
+					else if (isdigit(c)) {
 						while (isdigit(c)) {
 							if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
 
@@ -419,10 +424,14 @@ int getTokens (Token *token) {
 					break;
 
 				}
-				else if (c == ' ' || c == '\n' || c == EOF){
+				//char 13 == carriage return, a character behind a zero
+				else if (c == ' ' || c == '\n' || c == EOF || c == 13){
+					//zeroSwitch = false;
+					strToIntToken(str, token);
 					state = stateNumberEnd;
 					token->Type = tokenInteger;
-					strToIntToken(str, token);
+					fprintf(stderr, "KOKOTKO %d\n", c);
+					ungetc(c, code);
 				}
 			}
 			//Decimal and float numbers
@@ -542,7 +551,7 @@ int getTokens (Token *token) {
 			//Single line comment
 
 			//Read characters from file, until there is an EOL or EOF
-			if (c == '\n')
+			if (c == '\n' || c == 13)
 			{state = stateStart; token->Type = tokenEndOfLine;}
 			if (c == EOF)
 			{token->Type = tokenEndOfFile; state = stateEnd;}
