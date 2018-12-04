@@ -425,8 +425,9 @@ int getTokens (Token *token) {
 
 				}
 				//char 13 == carriage return, a character behind a zero
-				else if (c == ' ' || c == '\n' || c == EOF || c == 13){
-					//zeroSwitch = false;
+				else {
+					//if (c == ' ' || c == '\n' || c == EOF || c == 13 || c == ')' || c == '('){
+					zeroSwitch = false;
 					strToIntToken(str, token);
 					state = stateNumberEnd;
 					token->Type = tokenInteger;
