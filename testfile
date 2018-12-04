@@ -1,6 +1,3 @@
-def velikostKokota (kokot)
-a = length(kokot)
-print "delka kokota osoby se jmenem ", kokot, " je: ", a, "pm\n"
-end
-
-velikostKokota ("Novak")
+a = 5
+b = a
+print b, a

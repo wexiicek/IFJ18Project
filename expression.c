@@ -294,13 +294,20 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     case MINUS_RULE:
     case MUL_RULE:
     case DIV_RULE:
-        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
+        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
+            *final_type = TYPE_INTEGER;
+            parserData->lID->dataType = TYPE_INTEGER;
+            fprintf(stderr, "%s\n", "we here 1\n");
+            break;
+        }
+        else if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
             return SEMANTICAL_TYPES;
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
             *final_type = TYPE_FLOAT;
             parserData->lID->dataType = TYPE_FLOAT;
+            fprintf(stderr, "%s\n", "we here 2\n");
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
@@ -308,6 +315,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             op3ToFloat = true;
             *final_type = TYPE_FLOAT;
             parserData->lID->dataType = TYPE_FLOAT;
+            fprintf(stderr, "%s\n", "we here 3\n");
             break;
         }
         else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
@@ -315,6 +323,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             op1ToFloat = true;
             *final_type = TYPE_FLOAT;
             parserData->lID->dataType = TYPE_FLOAT;
+            fprintf(stderr, "%s\n", "we here 4\n");
             break;
         }
         else return SEMANTICAL_TYPES;

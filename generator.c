@@ -390,7 +390,7 @@ void codeGenSaveExpressionResult(char *var, char *frame, dataTypeEnum left, data
 	INS("POPS "); INS(frame); INS("@"); INS(var); INS("\n");
 }
 
-void codeGenOperand1toFloat() {
+void codeGenOperand3toFloat() {
 	stringAddString(&outcode, "INT2FLOATS\n");
 }
 /*
@@ -398,9 +398,9 @@ void codeGenOperand1toInteger() {
 	stringAddString(&outcode, "FLOAT2INTS\n");
 }
 */
-void codeGenOperand3toFloat() {
-	stringAddString(&outcode, "INT2FLOATS\n\
-POPS GF@%operand1\n\
+void codeGenOperand1toFloat() {
+	stringAddString(&outcode, "POPS GF@%operand1\n\
+INT2FLOATS\n\
 PUSHS GF@%operand1\n");
 }
 /*
