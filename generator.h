@@ -38,7 +38,7 @@ void codeGenFuncBegin( char *func);
 void codeGenFuncEnd( char *func);
 void codeGenFuncReturnValue( dataTypeEnum type);
 void codeGenFuncCall(char *func);
-void codeGenFuncReturnValueAssign(char *leftValue, dataTypeEnum left, dataTypeEnum ret);
+void codeGenFuncReturnValueAssign(char *leftValue);
 void codeGenFuncDeclarationOfParam(char *param, int i);
 void codeGenFuncBeforeEnterParam();
 void codeGenFuncConvertEnterParam(dataTypeEnum origin, dataTypeEnum converted, int i);

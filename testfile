@@ -1,5 +1,6 @@
+def velikostKokota (kokot)
+a = length(kokot)
+print "delka kokota osoby se jmenem ", kokot, " je: ", a, "pm\n"
+end
 
-delkaKokota = 1
-delkaKokota = "NULL"
-print "novak je gigapica\n", "a jeho kokot ma delku: ", delkaKokota, "\n"
-
+velikostKokota ("Novak")

@@ -14,6 +14,7 @@ typedef enum
 	MINUS_RULE,	        	// E -> E - E
 	MUL_RULE,				// E -> E * E
 	DIV_RULE,				// E -> E / E
+	IDIV_RULE,				// E -> E / E
 	EQUAL_RULE,				// E -> E = E
 	NOT_EQUAL_RULE,			// E -> E <> E
 	LESS_OR_EQUAL_RULE,		// E -> E <= E

@@ -15,6 +15,8 @@
 //We will work with this stack for the whole time
 Stack stack;
 Token token;
+
+
 // 2-dimensional array
 int precTable[tableSize][tableSize] =
 {
@@ -97,7 +99,7 @@ static dataTypeEnum getDataType(Token* token, parseData* parserData){
         if (parserData->lID->global){
             symbol = BSTsearchSymbol(parserData->globalTable, token->Data.string->value);
             if (symbol == NULL)
-                    return TYPE_UNDEFINED;
+                return TYPE_UNDEFINED;
             return symbol->dataType;
         }
         else{
@@ -188,8 +190,12 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
                 return MINUS_RULE;
             else if(operand2->symbol == MUL)            // rule E -> E * E
                 return MUL_RULE;
-            else if(operand2->symbol == DIV)            // rule E -> E / E
-                return DIV_RULE;
+            else if(operand2->symbol == DIV){
+                if(operand1->dataType == TYPE_INTEGER && operand3->dataType == TYPE_INTEGER){
+                    return IDIV_RULE;
+                }
+                else return DIV_RULE;
+            }            // rule E -> E / E
             else if(operand2->symbol == EQUAL)          // rule E -> E = E
                 return EQUAL_RULE;
             else if(operand2->symbol == NOT_EQUAL)      // rule E -> E != E
@@ -222,8 +228,11 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     
     if (rule == OPERAND_RULE)
     {
+        /*
         if (op1->dataType == TYPE_UNDEFINED)
-            return SEMANTICAL_UNDEF;
+            {fprintf(stderr, "%s\n", "novak je pica\n");
+                        return SEMANTICAL_UNDEF;}
+        */
     }
 
     if (rule == BRACKETS_RULE)
@@ -285,12 +294,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     case MINUS_RULE:
     case MUL_RULE:
     case DIV_RULE:
-        if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
-            *final_type = TYPE_INTEGER;
-            parserData->lID->dataType = TYPE_INTEGER;
-            break;
-        }
-        else if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
+        if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
             return SEMANTICAL_TYPES;
             break;
         }
@@ -322,6 +326,10 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             break;
         }
         else return SEMANTICAL_TYPES;
+        break;
+    case IDIV_RULE:
+        *final_type = TYPE_INTEGER;
+        parserData->lID->dataType = TYPE_INTEGER;
         break;
     case LESS_OR_EQUAL_RULE:
     case LESS_RULE:
@@ -376,8 +384,8 @@ static int reduceByRule(parseData* parserData)
 	StackItem* op1 = NULL;
 	StackItem* op2 = NULL;
 	StackItem* op3 = NULL;
+    precAnalysisRules rule;
 	dataTypeEnum finalType;
-	precAnalysisRules rule;
 	bool found = false;
 	int count = numberOfSymbolsAfterStop(&found);
    fprintf(stderr,CGRN"    [EXPR]"CWHT" numberOfSymbolsAfterStop %d\n", count);
@@ -405,7 +413,7 @@ static int reduceByRule(parseData* parserData)
 		if ((result = checkSemantics(rule, op1, op2, op3, &finalType, parserData)))
             return result;
             
-
+        fprintf(stderr, "%d\n", rule);
 		if (rule == PLUS_RULE && finalType == TYPE_STRING)
 		{
 			addToOutput(codeGenConcatStackStrings,);

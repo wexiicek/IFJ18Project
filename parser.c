@@ -172,6 +172,8 @@ static int params(parseData* parserData){
 		fprintf(stderr, CGRN"L O C A L\n" CWHT);
 		//Print_tree(parserData->localTable);
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
+		parserData->rID->global = false;
+		Print_tree(parserData->localTable);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		checkRule(params_n);
@@ -203,6 +205,8 @@ static int params_n(parseData* parserData){
 		fprintf(stderr, CGRN"L O C A L\n" CWHT);
 		//Print_tree(parserData->localTable); 	
 		parserData->rID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
+		parserData->rID->global = false;
+		Print_tree(parserData->localTable);
 		addToOutput(codeGenFuncDeclarationOfParam, parserData->rID->identifier, parserData->parameterIndex);
 		getToken();
 		return(params_n(parserData));
@@ -265,6 +269,7 @@ static int body(parseData* parserData){
 			else{
 				if (parserData->currentID != NULL){
 					checkRule(func);
+					addToOutput(codeGenFuncCall, parserData->currentID->identifier);
 					return body(parserData);
 				}
 				else return SEMANTICAL_UNDEF;
@@ -276,7 +281,7 @@ static int body(parseData* parserData){
 		parserData->labelDeep++;
 		parserData->inWhileOrIf = true;
 
-		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%%result");
+		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
 
 		int currentLabelIndex = parserData -> labelIndex;
 		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";
@@ -324,7 +329,7 @@ static int body(parseData* parserData){
 		parserData->labelDeep++;
 		parserData->inWhileOrIf = true;
 
-		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%%result");
+		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
 
 		int currentLabelIndex = parserData -> labelIndex;
 		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";
@@ -359,7 +364,7 @@ static int body(parseData* parserData){
 		getToken();
 
 
-		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%%result");
+		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
 		parserData->lID->dataType = TYPE_UNDEFINED;
 		if (parserData -> token.Type == tokenLeftBracket){	
 			getToken();
@@ -504,13 +509,16 @@ static int def_value(parseData* parserData){
 
 			//<def_value> -> LENGHT ( ID || STRING_VALUE )
 			case KW_LENGTH:
+				addToOutput(codeGenFuncBeforeEnterParam,);
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
-
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+				addToOutput(codeGenFuncEnterParam, *parserData, 0);
 				getToken();
 				checkTokenType(tokenRightBracket);
+				addToOutput(codeGenFuncCall, "length");
+				addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
 				getToken();
 				return SUCCESS;
 				}
@@ -519,10 +527,12 @@ static int def_value(parseData* parserData){
 
 			//<def_value> -> SUBSTR ( ID || STRING_VALUE, ID || INT_VALUE, ID || INT_VALUE)
 			case KW_SUBSTR:
+				addToOutput(codeGenFuncBeforeEnterParam,);
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					addToOutput(codeGenFuncEnterParam, *parserData, 0);
 					getToken();
 					checkTokenType(tokenComma);
 					getToken();
@@ -532,6 +542,7 @@ static int def_value(parseData* parserData){
 				}
 				
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					addToOutput(codeGenFuncEnterParam, *parserData, 1);
 					getToken();
 					checkTokenType(tokenComma);
 					getToken();
@@ -540,8 +551,11 @@ static int def_value(parseData* parserData){
 					return SEMANTICAL_TYPES;
 				}
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					addToOutput(codeGenFuncEnterParam, *parserData, 2);
 					getToken();
 					checkTokenType(tokenRightBracket);
+					addToOutput(codeGenFuncCall, "substr");
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
 					getToken();
 				}
 				else{
@@ -551,10 +565,12 @@ static int def_value(parseData* parserData){
 
 			//<def_value> -> ORD (ID || STRING_VALUE, ID || INT_VALUE)
 			case KW_ORD:
+				addToOutput(codeGenFuncBeforeEnterParam,);
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					addToOutput(codeGenFuncEnterParam, *parserData, 0);
 					getToken();
 					checkTokenType(tokenComma);
 					getToken();
@@ -563,8 +579,11 @@ static int def_value(parseData* parserData){
 					return SEMANTICAL_TYPES;
 				}
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					addToOutput(codeGenFuncEnterParam, *parserData, 1);
 					getToken();
 					checkTokenType(tokenRightBracket);
+					addToOutput(codeGenFuncCall, "ord");
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
 					getToken();
 				}
 				else{
@@ -574,12 +593,16 @@ static int def_value(parseData* parserData){
 
 			//<def_value> -> CHR (ID || INT_VALUE)
 			case KW_CHR:
+				addToOutput(codeGenFuncBeforeEnterParam,);
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					addToOutput(codeGenFuncEnterParam, *parserData, 0);
 					getToken();
 					checkTokenType(tokenRightBracket);
+					addToOutput(codeGenFuncCall, "chr");
+					addToOutput(codeGenFuncReturnValueAssign, parserData->lID->identifier);
 					getToken();
 				}
 				else{
@@ -593,7 +616,7 @@ static int def_value(parseData* parserData){
 	}
 	//<def_value> -> <expression>
 	checkRule(expression);
-	Print_tree(parserData->globalTable);
+	Print_tree(parserData->localTable);
 	return SUCCESS;
 }
 
@@ -604,25 +627,29 @@ static int args (parseData* parserData){
 	//<value> -> INT_VALUE || FLOAT_VALUE || STRING_VALUE || ID
 	if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger || 
 		parserData -> token.Type == tokenFloat || parserData -> token.Type == tokenString) {
+		addToOutput(codeGenFuncEnterParam, *parserData, parserData->currentID->callArgCounter);
 		parserData->currentID->callArgCounter += 1;
+
 		getToken();
 		checkRule(args_n);
 		return SUCCESS;
 	}
 	else if (parserData->currentID->argCounter == 0)
 		return SUCCESS;
-	return SEMANTICAL_OTHER;
+	return SEMANTICAL_ARGCOUNT;
 }
 
 //<arg_n> -> , <value> <arg_n>
 static int args_n (parseData* parserData){
 	int res = 0;
 	if (parserData -> token.Type == tokenComma){
-		parserData->currentID->callArgCounter += 1;
+		
 		getToken();
 
 		//<value> -> INT_VALUE || FLOAT_VALUE || STRING_VALUE || ID
-		checkMultipleTokenType(tokenIdentifier, tokenInteger, tokenFloat, tokenString); 
+		checkMultipleTokenType(tokenIdentifier, tokenInteger, tokenFloat, tokenString);
+		addToOutput(codeGenFuncEnterParam, *parserData, parserData->currentID->callArgCounter);
+		parserData->currentID->callArgCounter += 1;
 		getToken();
 		return(args_n(parserData));
 	}
@@ -632,7 +659,7 @@ static int args_n (parseData* parserData){
 
 static int func (parseData* parserData){
 	int res;
-
+	addToOutput(codeGenFuncBeforeEnterParam,);
 	//<func> -> ( <arg> )
 	if (parserData -> token.Type == tokenLeftBracket){
 				getToken();
@@ -677,8 +704,8 @@ void initTables(parseData* parserData){
 	parserData->inFunction = false;
 	parserData->inWhileOrIf = false;
 
-	BSTinsertSymbol(&parserData->globalTable, "%%result");
-	id = BSTsearchSymbol(parserData->globalTable, "%%result");
+	BSTinsertSymbol(&parserData->globalTable, "%result");
+	id = BSTsearchSymbol(parserData->globalTable, "%result");
 	id->defined = true;
 	id->dataType = TYPE_UNDEFINED;
 	id->global = true;

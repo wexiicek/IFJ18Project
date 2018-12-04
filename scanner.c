@@ -405,6 +405,25 @@ int getTokens (Token *token) {
 					state = stateNumberEnd;
 					break;
 				}
+				else if (c == '.'){
+					if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+					nextChar(c);
+					while (isdigit(c)) {
+						if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+						nextChar(c);
+					}
+					token->Data.flt = strtol(str->value, NULL, 10);
+					token->Type = tokenFloat;
+					ungetc(c, code);
+					state = stateNumberEnd;
+					break;
+
+				}
+				else if (c == ' ' || c == '\n' || c == EOF){
+					state = stateNumberEnd;
+					token->Type = tokenInteger;
+					strToIntToken(str, token);
+				}
 			}
 			//Decimal and float numbers
 			else if (!(zeroSwitch) && (token->Type = tokenInteger)) {

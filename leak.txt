@@ -1,460 +1,116 @@
-==13653== Memcheck, a memory error detector
-==13653== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==13653== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==13653== Command: ./compiler
-==13653== Parent PID: 13627
-==13653== 
---13653-- 
---13653-- Valgrind options:
---13653--    --leak-check=full
---13653--    --show-leak-kinds=all
---13653--    --track-origins=yes
---13653--    -v
---13653--    --log-file=leak.txt
---13653-- Contents of /proc/version:
---13653--   Linux version 4.15.0-39-generic (buildd@lgw01-amd64-054) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) #42-Ubuntu SMP Tue Oct 23 15:48:01 UTC 2018
---13653-- 
---13653-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
---13653-- Page sizes: currently 4096, max supported 4096
---13653-- Valgrind library directory: /usr/lib/valgrind
---13653-- Reading syms from /home/wex/IFJ18Project/compiler
---13653-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
---13653--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
---13653--   .. CRC mismatch (computed 1b7c895e wanted 2943108a)
---13653--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
---13653--   .. CRC is valid
---13653-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
---13653--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
---13653--   .. CRC mismatch (computed c25f395c wanted 0a9602a8)
---13653--    object doesn't have a symbol table
---13653--    object doesn't have a dynamic symbol table
---13653-- Scheduler: using generic scheduler lock implementation.
---13653-- Reading suppressions file: /usr/lib/valgrind/default.supp
-==13653== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-13653-by-wex-on-???
-==13653== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-13653-by-wex-on-???
-==13653== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-13653-by-wex-on-???
-==13653== 
-==13653== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==13653== don't want to do, unless you know exactly what you're doing,
-==13653== or are doing some strange experiment):
-==13653==   /usr/lib/valgrind/../../bin/vgdb --pid=13653 ...command...
-==13653== 
-==13653== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==13653==   /path/to/gdb ./compiler
-==13653== and then give GDB the following command
-==13653==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=13653
-==13653== --pid is optional if only one valgrind process is running
-==13653== 
---13653-- REDIR: 0x401f2f0 (ld-linux-x86-64.so.2:strlen) redirected to 0x58060901 (???)
---13653-- REDIR: 0x401f0d0 (ld-linux-x86-64.so.2:index) redirected to 0x5806091b (???)
---13653-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
---13653--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
---13653--   .. CRC mismatch (computed 4b63d83e wanted 670599e6)
---13653--    object doesn't have a symbol table
---13653-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
---13653--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
---13653--   .. CRC mismatch (computed a4b37bee wanted 8ad4dc94)
---13653--    object doesn't have a symbol table
-==13653== WARNING: new redirection conflicts with existing -- ignoring it
---13653--     old: 0x0401f2f0 (strlen              ) R-> (0000.0) 0x58060901 ???
---13653--     new: 0x0401f2f0 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
---13653-- REDIR: 0x401d360 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
---13653-- REDIR: 0x401f830 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
---13653-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
---13653--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
---13653--   .. CRC mismatch (computed b1c74187 wanted 042cc048)
---13653--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
---13653--   .. CRC is valid
---13653-- REDIR: 0x4edac70 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9d40 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edaf50 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9790 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9d70 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edc7c0 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edade0 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edac10 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9d00 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9800 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edad40 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ef80f0 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9ca0 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9870 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edafa0 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9840 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edb0e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9da0 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed97c0 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ed9c70 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ee46c0 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edaff0 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edabe0 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4ef8eb0 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4eda050 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edaf20 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edaef0 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edc7f0 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4edb040 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
---13653-- REDIR: 0x4fca3c0 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
---13653-- REDIR: 0x4ed3070 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
---13653-- REDIR: 0x4eda590 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
---13653-- REDIR: 0x4fa5d60 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
---13653-- REDIR: 0x4fca1d0 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
---13653-- REDIR: 0x4fca590 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
---13653-- REDIR: 0x4ed3950 (libc.so.6:free) redirected to 0x4c30cd0 (free)
---13653-- REDIR: 0x4ed4c30 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
---13653-- REDIR: 0x4eed9e0 (libc.so.6:__strcat_ssse3) redirected to 0x4c32990 (strcat)
---13653-- REDIR: 0x4fb7950 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
---13653-- REDIR: 0x4fcaab0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x10C0FC: args (parser.c:483)
-==13653==    by 0x10C21C: func (parser.c:506)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E988DA: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== Use of uninitialised value of size 8
-==13653==    at 0x4E9486B: _itoa_word (_itoa.c:179)
-==13653==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E94875: _itoa_word (_itoa.c:179)
-==13653==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E98014: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E98B4C: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x10C28C: func (parser.c:510)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== HEAP SUMMARY:
-==13653==     in use at exit: 0 bytes in 0 blocks
-==13653==   total heap usage: 127 allocs, 127 frees, 91,227 bytes allocated
-==13653== 
-==13653== All heap blocks were freed -- no leaks are possible
-==13653== 
-==13653== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
-==13653== 
-==13653== 1 errors in context 1 of 7:
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x10C28C: func (parser.c:510)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== 1 errors in context 2 of 7:
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E98B4C: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== 1 errors in context 3 of 7:
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E98014: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== 1 errors in context 4 of 7:
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E94875: _itoa_word (_itoa.c:179)
-==13653==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== 1 errors in context 5 of 7:
-==13653== Use of uninitialised value of size 8
-==13653==    at 0x4E9486B: _itoa_word (_itoa.c:179)
-==13653==    by 0x4E97F0D: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== 1 errors in context 6 of 7:
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x4E988DA: vfprintf (vfprintf.c:1642)
-==13653==    by 0x4E9A67F: buffered_vfprintf (vfprintf.c:2329)
-==13653==    by 0x4E97725: vfprintf (vfprintf.c:1301)
-==13653==    by 0x4EA0E53: fprintf (fprintf.c:32)
-==13653==    by 0x10C273: func (parser.c:509)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== 
-==13653== 1 errors in context 7 of 7:
-==13653== Conditional jump or move depends on uninitialised value(s)
-==13653==    at 0x10C0FC: args (parser.c:483)
-==13653==    by 0x10C21C: func (parser.c:506)
-==13653==    by 0x10B4A1: body (parser.c:233)
-==13653==    by 0x10B015: mainFun (parser.c:139)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653==  Uninitialised value was created by a heap allocation
-==13653==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13653==    by 0x10C56B: BSTinsertSymbol (symtable.c:22)
-==13653==    by 0x10C6C7: BSTinsertSymbol (symtable.c:41)
-==13653==    by 0x10AD40: mainFun (parser.c:86)
-==13653==    by 0x10B02F: mainFun (parser.c:140)
-==13653==    by 0x10AFBB: mainFun (parser.c:130)
-==13653==    by 0x10AF7C: mainFun (parser.c:124)
-==13653==    by 0x10C4F6: kowalskiAnalysis (parser.c:631)
-==13653==    by 0x108DB4: main (main.c:39)
-==13653== 
-==13653== ERROR SUMMARY: 7 errors from 7 contexts (suppressed: 0 from 0)
+==483== Memcheck, a memory error detector
+==483== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==483== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==483== Command: ./compiler
+==483== Parent PID: 4
+==483== 
+--483-- 
+--483-- Valgrind options:
+--483--    --leak-check=full
+--483--    --show-leak-kinds=all
+--483--    -v
+--483--    --log-file=leak.txt
+--483-- Contents of /proc/version:
+--483--   Linux version 4.4.0-17763-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #55-Microsoft Sat Oct 06 18:05:00 PST 2018
+--483-- 
+--483-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--483-- Page sizes: currently 4096, max supported 4096
+--483-- Valgrind library directory: /usr/lib/valgrind
+--483-- Reading syms from /home/cattitude/IFJ18Project/compiler
+--483-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--483--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--483--   .. CRC mismatch (computed 1b7c895e wanted 2943108a)
+--483--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--483--   .. CRC is valid
+--483-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--483--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--483--   .. CRC mismatch (computed 62965bbf wanted eeb84137)
+--483--    object doesn't have a symbol table
+--483--    object doesn't have a dynamic symbol table
+--483-- Scheduler: using generic scheduler lock implementation.
+--483-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==483== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-483-by-cattitude-on-???
+==483== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-483-by-cattitude-on-???
+==483== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-483-by-cattitude-on-???
+==483== 
+==483== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==483== don't want to do, unless you know exactly what you're doing,
+==483== or are doing some strange experiment):
+==483==   /usr/lib/valgrind/../../bin/vgdb --pid=483 ...command...
+==483== 
+==483== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==483==   /path/to/gdb ./compiler
+==483== and then give GDB the following command
+==483==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=483
+==483== --pid is optional if only one valgrind process is running
+==483== 
+==483== error calling PR_SET_PTRACER, vgdb might block
+--483-- REDIR: 0x401f2f0 (ld-linux-x86-64.so.2:strlen) redirected to 0x58060901 (???)
+--483-- REDIR: 0x401f0d0 (ld-linux-x86-64.so.2:index) redirected to 0x5806091b (???)
+--483-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--483--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--483--   .. CRC mismatch (computed 13d5e98a wanted 1786ecf1)
+--483--    object doesn't have a symbol table
+--483-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--483--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--483--   .. CRC mismatch (computed 8f77ef36 wanted fcbde737)
+--483--    object doesn't have a symbol table
+==483== WARNING: new redirection conflicts with existing -- ignoring it
+--483--     old: 0x0401f2f0 (strlen              ) R-> (0000.0) 0x58060901 ???
+--483--     new: 0x0401f2f0 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--483-- REDIR: 0x401d360 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--483-- REDIR: 0x401f830 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--483-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--483--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--483--   .. CRC mismatch (computed b1c74187 wanted 042cc048)
+--483--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--483--   .. CRC is valid
+--483-- REDIR: 0x4edac70 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9d40 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edaf50 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9790 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9d70 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edc7c0 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edade0 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edac10 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9d00 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9800 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edad40 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ef80f0 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9ca0 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9870 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edafa0 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9840 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edb0e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9da0 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed97c0 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ed9c70 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ee46c0 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edaff0 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edabe0 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4ef8eb0 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4eda050 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edaf20 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edaef0 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edc7f0 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4edb040 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--483-- REDIR: 0x4fca3c0 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--483-- REDIR: 0x4ed3070 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+--483-- REDIR: 0x4eda590 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
+--483-- REDIR: 0x4fca590 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--483-- REDIR: 0x4fb7950 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+--483-- REDIR: 0x4fca1d0 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--483-- REDIR: 0x4fcaab0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+--483-- REDIR: 0x4fa5d60 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--483-- REDIR: 0x4ed3950 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+--483-- REDIR: 0x4ed4c30 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
+--483-- REDIR: 0x4eed9e0 (libc.so.6:__strcat_ssse3) redirected to 0x4c32990 (strcat)
+==483== 
+==483== HEAP SUMMARY:
+==483==     in use at exit: 0 bytes in 0 blocks
+==483==   total heap usage: 217 allocs, 217 frees, 275,221 bytes allocated
+==483== 
+==483== All heap blocks were freed -- no leaks are possible
+==483== 
+==483== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==483== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
