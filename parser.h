@@ -20,6 +20,7 @@ typedef struct {
 	tData* currentID;
 	tData* lID;
 	tData* rID;
+	tData* tmp;
 
 	unsigned parameterIndex;
 	int labelIndex;

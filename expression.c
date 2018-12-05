@@ -228,14 +228,14 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
 static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type, parseData *parserData){
     bool op1ToFloat = false;
 	bool op3ToFloat = false;
-    
+    /*
     if (rule == OPERAND_RULE)
     {
-        /*
+        
         if (op1->dataType == TYPE_UNDEFINED)
             {fprintf(stderr, "%s\n", "novak je pica\n");
                         return SEMANTICAL_UNDEF;}
-        */
+        
     }
 
     if (rule == BRACKETS_RULE)
@@ -243,13 +243,14 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         if (op2->dataType == TYPE_UNDEFINED)
             return SEMANTICAL_UNDEF;
     }
-    
+
     if (rule != OPERAND_RULE && rule != BRACKETS_RULE)
     {
         if (op1->dataType == TYPE_UNDEFINED && op3->dataType == TYPE_UNDEFINED)
             {fprintf(stderr, "%s\n", "CHYBA JE TADY");
                         return SEMANTICAL_UNDEF;}
     }
+    */
 
     switch (rule)
     {
@@ -550,8 +551,8 @@ int expression(parseData *parserData){
                 if(finalNT->dataType == TYPE_STRING){
                     stackFree(&stack);
                     return SEMANTICAL_TYPES;
-                }
-                fprintf(stderr, "%s\n", "KOKOT\n");
+                }                                                                                 
+                fprintf(stderr, "lID identifier %s\n", parserData->lID->identifier);
                 addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_INTEGER,finalNT->dataType);
                 break;
             case TYPE_FLOAT:

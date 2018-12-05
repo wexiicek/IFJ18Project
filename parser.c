@@ -232,21 +232,37 @@ static int body(parseData* parserData){
 
 			//<id> -> = <def_value>
 			if (parserData -> token.Type == tokenAssign){
+				fprintf(stderr, "%s\n", "DEBUG1");
 				if (parserData -> inFunction == true) {
+					fprintf(stderr, "%s\n", "DEBUG2");
 					if ((BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value)) == NULL) {
+						fprintf(stderr, "%s\n", "DEBUG3");
 							BSTinsertSymbol(&parserData -> localTable, parserData -> prevToken.Data.string->value);
 							parserData -> lID = BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value);
 							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier, parserData -> lID -> global);
 						}
-				}
-				else {
-					if ((BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value)) == NULL) {
-							BSTinsertSymbol(&parserData -> globalTable, parserData -> prevToken.Data.string->value);
-							parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
-							parserData -> lID -> global = true;
-							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier, parserData -> lID -> global);
+					else {
+						parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
+						parserData -> lID -> global = true;
 					}
 				}
+				else {
+					fprintf(stderr, "%s\n", "DEBUG4");
+					if ((BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value)) == NULL) {
+						fprintf(stderr, "%s\n", "DEBUG5");
+							BSTinsertSymbol(&parserData -> globalTable, parserData -> prevToken.Data.string->value);
+							parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
+							fprintf(stderr, "lID v BODY%s\n", parserData ->lID ->identifier);
+							parserData -> lID -> global = true;
+
+							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier, parserData -> lID -> global);
+					}
+					else {
+						parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
+						parserData -> lID -> global = true;
+					}
+				}
+				
 				//fprintf(stderr, "%s\n", "GLOBALNI TABULKA:");
 				//Print_tree(parserData -> globalTable);
 				//fprintf(stderr, "%s\n", "LOKALNI TABULKA:");
@@ -659,6 +675,7 @@ static int def_value(parseData* parserData){
 
 	}
 	//<def_value> -> <expression>
+	fprintf(stderr, "PRED EXP %s\n", parserData->lID->identifier);
 	checkRule(expression);
 	//Print_tree(parserData->localTable);
 	return SUCCESS;

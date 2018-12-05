@@ -1,5 +1,5 @@
-def kokot (k)
-print k
+n = 4
+while n > 1 do
+n = n - 1
+print "novak je kokot\n"
 end
-
-kokot (1)
