@@ -242,8 +242,7 @@ static int body(parseData* parserData){
 							addToOutput(codeGenDeclarationOfVar, parserData -> lID -> identifier, parserData -> lID -> global);
 						}
 					else {
-						parserData -> lID = BSTsearchSymbol(parserData -> globalTable, parserData -> prevToken.Data.string->value);
-						parserData -> lID -> global = true;
+						parserData -> lID = BSTsearchSymbol(parserData -> localTable, parserData -> prevToken.Data.string->value);
 					}
 				}
 				else {
@@ -265,7 +264,7 @@ static int body(parseData* parserData){
 				
 				//fprintf(stderr, "%s\n", "GLOBALNI TABULKA:");
 				//Print_tree(parserData -> globalTable);
-				//fprintf(stderr, "%s\n", "LOKALNI TABULKA:");
+				fprintf(stderr, "%s\n", "LOKALNI TABULKA:");
 				//Print_tree(parserData -> localTable);
 				
 				getToken();
@@ -354,6 +353,10 @@ static int body(parseData* parserData){
 		parserData->inWhileOrIf = true;
 
 		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
+		if (parserData->inFunction == true)
+			parserData -> lID -> global = false;
+		else 
+			parserData -> lID -> global = true;
 
 		int currentLabelIndex = parserData -> labelIndex;
 		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";

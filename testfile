@@ -1,5 +1,9 @@
-n = 4
+def kokot (n)
 while n > 1 do
 n = n - 1
-print "novak je kokot\n"
+print n, "novak je kokot\n"
 end
+end
+
+
+kokot 4

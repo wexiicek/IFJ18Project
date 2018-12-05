@@ -96,13 +96,17 @@ static dataTypeEnum getDataType(Token* token, parseData* parserData){
 	tData* symbol;
 
 	if(token->Type == tokenIdentifier){
+        fprintf(stderr, "%s\n", "debug1");
+        fprintf(stderr, "%s\n", parserData->lID->identifier);
         if (parserData->lID->global){
+            fprintf(stderr, "%s\n", "debug2");
             symbol = BSTsearchSymbol(parserData->globalTable, token->Data.string->value);
             if (symbol == NULL)
                 return TYPE_UNDEFINED;
             return symbol->dataType;
         }
         else{
+        fprintf(stderr, "%s\n", "debug3");
         fprintf(stderr, "%s\n", token->Data.string->value);
         symbol = BSTsearchSymbol(parserData->localTable, token->Data.string->value);
         //fprintf(stderr, "%s %d\n","DATOVY TYP:", symbol->dataType);
@@ -304,6 +308,11 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
                 parserData->lID->dataType = TYPE_STRING;
             break;
         }
+        else if (parserData -> inFunction == true && (op1 -> dataType == TYPE_UNDEFINED || op3 -> dataType == TYPE_UNDEFINED))
+        {
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
         else 
             {fprintf(stderr, "%s\n", "SEMANTICAL HERE"); 
                         return SEMANTICAL_TYPES;}
@@ -343,6 +352,11 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             fprintf(stderr, "%s\n", "we here 4\n");
             break;
         }
+        else if (parserData -> inFunction == true && (op1 -> dataType == TYPE_UNDEFINED || op3 -> dataType == TYPE_UNDEFINED))
+        {
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
         else return SEMANTICAL_TYPES;
         break;
     case EQUAL_RULE:
@@ -361,6 +375,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     case LESS_RULE:
     case GREATER_OR_EQUAL_RULE:
     case GREATER_RULE:
+        fprintf(stderr, "%d\n", op1->dataType);
         if(op1->dataType == op3->dataType){
             *final_type = TYPE_UNDEFINED;
             break;
@@ -374,6 +389,11 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
             op1->dataType = TYPE_FLOAT;
             op1ToFloat = true;
+            *final_type = TYPE_UNDEFINED;
+            break;
+        }
+        else if (parserData -> inFunction == true && (op1 -> dataType == TYPE_UNDEFINED || op3 -> dataType == TYPE_UNDEFINED))
+        {
             *final_type = TYPE_UNDEFINED;
             break;
         }
