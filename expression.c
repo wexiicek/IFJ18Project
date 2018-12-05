@@ -1,15 +1,22 @@
+/*/////////////////////////////////////////////////////////////
+/                                                             /                           
+/    Subject: IFJ                                             /                           
+/    Task: IFJ Project                                        /                           
+/                                                             /                           
+/          Author 1 (leader)               Author 2           /      
+/           Marian Pukancik               Adam Linka          /                        
+/              xpukan01                    xlinka01           /                     
+/                                                             /                           
+/    Team: 045, Variant I                                     /                           
+/                                                             /                           
+/////////////////////////////////////////////////////////////*/
+
 #include "scanner.h"
 #include "expression.h"
 #include "stack.h"     
 #include "err.h"
 #include "generator.h"
 #include "symtable.h"
-
-
-
-#define CRED  "\x1B[31m"
-#define CGRN  "\x1B[32m"
-#define CWHT  "\x1B[37m"
 
 #define tableSize 7
 //We will work with this stack for the whole time
@@ -27,7 +34,7 @@ int precTable[tableSize][tableSize] =
 //	|+- | */| r | ( | ) | i | $ |
 	{ R , S , R , S , R , S , R }, // +-
 	{ R , R , R , S , R , S , R }, // */
-	{ S , S , N , S , R , S , R }, // r (realtion operators) = != <= < >= >
+	{ S , S , N , S , R , S , R }, // r (relation operators) = != <= < >= >
 	{ S , S , S , S , E , S , N }, // (
 	{ R , R , R , N , R , N , R }, // )
 	{ R , R , R , N , R , N , R }, // i (id, int, double, string)
@@ -35,15 +42,13 @@ int precTable[tableSize][tableSize] =
 };
 
 FILE *dest;
-
 /**
- * Function converts token type to symbol.
+ * Function converts token type to symbol from precAnalysisTableSymbol.
  *
- * @param token Pointer to token.
- * @return Returns dollar if symbol is not supported or converted symbol if symbol is supported.
+ * @param token  -  Pointer to token
+ * @return       -  Function returns symbol according current token, otherwise it returns symbol dollar
  */
-static precAnalysisTableSymbol getSymbolFromToken(Token* token)
-{
+static precAnalysisTableSymbol getSymbolFromToken(Token* token){
 	switch (token->Type)
 	{
 	case tokenAdd:
@@ -86,36 +91,31 @@ static precAnalysisTableSymbol getSymbolFromToken(Token* token)
 }
 
 /**
- * Function converts token type to data type.
+ * Function finds out data type of the token.
  *
- * @param token Pointer to token.
- * @param data Pointer to parser's internal data.
- * @return Returns data type of actual token.
+ * @param token       -  Pointer to a  token
+ * @param parserData  -  Pointer to parser's internal data
+ * @return            -  Returns data type of actual token
  */
 static dataTypeEnum getDataType(Token* token, parseData* parserData){
 	tData* symbol;
-
+    //If we get an identifier
 	if(token->Type == tokenIdentifier){
-        fprintf(stderr, "%s\n", "debug1");
-        fprintf(stderr, "%s\n", parserData->lID->identifier);
-        if (parserData->lID->global){
-            fprintf(stderr, "%s\n", "debug2");
+        if (parserData->lID->global){               //If this item has parameter global from symtable set to true
             symbol = BSTsearchSymbol(parserData->globalTable, token->Data.string->value);
-            if (symbol == NULL)
+            if (symbol == NULL)                     //Then we will look for him in global table
                 return TYPE_UNDEFINED;
             return symbol->dataType;
         }
-        else{
-        fprintf(stderr, "%s\n", "debug3");
-        fprintf(stderr, "%s\n", token->Data.string->value);
+        else{                                       //If not, then we will look in local table
         symbol = BSTsearchSymbol(parserData->localTable, token->Data.string->value);
-        //fprintf(stderr, "%s %d\n","DATOVY TYP:", symbol->dataType);
+                                                    //If we will not find anything, we will return TYPE_UNDEFINED
         if (symbol == NULL){
-                    fprintf(stderr, "%s\n", "JE TO NULL");
                     return TYPE_UNDEFINED;}
         return symbol->dataType;
         }
 	}
+    //If we get number or string
 	else if(token->Type == tokenInteger)
 		return TYPE_INTEGER;
 	
@@ -128,9 +128,13 @@ static dataTypeEnum getDataType(Token* token, parseData* parserData){
 	else return TYPE_UNDEFINED;
 }
 
-static int numberOfSymbolsAfterStop(bool* stopFound)
-{
-    fprintf(stderr,CGRN"    [EXPR]" CRED" FUN "CWHT" numberOfSymbolsAfterStop \n");
+/**
+ * Function find out how many symbols had beed pushed into stack after symbol stop
+ * 
+ * @param stopFound  -  Bool value which tells us if we found stop symbol
+ * @return           -  Number of symbols after stop symbol
+ */
+static int numberOfSymbolsAfterStop(bool* stopFound){
 	StackItem* tmp = stackTop(&stack);
 	int count = 0;
 	while (tmp != NULL){
@@ -150,10 +154,11 @@ static int numberOfSymbolsAfterStop(bool* stopFound)
 /**
  * Function converts symbol to precedence table index.
  *
- * @param symbol Symbol to be converted.
- * @return Returns precedence table index.
+ * @param symbol     -  Symbol to be converted
+ * @return           -  Returns precedence table index
  */
 static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
+    //These indexes will be used for searching in precedence table
     if((symbol == PLUS) || (symbol == MINUS))
         return I_PLUS_MINUS;
     else if((symbol == MUL) || (symbol == DIV))
@@ -172,21 +177,18 @@ static precTabIndexSymbol getPrecTableIndex(precAnalysisTableSymbol symbol){
 /**
  * Function tests if symbols in parameters are valid according to rules.
  *
- * @param num Number of valid symbols in parameter.
- * @param operand1 Symbol 1.
- * @param operand2 Symbol 2.
- * @param operand3 Symbol 3.
- * @return NOT_A_RULE if no rule is found or returns rule which is valid.
+ * @param numberOfOperands  -  Number of valid symbols in parameter
+ * @param operand1          -  Symbol 1
+ * @param operand2          -  Symbol 2
+ * @param operand3          -  Symbol 3
+ * @return                  -  If correct rule was not found, function returns NOT_A_RULE
  */
 static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *operand1, StackItem *operand2, StackItem *operand3){
-	fprintf(stderr, CGRN"    [EXPR]"CWHT" testWhichRuleToUse.. Operand count: %d\n", numberOfOperands);
-
-    if (numberOfOperands == 1){
-		// rule E -> i
+    if (numberOfOperands == 1){   
 		if (operand1->symbol == INT_NUMBER || operand1->symbol == FLOAT_NUMBER || operand1->symbol == STRING || operand1->symbol == IDENTIFIER)
-			{fprintf(stderr, CGRN"    [EXPR]"CRED" RET "CWHT"OPERAND RULE\n");return OPERAND_RULE;}
+			return OPERAND_RULE;                        // rule E -> i
         else
-		    return NOT_A_RULE;
+		    return NOT_A_RULE;                          // rule doesn't exist
     }
 
 	else if(numberOfOperands == 3){
@@ -197,17 +199,17 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
                 return MINUS_RULE;
             else if(operand2->symbol == MUL)            // rule E -> E * E
                 return MUL_RULE;
-            else if(operand2->symbol == DIV){
+            else if(operand2->symbol == DIV){           // rule E -> E / E
                 if(operand1->dataType == TYPE_INTEGER && operand3->dataType == TYPE_INTEGER){
-                    return IDIV_RULE;
+                    return IDIV_RULE;                   //IDIV for two integers, otherwise only DIV
                 }
                 else return DIV_RULE;
-            }            // rule E -> E / E
-            else if(operand2->symbol == EQUAL)          // rule E -> E = E
+            }            
+            else if(operand2->symbol == EQUAL)          // rule E -> E == E
                 return EQUAL_RULE;
             else if(operand2->symbol == NOT_EQUAL)      // rule E -> E != E
                 return NOT_EQUAL_RULE;
-            else if(operand2->symbol == GREATER)       // rule E -> E > E
+            else if(operand2->symbol == GREATER)        // rule E -> E > E
                 return GREATER_RULE;
             else if(operand2->symbol == LESS)           // rule E -> E < E
                 return LESS_RULE;  
@@ -221,48 +223,55 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
         else if(operand1->symbol == LEFT_BRACKET && operand2->symbol == NON_TERMINAL && operand3->symbol == RIGHT_BRACKET){
             return BRACKETS_RULE;                       // rule E -> (E)
         }
-        else
-            {return NOT_A_RULE;}
+        else{
+            return NOT_A_RULE;
+        }
     }
     else
         return NOT_A_RULE;
 }
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+
+/**
+ * Function check Semantics of the expression 
+ * 
+ * @param rule        -  Rule from the function testWhichRuleToUse
+ * @param op1         -  Left number, string or identifier
+ * @param op2         -  Operator
+ * @param op3         -  Right number, string or identifier
+ * @param final_type  -  Final type of the expression
+ * @param parserData  -  Pointer parser's internal data
+ * @return            -  Final type if the semantics is right or correct error
+ */
 static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type, parseData *parserData){
+    
+    //For us to know if we need to retype operands
     bool op1ToFloat = false;
 	bool op3ToFloat = false;
+
+    //If we are checking function. Because we ifj18 is dynamically typed language.
+    //And we do not know data types of the operands used in functions.
     if (parserData -> inFunction == false && parserData -> inPrint == false){
-        
-        if (rule == OPERAND_RULE)
-        {
-            
+        if (rule == OPERAND_RULE){
             if (op1->dataType == TYPE_UNDEFINED)
-                {fprintf(stderr, "%s\n", "novak je pica\n");
-                            return SEMANTICAL_UNDEF;}   
+                return SEMANTICAL_UNDEF; 
         }
 
-        if (rule == BRACKETS_RULE)
-        {
+        if (rule == BRACKETS_RULE){
             if (op2->dataType == TYPE_UNDEFINED)
                 return SEMANTICAL_UNDEF;
         }
 
-        if (rule != OPERAND_RULE && rule != BRACKETS_RULE)
-        {
+        if (rule != OPERAND_RULE && rule != BRACKETS_RULE){
             if (op1->dataType == TYPE_UNDEFINED && op3->dataType == TYPE_UNDEFINED)
-                {fprintf(stderr, "%s\n", "CHYBA JE TADY");
-                            return SEMANTICAL_UNDEF;}
+                return SEMANTICAL_UNDEF;
         }
     }
-    switch (rule)
-    {
+
+    switch (rule){
     case OPERAND_RULE:
         *final_type = op1->dataType;
         if (parserData->lID != NULL)
-        {
            parserData->lID->dataType = *final_type;
-        }
         break;
 
     case BRACKETS_RULE:
@@ -271,16 +280,22 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             parserData->lID->dataType = *final_type;
         break;
 
+    /* 
+     * Here we can do concatenation of two strings.
+     * We cal add two integers, floats 
+     * Or if we have one operand integer and second float, we can retype integer to float
+     */ 
     case PLUS_RULE:
-        fprintf(stderr, "%d\n", op3->dataType);
         if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
             *final_type = TYPE_INTEGER;
+
             if (parserData->lID != NULL)
                 parserData->lID->dataType = TYPE_INTEGER;
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
             *final_type = TYPE_FLOAT;
+
             if (parserData->lID != NULL)
                 parserData->lID->dataType = TYPE_FLOAT;
             break;
@@ -289,6 +304,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             op3->dataType = TYPE_FLOAT;
             op3ToFloat = true;
             *final_type = TYPE_FLOAT;
+
             if (parserData->lID != NULL)
                 parserData->lID->dataType = TYPE_FLOAT;
             break;
@@ -297,12 +313,14 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             op1->dataType = TYPE_FLOAT;
             op1ToFloat = true;
             *final_type = TYPE_FLOAT;
+
             if (parserData->lID != NULL)
                 parserData->lID->dataType = TYPE_FLOAT;
             break;
         }
         else if (op1->dataType == TYPE_STRING && op3->dataType == TYPE_STRING && rule == PLUS_RULE){
             *final_type = TYPE_STRING;
+
             if (parserData->lID != NULL)
                 parserData->lID->dataType = TYPE_STRING;
             break;
@@ -313,16 +331,21 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             break;
         }
         else 
-            {fprintf(stderr, "%s\n", "SEMANTICAL HERE"); 
-                        return SEMANTICAL_TYPES;}
+            return SEMANTICAL_TYPES;
         break;
+
+    /* 
+     * Here we cannot do concatenation of two strings.
+     * We cal add two integers, floats 
+     * Or if we have one operand integer and second float, we can retype integer to float
+     */ 
+
     case MINUS_RULE:
     case MUL_RULE:
     case DIV_RULE:
         if (op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_INTEGER){
             *final_type = TYPE_INTEGER;
             parserData->lID->dataType = TYPE_INTEGER;
-            fprintf(stderr, "%s\n", "we here 1\n");
             break;
         }
         else if (op1->dataType == TYPE_STRING || op3->dataType == TYPE_STRING){
@@ -332,7 +355,6 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_FLOAT){
             *final_type = TYPE_FLOAT;
             parserData->lID->dataType = TYPE_FLOAT;
-            fprintf(stderr, "%s\n", "we here 2\n");
             break;
         }
         else if(op1->dataType == TYPE_FLOAT && op3->dataType == TYPE_INTEGER){
@@ -340,7 +362,6 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             op3ToFloat = true;
             *final_type = TYPE_FLOAT;
             parserData->lID->dataType = TYPE_FLOAT;
-            fprintf(stderr, "%s\n", "we here 3\n");
             break;
         }
         else if(op1->dataType == TYPE_INTEGER && op3->dataType == TYPE_FLOAT){
@@ -348,7 +369,6 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
             op1ToFloat = true;
             *final_type = TYPE_FLOAT;
             parserData->lID->dataType = TYPE_FLOAT;
-            fprintf(stderr, "%s\n", "we here 4\n");
             break;
         }
         else if (parserData -> inFunction == true && (op1 -> dataType == TYPE_UNDEFINED || op3 -> dataType == TYPE_UNDEFINED))
@@ -358,6 +378,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         }
         else return SEMANTICAL_TYPES;
         break;
+
     case EQUAL_RULE:
     case NOT_EQUAL_RULE:
         if(op1->dataType == op3->dataType){
@@ -366,15 +387,16 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         }
         else return SEMANTICAL_TYPES;
         break;
+
     case IDIV_RULE:
         *final_type = TYPE_INTEGER;
         parserData->lID->dataType = TYPE_INTEGER;
         break;
+
     case LESS_OR_EQUAL_RULE:
     case LESS_RULE:
     case GREATER_OR_EQUAL_RULE:
     case GREATER_RULE:
-        fprintf(stderr, "%d\n", op1->dataType);
         if(op1->dataType == op3->dataType){
             *final_type = TYPE_UNDEFINED;
             break;
@@ -403,6 +425,7 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
         break;
     }
 
+    //If the bool variable is set to true, then we will retype integer to float
     if(op1ToFloat){
         addToOutput(codeGenOperand1toFloat,);
     }
@@ -411,35 +434,36 @@ static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2
     }
     return SUCCESS;
 }
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+
 
 /**
- * Function reduces symbols after STOP symbol if rule for reducing is found.
+ * Function reduces symbols after STOP symbol if rule for reducing was found.
  *
- * @param data Pointer to table.
- * @return Given exit code.
+ * @param parserData     -  Pointer to table.
+ * @return               -  Given exit code.
  */
-static int reduceByRule(parseData* parserData)
-{
-    fprintf(stderr,CGRN"    [EXPR]"CRED" FUN "CWHT" reduceByRule\n");
+static int reduceByRule(parseData* parserData){
 	(void) parserData;
     int result;
 
 	StackItem* op1 = NULL;
 	StackItem* op2 = NULL;
 	StackItem* op3 = NULL;
+
     precAnalysisRules rule;
 	dataTypeEnum finalType;
 	bool found = false;
+    //We need to find out with how many operands are we dealing with
 	int count = numberOfSymbolsAfterStop(&found);
-   fprintf(stderr,CGRN"    [EXPR]"CWHT" numberOfSymbolsAfterStop %d\n", count);
+    //For one operand 
     if(count == 1){
         if(found == true){
             op1 = stack.topPtr;
 		    rule = testWhichRuleToUse(count, op1, NULL, NULL);
         }
     }
+    //For three operands
+    //Operands are saved on stack
 	else if (count == 3){
         if(found == true){
             op1 = stack.topPtr->nextPtr->nextPtr;
@@ -448,37 +472,40 @@ static int reduceByRule(parseData* parserData)
             rule = testWhichRuleToUse(count, op1, op2, op3);
         }
 	}
-	else {return SYNTACTICAL;}
+	else return SYNTACTICAL;
 
-	if (rule == NOT_A_RULE){
-       fprintf(stderr,CGRN"    [EXPR]"CRED" RET "CWHT" NOT A RULE (SYNTACTICAL)\n");
-		return SYNTACTICAL;}
-
+    //If do not find correct rule
+	if (rule == NOT_A_RULE)
+		return SYNTACTICAL;
 	else{
 		if ((result = checkSemantics(rule, op1, op2, op3, &finalType, parserData)))
             return result;
-            
-        fprintf(stderr, "%d\n", rule);
+    
 		if (rule == PLUS_RULE && finalType == TYPE_STRING)
-		{
 			addToOutput(codeGenConcatStackStrings,);
-		}
+	
 		else addToOutput(codeGenStackOperation,rule);
-        //printStack(&stack);
+        
 		stackPopCount(&stack, count + 1);
-        //printStack(&stack);
 		stackPush(&stack, NON_TERMINAL, finalType, token);
-
 	}
     
 	return SUCCESS;
 }
 
+/**
+ * Implementation of <expression> rule. Parses expressions.
+ *
+ * @param parserData  -  Pointer to parser's internal data.
+ * @return            -  Given exit code.
+ */
+//This function is the brain of whole precedence analysis
 int expression(parseData *parserData){
     bool success = false;
     int result = SYNTACTICAL;
     stackInit(&stack);
 
+    //At first we have to push dollar into stack, so we know where to end analysis
     int continue0 = stackPush(&stack, DOLLAR, TYPE_UNDEFINED, token);
     
     if(continue0 == false){
@@ -489,6 +516,7 @@ int expression(parseData *parserData){
     StackItem *topTerminal;
     precAnalysisTableSymbol actualSymbol;
 
+    //This part is direct implementation of algorithm from lecture
     do {
         actualSymbol = getSymbolFromToken(&parserData->token);
         topTerminal = stackTopTerminal(&stack);
@@ -497,7 +525,8 @@ int expression(parseData *parserData){
             stackFree(&stack);
             return INTERNAL;
         }
-
+        
+        //If we get symbol "<" from symtable 
         if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == S){
             int continue1 = symbolStackInsertAfterTopTerminal(&stack, STOP, TYPE_UNDEFINED);
             if (continue1 == false){
@@ -512,7 +541,6 @@ int expression(parseData *parserData){
             }
 
             if(actualSymbol == IDENTIFIER || actualSymbol == INT_NUMBER || actualSymbol == FLOAT_NUMBER || actualSymbol == STRING){
-                fprintf(stderr, "%s\n", "JEBEK\n");
                 addToOutput(codeGenPush, (*parserData));
             }
 
@@ -523,6 +551,7 @@ int expression(parseData *parserData){
             }
         }
 
+        //If we get symbol "=" from symtable
         else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == E){
             stackPush(&stack, actualSymbol, getDataType(&parserData->token, parserData), token);
 
@@ -533,6 +562,7 @@ int expression(parseData *parserData){
             }
         }
 
+        //If we get symbol ">" from symtable
         else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == R){
             result = reduceByRule(parserData);
             if (result){
@@ -541,6 +571,7 @@ int expression(parseData *parserData){
             }
         }
 
+        //If we get symbol "error" from symtable
         else if((precTable[getPrecTableIndex(topTerminal->symbol)][getPrecTableIndex(actualSymbol)]) == N){
             if ((actualSymbol == DOLLAR) && (topTerminal->symbol == DOLLAR)){
                 success = true;
@@ -554,24 +585,31 @@ int expression(parseData *parserData){
     } while (!success);
 
     StackItem *finalNT = stackTop(&stack);
-    if(finalNT == NULL) {stackFree(&stack);
-     return INTERNAL;}
-    if(finalNT -> symbol != NON_TERMINAL) {stackFree(&stack);
-     return SYNTACTICAL;}
+    if(finalNT == NULL) {
+        stackFree(&stack);
+        return INTERNAL;
+    }
+    if(finalNT -> symbol != NON_TERMINAL) {
+        stackFree(&stack);
+        return SYNTACTICAL;
+    }
 
+    //In this section we will generate code
     if(parserData->lID != NULL){
-        char *frame = "LF";
+        char *frame = "LF";  //LF = local frame
         if(parserData->lID->global){
-            frame = "GF";
+            frame = "GF";    //GF = global frame
         }
 
+        //We will call generator's functions depending on data types
+        //To be more specific depending on data type of the left side if the expression and data type of the final nonterminal
         switch(parserData->lID->dataType){
             case TYPE_INTEGER:
                 if(finalNT->dataType == TYPE_STRING){
                     stackFree(&stack);
                     return SEMANTICAL_TYPES;
-                }                                                                                 
-                fprintf(stderr, "lID identifier %s\n", parserData->lID->identifier);
+                }      
+
                 addToOutput(codeGenSaveExpressionResult,parserData->lID->identifier,frame,TYPE_INTEGER,finalNT->dataType);
                 break;
             case TYPE_FLOAT:

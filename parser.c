@@ -232,6 +232,7 @@ static int body(parseData* parserData){
 			getToken();
 
 			//<id> -> = <def_value>
+			fprintf(stderr, "%d\n", parserData -> token.Type);
 			if (parserData -> token.Type == tokenAssign){
 				fprintf(stderr, "%s\n", "DEBUG1");
 				if (parserData -> inFunction == true) {
@@ -443,24 +444,20 @@ static int body(parseData* parserData){
 static int terms(parseData* parserData){
 	int res;
 	
-/*
-		if (parserData->token.Type == tokenIdentifier)
-		{
+
+		if (parserData->token.Type == tokenIdentifier) {
 			if (parserData->inFunction == true) {
-				parserData->lID = BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value);
-				if (parserData->lID == NULL)	
+				if (BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value) == NULL){
 					return SEMANTICAL_UNDEF;
-				else
-					parserData->lID->global = false;
+				}
 			}
 			else {
-				parserData->lID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
-				if (parserData->lID == NULL)
+				if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value) == NULL) {
 					return SEMANTICAL_UNDEF;
-				else
-					parserData->lID->global = true;}
+				}
+			}
 		}
-*/
+
 		res = checkRulePrint(expression);
 		fprintf(stderr, "%s %d\n","res ve funkci terms",res);
 		if (res == 2 && parserData->token.Type == tokenRightBracket)
@@ -478,9 +475,24 @@ static int terms(parseData* parserData){
 static int terms_n(parseData* parserData){
 	int res = 0;
 
+
 	//<terms_n> -> , <expression> <terms_n>
 	if (parserData -> token.Type == tokenComma){
 		getToken();
+
+		if (parserData->token.Type == tokenIdentifier) {
+			if (parserData->inFunction == true) {
+				if (BSTsearchSymbol(parserData->localTable, parserData->token.Data.string->value) == NULL){
+					return SEMANTICAL_UNDEF;
+				}
+			}
+			else {
+				if (BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value) == NULL) {
+					return SEMANTICAL_UNDEF;
+				}
+			}
+		}
+
 
 		res = checkRulePrint(expression);
 		fprintf(stderr, "%s %d\n","res ve funkci terms_n",res); //docasne ID, nahradit za expression
@@ -502,23 +514,6 @@ static int terms_n(parseData* parserData){
 
 static int def_value(parseData* parserData){
 	int res;
-	/*
-	if (parserData -> token.Type == tokenIdentifier)
-	{
-		getToken();
-		if (parserData -> token.Type == tokenEndOfLine){
-			return SUCCESS;
-		}
-		else if (parserData -> token.Type == tokenEndOfFile)
-		{
-			return SUCCESS;
-		}
-		else{
-			checkRule(func);
-			return SUCCESS;
-		}
-	}
-	*/
 
 	if (parserData -> token.Type == tokenKeyword)
 	{
@@ -580,6 +575,38 @@ static int def_value(parseData* parserData){
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					if (parserData -> token.Type == tokenIdentifier)
+						{
+							if (parserData -> inFunction == true)
+							{
+								tData *helper;
+								helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+								if (helper == NULL)
+								{
+									return SEMANTICAL_UNDEF;
+								}
+								else {
+									if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_STRING)
+									{
+										return SEMANTICAL_TYPES;
+									}
+								}
+							}
+							else {
+								tData *helper;
+								helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+								if (helper == NULL)
+								{
+									return SEMANTICAL_UNDEF;
+								}
+								else {
+									if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_STRING)
+									{
+										return SEMANTICAL_TYPES;
+									}
+								}
+							}
+						}
 				addToOutput(codeGenFuncEnterParam, *parserData, 0);
 				getToken();
 				checkTokenType(tokenRightBracket);
@@ -593,30 +620,119 @@ static int def_value(parseData* parserData){
 
 			//<def_value> -> SUBSTR ( ID || STRING_VALUE, ID || INT_VALUE, ID || INT_VALUE)
 			case KW_SUBSTR:
+				
 				addToOutput(codeGenFuncBeforeEnterParam,);
 				getToken();
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					if (parserData -> token.Type == tokenIdentifier)
+					{
+						if (parserData -> inFunction == true)
+						{
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_STRING)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+						else {
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_STRING)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+					}
 					addToOutput(codeGenFuncEnterParam, *parserData, 0);
 					getToken();
 					checkTokenType(tokenComma);
 					getToken();
-				}
-				else{
-					return SEMANTICAL_TYPES;
-				}
-				
-				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+						if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					if (parserData -> token.Type == tokenIdentifier)
+					{
+						if (parserData -> inFunction == true)
+						{
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+						else {
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								fprintf(stderr, "HELPER: %d\n", helper -> dataType);
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+					}
 					addToOutput(codeGenFuncEnterParam, *parserData, 1);
 					getToken();
 					checkTokenType(tokenComma);
 					getToken();
-				}
-				else{
-					return SEMANTICAL_TYPES;
-				}
-				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					if (parserData -> token.Type == tokenIdentifier)
+					{
+						if (parserData -> inFunction == true)
+						{
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+						else {
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+					}
 					addToOutput(codeGenFuncEnterParam, *parserData, 2);
 					getToken();
 					checkTokenType(tokenRightBracket);
@@ -627,6 +743,17 @@ static int def_value(parseData* parserData){
 				else{
 					return SEMANTICAL_TYPES;
 				}
+				}
+				else{
+					return SEMANTICAL_TYPES;
+				}
+				}
+				else{
+					return SEMANTICAL_TYPES;
+				}
+				
+
+				
 				return SUCCESS;
 
 			//<def_value> -> ORD (ID || STRING_VALUE, ID || INT_VALUE)
@@ -636,15 +763,75 @@ static int def_value(parseData* parserData){
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenString){
+					if (parserData -> token.Type == tokenIdentifier)
+					{
+						if (parserData -> inFunction == true)
+						{
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_STRING)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+						else {
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_STRING)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+					}
 					addToOutput(codeGenFuncEnterParam, *parserData, 0);
 					getToken();
 					checkTokenType(tokenComma);
 					getToken();
-				}
-				else{
-					return SEMANTICAL_TYPES;
-				}
-				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					if (parserData -> token.Type == tokenIdentifier)
+					{
+						if (parserData -> inFunction == true)
+						{
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+						else {
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+					}
 					addToOutput(codeGenFuncEnterParam, *parserData, 1);
 					getToken();
 					checkTokenType(tokenRightBracket);
@@ -655,6 +842,11 @@ static int def_value(parseData* parserData){
 				else{
 					return SEMANTICAL_TYPES;
 				}
+				}
+				else{
+					return SEMANTICAL_TYPES;
+				}
+				
 				return SUCCESS;
 
 			//<def_value> -> CHR (ID || INT_VALUE)
@@ -664,6 +856,38 @@ static int def_value(parseData* parserData){
 				checkTokenType(tokenLeftBracket);
 				getToken();
 				if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenInteger){
+					if (parserData -> token.Type == tokenIdentifier)
+					{
+						if (parserData -> inFunction == true)
+						{
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> localTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+						else {
+							tData *helper;
+							helper = BSTsearchSymbol(parserData -> globalTable, parserData -> token.Data.string -> value);
+							if (helper == NULL)
+							{
+								return SEMANTICAL_UNDEF;
+							}
+							else {
+								if (helper -> dataType != TYPE_UNDEFINED && helper -> dataType != TYPE_INTEGER)
+								{
+									return SEMANTICAL_TYPES;
+								}
+							}
+						}
+					}
 					addToOutput(codeGenFuncEnterParam, *parserData, 0);
 					getToken();
 					checkTokenType(tokenRightBracket);
@@ -762,6 +986,9 @@ void initTables(parseData* parserData){
 	parserData->currentID = NULL;
 	parserData->lID = NULL;
 	parserData->rID = NULL;
+	parserData->tempCurrentID = NULL;
+	parserData->tmp = NULL;
+
 
 	
 	parserData->parameterIndex = 0;

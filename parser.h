@@ -29,9 +29,7 @@ typedef struct {
 
 	bool inPrint;
 	bool inFunction;
-	bool inDecleration;
 	bool inWhileOrIf;
-	bool nonDeclaredFunction;
 } parseData;
 
 int kowalskiAnalysis();

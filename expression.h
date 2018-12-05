@@ -1,9 +1,21 @@
-#ifndef _EXPRESSION_H
-#define _EXPRESSION_H
+/*/////////////////////////////////////////////////////////////
+/                                                             /                           
+/    Subject: IFJ                                             /                           
+/    Task: IFJ Project                                        /                           
+/                                                             /                           
+/          Author 1 (leader)               Author 2           /      
+/           Marian Pukancik               Adam Linka          /                        
+/              xpukan01                    xlinka01           /                     
+/                                                             /                           
+/    Team: 045, Variant I                                     /                           
+/                                                             /                           
+/////////////////////////////////////////////////////////////*/
+
+#ifndef EXPRESSION_HEADER
+#define EXPRESSION_HEADER
 
 
 #include "parser.h"
-
 
 /**
  * @enum Rules used for parsing.
@@ -81,10 +93,10 @@ typedef enum
 /**
  * Implementation of <expression> rule. Parses expressions.
  *
- * @param data Pointer to parser's internal data.
- * @return Given exit code.
+ * @param parserData  -  Pointer to parser's internal data.
+ * @return            -  Given exit code.
  */
 int expression(parseData* parserData);
 
 
-#endif //_parser_H
+#endif 

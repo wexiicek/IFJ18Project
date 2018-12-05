@@ -1,3 +1,16 @@
+/*/////////////////////////////////////
+/                                     /                           
+/    Subject: IFJ                     /                           
+/    Task: IFJ Project                /                           
+/                                     /                           
+/          Author (leader)            /      
+/           Marian Pukancik           /                        
+/              xpukan01               /                     
+/                                     /                           
+/    Team: 045, Variant I             /                           
+/                                     /                           
+/////////////////////////////////////*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -5,18 +18,15 @@
 #include "string.h"
 #include "err.h"
 
-#define CRED  "\x1B[31m"
-#define CGRN  "\x1B[32m"
-#define CWHT  "\x1B[37m"
-//int allocCounter = 0;
+
 
 int stringInit(dynString *str) {
-    //fprintf(stderr, CRED"       %d. ALLOCATING STRING \n"CWHT, ++allocCounter );
-    str->value = (char*) malloc(initAllocSize * sizeof(char)); 
+    str->value = (char*) malloc(initAllocSize * sizeof(char));
+    //If allocation was not successfull 
     if(str->value == NULL){
         return INTERNAL;
     }
-    
+    //Otherwise we set default values
     str->length = 0;
     str->value[0] = '\0';
     str->lengthAllocated = initAllocSize;
@@ -38,14 +48,13 @@ int stringAddChar(dynString *str, char c) {
     //Then we use realloc.
     if (str->length+1 >= str->lengthAllocated) {
         str->value = (char *) realloc(str->value, (str->lengthAllocated + initAllocSize * sizeof(char)));
-        //fprintf(stderr, CRED"       %d. REALLOCATING STRING \n"CWHT, ++allocCounter );
 
         if (str->value == NULL){    
             return INTERNAL;
         }
         str->lengthAllocated = str->lengthAllocated + initAllocSize;
     }
-    //adding a chat at the end of the string
+    //adding char at the end of the string
     str->value[str->length] = c;
     str->value[str->length+1] = '\0';
     str->length++;
@@ -83,6 +92,7 @@ void stringDispose(dynString *str) {
 
 bool pushToToken(dynString *from, dynString *to){
     int len = from -> length + 1;
+    //We have to check if we have enough memory
     if (len >= to -> lengthAllocated ){
         to -> value = (char *) realloc(to -> value, len); 
         to -> lengthAllocated = len;

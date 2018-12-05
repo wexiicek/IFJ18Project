@@ -1,3 +1,16 @@
+/*///////////////////////////////////////////////////////////////////////////////////////
+/																						/
+/	Subject: IFJ																		/
+/	Task: IFJ Project 																	/
+/																						/
+/	     Author 1 		    															/
+/	Dominik Juriga																		/
+/		xjurig00																		/
+/																						/
+/	Team: 045, Variant I 																/
+/																						/
+///////////////////////////////////////////////////////////////////////////////////////*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -18,7 +31,7 @@
 //Macro definition
 
 //return next character in file
-#define nextChar(character) character = (char)getc(code)
+#define nextChar(character) character = (char)getc(code); fprintf(stderr, "stt: %d, chr: %d\n",state, c);
 
 FILE *code;
 
@@ -93,23 +106,39 @@ void setDynString(dynString *string) {
 	kwstring = string;
 }
 
+/*
+	@brief Convert the string value to an integer value and push it to token
+	@param from string we want the value from
+	@param to token we want to push the value to
+	@return SUCCESS
+*/
 bool strToIntToken(dynString *from, Token *to) {
-	/*Convert the string value to an integer value and push it to token.*/
 	int value = atoi(from->value);
 	to->Data.integer = value;
-	fprintf(stderr, "%d\n",to->Data.integer );
+	fprintf(stderr, "%d\n", to->Data.integer );
 	return SUCCESS;
 }
 
+/*
+	@brief Convert the string value to a float value and push it to token
+	@param from string we want the value from
+	@param to token we want to push the value to
+	@return SUCCESS
+*/
 bool strToFltToken(dynString *from, Token *to) {
-	/*Convert the string value to a float value and push it to token.*/
+
 	float value = strtof(from->value, NULL);
 	to->Data.flt = value;
 	return SUCCESS;
 }
 
+/*
+	@brief Convert the string value to a exponential value and push it to token
+	@param from string we want the value from
+	@param to token we want to push the value to
+	@return SUCCESS
+*/
 bool strToExpToken(dynString *from, Token *to) {
-	/*Convert the string value to a float value and push it to token.*/
 	float value = atof(from->value);
 	to->Data.flt = value;
 	return SUCCESS;
@@ -135,9 +164,12 @@ int getTokens (Token *token) {
 	if (stringInit(str))
 		return INTERNAL;
 
+	//Check if the first number in input is zero
 	bool zeroSwitch = false;
-	int state = stateStart; token -> Type = tokenEmpty;
+	int state = stateStart;
+	token -> Type = tokenEmpty;
 	char c;
+	//for printing (debugging purposes)
 	char *prt = "    TOKEN TYPE:";
 
 
@@ -145,83 +177,19 @@ int getTokens (Token *token) {
 	// .. dont ask
 	nextChar(c);
 	ungetc(c, code);
-	if ((c == '=')) {
-		state = stateError;
-		nextChar(c);
-		nextChar(c);
-		if (c == 'b') {
-			nextChar(c);
-			if (c == 'e') {
-				nextChar(c);
-				if (c == 'g') {
-					nextChar(c);
-					if (c == 'i') {
-						nextChar(c);
-						if (c == 'n') {
-							nextChar(c);
-							if (c ==  '\n' || c == 13) {
-								while (c != EOF) {
-									nextChar(c);
-									if (c == '\n' || c == '=') {
-										nextChar(c);
-										if (c == '=' || c == 'e') {
-											nextChar(c);
-											if ( c == 'e' || c == 'n') {
-												nextChar(c);
-												if (c == 'n' || c == 'd') {
-													nextChar(c);
-													if (c == 'd' || c == '\n' || c == EOF) {
-														//fprintf(stderr, "%d\n",c );
-														if (c == EOF) {
-															state = stateEnd;
-															token->Type = tokenEndOfFile;
-															break;
-														}
-														else if (c == 'd') {
-															state = stateStart;
-															token -> Type = tokenEndOfLine;
-															break;
-														}
 
-														else if (c == '\n') {
-															state = stateStart;
-															token -> Type = tokenEmpty;
-															break;
-														}
-													}
-													else return LEXICAL;
-													return LEXICAL;
-												}
-											}
-										}
-									}
-								}
-							}
-							else if (c == EOF) return LEXICAL;
-						}
-					}
-				}
-			}
-		}
-
-		
-	
-	//If there was no "=", we return the character and start over
-	else {
-		ungetc(c, code);
-		state = stateEnd;
-		token->Type = tokenEndOfLine;
-	}}
 
 	//Go through every character of a file
 	while (1) {
 		nextChar(c);
+		fprintf(stderr, "%s\n", "neco");
 		switch (state) {
 		case (stateStart):
 			//Checking for END OF LINE
 			//Or a block comment
-			if (c == '\n' || c == 13) {
+			if (c == 10) {
 				nextChar(c);
+				fprintf(stderr, "%d\n", c);
 				if ((c == '=')) {
 					state = stateError;
 					nextChar(c);
@@ -352,7 +320,7 @@ int getTokens (Token *token) {
 			}
 
 			else if (c == '#')
-			{state = stateComment; token->Type = tokenEmpty;}
+			{state = stateComment;}
 			//Question: do we need EOL token on the end of single line
 			//			comment?
 
@@ -373,23 +341,27 @@ int getTokens (Token *token) {
 
 		case (stateNumber):
 			if ((zeroSwitch == true) && (token->Type == tokenInteger)) {
+				fprintf(stderr, "st num:%d\n", c);
 				nextChar(c);
-				if (isdigit(c)) {/*
-					if (c == 48) {
-						zeroSwitch = false;
-						return scanRet(str, LEXICAL);
-					}*/
-
+				if (isdigit(c)) {
+					/*
+						if (c == 48) {
+							zeroSwitch = false;
+							return scanRet(str, LEXICAL);
+						}*/
+					//Number input in octal
 					if (isdigit(c)) {
 						do {
-							if(c > 47 && c <56){
+							if (c > 47 && c < 56) {
 								if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
 								nextChar(c);
 								fprintf(stderr, "chr%d\n", c);
 							}
 							else return scanRet(str, LEXICAL);
 						} while (isdigit(c));
+						//If there is any sign right behind the number, we return LEXICAL
 						if (isalpha(c)) return scanRet(str, LEXICAL);
+						//otherwise push the value to token
 						int tmpval1 = strtol(str->value, NULL, 8);
 						token->Data.integer = tmpval1;
 						token->Type = tokenInteger;
@@ -398,24 +370,29 @@ int getTokens (Token *token) {
 						break;
 					}
 				}
-				//
+				//Number input in binary
 				else if (c == 'b') {
 					nextChar(c);
 					do {
-						if (c == 48 || c == 49){
+						if (c == 48 || c == 49) {
+							//Loading only 0 and 1, otherwise it is an error
 							if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
 							nextChar(c);
-							fprintf(stderr, "%d\n", c);}
+							fprintf(stderr, "%d\n", c);
+						}
 						else return scanRet(str, LEXICAL);
 					} while (isdigit(c));
+					//if there is any alphabet character right behind, we return LEXICAL
 					if (isalpha(c)) return scanRet(str, LEXICAL);
+					//otherwise we push the value to token
 					token->Data.integer = strtol(str->value, NULL, 2);
 					token->Type = tokenInteger;
 					ungetc(c, code);
 					state = stateNumberEnd;
 					break;
 				}
-				else if (c == '.'){
+				//Numbers in float
+				else if (c == '.') {
 					if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
 					nextChar(c);
 					while (isdigit(c)) {
@@ -430,17 +407,17 @@ int getTokens (Token *token) {
 
 				}
 				//char 13 == carriage return, a character behind a zero
-				else if (c == ' ' || c == '\n' || c == EOF || c == 13 || c == ')' || c == '('){
-					
+				else if (c == ' ' || c == '\n' || c == EOF || c == 13 || c == ')' || c == '(') {
+
 					zeroSwitch = false;
 					strToIntToken(str, token);
 					state = stateNumberEnd;
 					token->Type = tokenInteger;
 					fprintf(stderr, "KOKOTKO %d\n", c);
 					ungetc(c, code);
-					
+
 				}
-				else return scanRet(str, LEXICAL); 
+				else return scanRet(str, LEXICAL);
 			}
 			//Decimal and float numbers
 			else if (!(zeroSwitch) && (token->Type = tokenInteger)) {
@@ -464,6 +441,7 @@ int getTokens (Token *token) {
 						nextChar(c);
 					}
 				} while (isdigit(c));
+				//already decimal numbers, putting their values into token
 				state = stateNumberEnd;
 				if (token->Type == tokenInteger)
 					strToIntToken(str, token);
@@ -484,7 +462,7 @@ int getTokens (Token *token) {
 					if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
 					nextChar(c);
 				}
-				if(!strlen(str->value)) return scanRet(str, LEXICAL);
+				if (!strlen(str->value)) return scanRet(str, LEXICAL);
 				//fprintf(stderr, "strln%ld\n", strlen(str->value));
 				token->Data.integer = (int)strtol(str->value, NULL, 16);
 				ungetc(c, code);
@@ -522,6 +500,7 @@ int getTokens (Token *token) {
 			break;
 
 		case (stateEqual):
+			//nextChar(c);
 			//If "=="
 			if (c == '=')
 			{token->Type = tokenEqual; state = stateStart;  fprintf(stderr, "%s EQUAL", prt); return scanRet(str, SUCCESS);}
@@ -559,12 +538,15 @@ int getTokens (Token *token) {
 
 		case (stateComment):
 			//Single line comment
-
-			//Read characters from file, until there is an EOL or EOF
-			if (c == '\n' || c == 13)
-			{state = stateStart; token->Type = tokenEndOfLine;}
-			if (c == EOF)
-			{token->Type = tokenEndOfFile; state = stateEnd;}
+			fprintf(stderr, "cmmnt %d\n", c);
+			while (c != EOF || c != 10 || c != 13){
+				nextChar(c);
+				if (c == 10 || c == 13){
+					state = stateStart; token->Type = tokenEndOfLine; ungetc(c, code); break;
+				}
+				else if (c == EOF)					
+					{token->Type = tokenEndOfFile; state = stateEnd; break;}
+			}
 			break;
 
 		case (stateStringStart):
@@ -706,6 +688,7 @@ int getTokens (Token *token) {
 					fprintf(stderr, "    TOKEN TYPE: %d | TOKEN VAL: \"%s\"\n", token->Type , str->value);
 				state = stateStart;
 				if (!pushToToken(str, token->Data.string)) return scanRet(str, INTERNAL);
+
 				ungetc(c, code);
 				return scanRet(str, SUCCESS);
 			}
