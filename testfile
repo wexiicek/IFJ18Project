@@ -1,9 +1,48 @@
-def kokot (n)
+#TESTY SPRAVNE
+
+# 1.
+#tady je zacatek
+var1 = 0b1
+var2 = 0 #toto je nula
+var3 = \xFF
+var4 = 42
+
+print var1, "\n"
+print var2, "\n"
+print var3, "\n"
+print var4, "\n"
+
+ultimate = var1 + var2 + var3 + var4
+print ultimate, "\n"
+
+# 2.
+def curak (m)
+while m > 1 do
+m = m - 1
+print m, "novak je kokot\n"
+end
+end
+
+curak 4
+
+# 3.
+n = 4
 while n > 1 do
 n = n - 1
 print n, "novak je kokot\n"
 end
+
+# 4.
+def kokot (b)
+while b > 1 do
+b = b - 1
+print b, "novak je kokot\n"
+end
 end
 
+a = inputi
+kokot (a)
 
-kokot 4
+# 5.
+def _okot! ()
+end

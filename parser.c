@@ -142,7 +142,7 @@ static int mainFun(parseData* parserData){
 
 	//<main> -> <body> <main>
 	else if (parserData -> token.Type == tokenIdentifier || parserData -> token.Type == tokenEndOfLine || parserData -> token.Data.keyword == KW_IF || parserData -> token.Data.keyword == KW_WHILE || parserData -> token.Data.keyword == KW_PRINT){
-		parserData -> labelIndex = 0;
+		//parserData -> labelIndex = 0;
 		checkRule(body);
 		return mainFun(parserData);
 	}
@@ -223,8 +223,9 @@ static int body(parseData* parserData){
 	//<body> -> ID <id> EOL <body>
 	if (parserData -> token.Type == tokenIdentifier){
 
-			tData *tempCurrentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
-			if(tempCurrentID != NULL){
+			parserData -> tempCurrentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value);
+			if(parserData -> tempCurrentID != NULL){
+				fprintf(stderr, "%s\n", "HELLO");
 				parserData->currentID = BSTsearchSymbol(parserData->globalTable, parserData->token.Data.string->value); 
 				parserData->currentID->callArgCounter = 0;
 			}
@@ -284,7 +285,7 @@ static int body(parseData* parserData){
 			}
 			//<id> -> <func>
 			else{
-				if (parserData->currentID != NULL){
+				if (parserData->tempCurrentID != NULL){
 					checkRule(func);
 					addToOutput(codeGenFuncCall, parserData->currentID->identifier);
 					return body(parserData);
@@ -361,6 +362,8 @@ static int body(parseData* parserData){
 		int currentLabelIndex = parserData -> labelIndex;
 		char *functionID = parserData -> currentID ? parserData -> currentID -> identifier : "";
 		parserData -> labelIndex += 2;
+		fprintf(stderr, "LABEL INDEX: %d\n", parserData -> labelIndex);
+		fprintf(stderr, "CURRENT LABEL INDEX: %d\n", currentLabelIndex);
 		addToOutput(codeGenLabel, functionID, currentLabelIndex, parserData->labelDeep);
 
 		getToken();
@@ -390,7 +393,7 @@ static int body(parseData* parserData){
 	else if(parserData -> token.Type == tokenKeyword && parserData -> token.Data.keyword == KW_PRINT){
 		getToken();
 
-
+		parserData -> inPrint = true;
 		parserData->lID = BSTsearchSymbol(parserData->globalTable, "%result");
 		parserData->lID->dataType = TYPE_UNDEFINED;
 		if (parserData->inFunction == true)
@@ -411,7 +414,7 @@ static int body(parseData* parserData){
 		}
 			
 			checkRule(terms);
-
+			parserData -> inPrint = false;
 			checkTokenType2(tokenEndOfLine, tokenEndOfFile);
 		return body(parserData);
 
@@ -765,6 +768,7 @@ void initTables(parseData* parserData){
 	parserData->labelIndex = 0;
 	parserData->labelDeep = -1;
 
+	parserData -> inPrint = false;
 	parserData->inFunction = false;
 	parserData->inWhileOrIf = false;
 

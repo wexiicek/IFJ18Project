@@ -18,6 +18,7 @@ typedef struct {
 	tBSTNodePtr globalTable;
 
 	tData* currentID;
+	tData* tempCurrentID;
 	tData* lID;
 	tData* rID;
 	tData* tmp;
@@ -26,6 +27,7 @@ typedef struct {
 	int labelIndex;
 	int labelDeep;
 
+	bool inPrint;
 	bool inFunction;
 	bool inDecleration;
 	bool inWhileOrIf;

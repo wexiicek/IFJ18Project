@@ -374,21 +374,22 @@ int getTokens (Token *token) {
 		case (stateNumber):
 			if ((zeroSwitch == true) && (token->Type == tokenInteger)) {
 				nextChar(c);
-				fprintf(stderr, "next chr je: %d\n",c );
-				if (isdigit(c)) {
-					fprintf(stderr, "Mame char: %c\n", c);
+				if (isdigit(c)) {/*
 					if (c == 48) {
-						fprintf(stderr, "%s\n", "yap");
 						zeroSwitch = false;
 						return scanRet(str, LEXICAL);
-					}
+					}*/
 
-					else if (isdigit(c)) {
-						while (isdigit(c)) {
-							if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
-
-							nextChar(c);
-						}
+					if (isdigit(c)) {
+						do {
+							if(c > 47 && c <56){
+								if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+								nextChar(c);
+								fprintf(stderr, "chr%d\n", c);
+							}
+							else return scanRet(str, LEXICAL);
+						} while (isdigit(c));
+						if (isalpha(c)) return scanRet(str, LEXICAL);
 						int tmpval1 = strtol(str->value, NULL, 8);
 						token->Data.integer = tmpval1;
 						token->Type = tokenInteger;
@@ -400,10 +401,14 @@ int getTokens (Token *token) {
 				//
 				else if (c == 'b') {
 					nextChar(c);
-					while (isdigit(c)) {
-						if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
-						nextChar(c);
-					}
+					do {
+						if (c == 48 || c == 49){
+							if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
+							nextChar(c);
+							fprintf(stderr, "%d\n", c);}
+						else return scanRet(str, LEXICAL);
+					} while (isdigit(c));
+					if (isalpha(c)) return scanRet(str, LEXICAL);
 					token->Data.integer = strtol(str->value, NULL, 2);
 					token->Type = tokenInteger;
 					ungetc(c, code);
@@ -425,15 +430,17 @@ int getTokens (Token *token) {
 
 				}
 				//char 13 == carriage return, a character behind a zero
-				else {
-					//if (c == ' ' || c == '\n' || c == EOF || c == 13 || c == ')' || c == '('){
+				else if (c == ' ' || c == '\n' || c == EOF || c == 13 || c == ')' || c == '('){
+					
 					zeroSwitch = false;
 					strToIntToken(str, token);
 					state = stateNumberEnd;
 					token->Type = tokenInteger;
 					fprintf(stderr, "KOKOTKO %d\n", c);
 					ungetc(c, code);
+					
 				}
+				else return scanRet(str, LEXICAL); 
 			}
 			//Decimal and float numbers
 			else if (!(zeroSwitch) && (token->Type = tokenInteger)) {
@@ -477,6 +484,8 @@ int getTokens (Token *token) {
 					if (stringAddChar(str, c)) return scanRet(str, INTERNAL);
 					nextChar(c);
 				}
+				if(!strlen(str->value)) return scanRet(str, LEXICAL);
+				//fprintf(stderr, "strln%ld\n", strlen(str->value));
 				token->Data.integer = (int)strtol(str->value, NULL, 16);
 				ungetc(c, code);
 				token->Type = tokenInteger;

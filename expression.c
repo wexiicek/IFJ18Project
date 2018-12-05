@@ -232,30 +232,29 @@ static precAnalysisRules testWhichRuleToUse(int numberOfOperands, StackItem *ope
 static int checkSemantics(precAnalysisRules rule, StackItem* op1, StackItem* op2, StackItem* op3, dataTypeEnum* final_type, parseData *parserData){
     bool op1ToFloat = false;
 	bool op3ToFloat = false;
-    /*
-    if (rule == OPERAND_RULE)
-    {
+    if (parserData -> inFunction == false && parserData -> inPrint == false){
         
-        if (op1->dataType == TYPE_UNDEFINED)
-            {fprintf(stderr, "%s\n", "novak je pica\n");
-                        return SEMANTICAL_UNDEF;}
-        
-    }
+        if (rule == OPERAND_RULE)
+        {
+            
+            if (op1->dataType == TYPE_UNDEFINED)
+                {fprintf(stderr, "%s\n", "novak je pica\n");
+                            return SEMANTICAL_UNDEF;}   
+        }
 
-    if (rule == BRACKETS_RULE)
-    {
-        if (op2->dataType == TYPE_UNDEFINED)
-            return SEMANTICAL_UNDEF;
-    }
+        if (rule == BRACKETS_RULE)
+        {
+            if (op2->dataType == TYPE_UNDEFINED)
+                return SEMANTICAL_UNDEF;
+        }
 
-    if (rule != OPERAND_RULE && rule != BRACKETS_RULE)
-    {
-        if (op1->dataType == TYPE_UNDEFINED && op3->dataType == TYPE_UNDEFINED)
-            {fprintf(stderr, "%s\n", "CHYBA JE TADY");
-                        return SEMANTICAL_UNDEF;}
+        if (rule != OPERAND_RULE && rule != BRACKETS_RULE)
+        {
+            if (op1->dataType == TYPE_UNDEFINED && op3->dataType == TYPE_UNDEFINED)
+                {fprintf(stderr, "%s\n", "CHYBA JE TADY");
+                            return SEMANTICAL_UNDEF;}
+        }
     }
-    */
-
     switch (rule)
     {
     case OPERAND_RULE:
